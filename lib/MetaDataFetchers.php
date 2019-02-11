@@ -16,7 +16,6 @@ class MetaDataFetcher extends MetaDataAbstract{
     protected $params=[]; // To be overridden with defaults in subclasses
                           // Parameters to construct URI must be in $params['uri_params']
     
-    private $doc;
     
     public function __construct() {
         $this->doc = new DOMDocument();

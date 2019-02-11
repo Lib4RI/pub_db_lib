@@ -10,8 +10,8 @@
  * Abstract classes
  *****************************************************************************/
 abstract class MetaDataAbstract{
-    protected $params=[]; //To be overridden with defaults in subclasses
-
+    protected $doc;
+    
     public function __construct() {
         
     }

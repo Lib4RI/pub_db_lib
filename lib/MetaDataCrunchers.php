@@ -11,21 +11,45 @@ require 'main.php';
  * Classes for data manipulation
  *****************************************************************************/
 
-class MetaDataFetcher extends MetaDataAbstract{
-    protected $uri = ''; //To be overridden with defaults in subclasses
-    protected $params=[]; //To be overridden with defaults in subclasses
+class MetaDataCruncher extends MetaDataAbstract{
+    
+    private $steps = array();
     
     public function __construct() {
         
     }
 
-    public function set_source_uri($uri){
-        $this->uri = $uri;
+    public function loadDoc($doc){
+        $this->doc = $doc;
     }
     
-    
-    public function fetch(){
-        
+    public function addSteps($steps){
+        array_push($this->steps, $steps);
     }
     
+    public function cruch(){
+        foreach ($steps as $ii => $step){
+            switch ($step['type']){
+                case "xslt":
+                    $xsl = new DOMDocument;
+                    switch ($step['params']){
+                        case 'file':
+                            $xsl->load($step['rule']);
+                            break;
+                        case 'str':
+                            $xsl->loadXML($step['rule']);
+                            break;
+                        case 'dom':
+                            break;
+                    }
+                    $proc = new XSLTProcessor;
+                    $proc->importStyleSheet($xsl); // attach the xsl rules
+                    $this->doc = $proc->transformToXML($xml);
+                    break;
+                case "callback":
+                    $this->doc = $step['rule']($this->doc, $step['params']);
+                    break;
+            }
+        }
+    }
 }
