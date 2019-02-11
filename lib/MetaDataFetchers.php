@@ -16,10 +16,10 @@ class MetaDataFetcher extends MetaDataAbstract{
     protected $params=[]; // To be overridden with defaults in subclasses
                           // Parameters to construct URI must be in $params['uri_params']
     
-    protected $data;
+    private $doc;
     
     public function __construct() {
-        $this->data = new DOMDocument();
+        $this->doc = new DOMDocument();
     }
 
     public function set_source_uri($uri){
@@ -47,7 +47,7 @@ class MetaDataFetcher extends MetaDataAbstract{
         curl_setopt($cSession,CURLOPT_RETURNTRANSFER,true);
         curl_setopt($cSession,CURLOPT_HEADER, false);
         
-        $this->data->loadXML(curl_exec($cSession));
+        $this->doc->loadXML(curl_exec($cSession));
         
         curl_close($cSession);
         
@@ -55,15 +55,15 @@ class MetaDataFetcher extends MetaDataAbstract{
     }
     
     public function getData(){
-        return $this->data;
+        return $this->doc;
     }
     
     public function getXML(){
-        return $this->data->saveXML();
+        return $this->doc->saveXML();
     }
     
     public function getJSON(){
-        return json_encode(simplexml_load_string($this->data->saveXML()), JSON_PRETTY_PRINT);
+        return json_encode(simplexml_load_string($this->doc->saveXML()), JSON_PRETTY_PRINT);
         
     }
     
