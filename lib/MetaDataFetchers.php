@@ -53,20 +53,7 @@ class MetaDataFetcher extends MetaDataAbstract{
         
         return $this;
     }
-    
-    public function getData(){
-        return $this->doc;
-    }
-    
-    public function getXML(){
-        return $this->doc->saveXML();
-    }
-    
-    public function getJSON(){
-        return json_encode(simplexml_load_string($this->doc->saveXML()), JSON_PRETTY_PRINT);
         
-    }
-    
 }
 
 class PubmedFetcher extends MetaDataFetcher{
