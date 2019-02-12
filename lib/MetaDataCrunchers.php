@@ -5,7 +5,7 @@
  * such us CrossRef, Scopus, Web of Science, Pubmed
  */ 
 
-require 'main.php';
+require_once  'main.php';
 
 /******************************************************************************
  * Classes for data manipulation
@@ -21,14 +21,16 @@ class MetaDataCruncher extends MetaDataAbstract{
 
     public function loadDoc($doc){
         $this->doc = $doc;
+        return $this;
     }
     
     public function addSteps($steps){
         array_push($this->steps, $steps);
+        return $this;
     }
     
     public function cruch(){
-        foreach ($steps as $ii => $step){
+        foreach ($this->steps as $ii => $step){
             switch ($step['type']){
                 case "xslt":
                     $xsl = new DOMDocument;
@@ -51,5 +53,6 @@ class MetaDataCruncher extends MetaDataAbstract{
                     break;
             }
         }
+        return $this;
     }
 }

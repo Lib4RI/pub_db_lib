@@ -5,7 +5,7 @@
  * such us CrossRef, Scopus, Web of Science, Pubmed
  */ 
 
-require 'main.php';
+require_once 'main.php';
 
 /******************************************************************************
  * Classes for data fetching
