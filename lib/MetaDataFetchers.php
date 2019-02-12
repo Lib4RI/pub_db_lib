@@ -18,7 +18,7 @@ class MetaDataFetcher extends MetaDataAbstract{
     
     
     public function __construct() {
-        $this->doc = new DOMDocument();
+        $this->dom = new DOMDocument();
     }
 
     public function set_source_uri($uri){
@@ -46,7 +46,7 @@ class MetaDataFetcher extends MetaDataAbstract{
         curl_setopt($cSession,CURLOPT_RETURNTRANSFER,true);
         curl_setopt($cSession,CURLOPT_HEADER, false);
         
-        $this->doc->loadXML(curl_exec($cSession));
+        $this->dom->loadXML(curl_exec($cSession));
         
         curl_close($cSession);
         

@@ -10,7 +10,7 @@
  * Abstract classes
  *****************************************************************************/
 abstract class MetaDataAbstract{
-    protected $doc;
+    protected $dom;
     
     public function __construct() {
         
@@ -20,16 +20,21 @@ abstract class MetaDataAbstract{
         $this->params = $params;
     }
 
-    public function getData(){
-        return $this->doc;
+    public function getDom(){
+        return $this->dom;
     }
     
     public function getXML(){
-        return $this->doc->saveXML();
+        return $this->getDom()->saveXML();
     }
     
     public function getJSON(){
-        return json_encode(simplexml_load_string($this->doc->saveXML()), JSON_PRETTY_PRINT);
+        return json_encode(simplexml_load_string($this->getXML()), JSON_PRETTY_PRINT);
+        
+    }
+
+    public function getArray(){
+        return json_decode($this->getJSON(),TRUE);
         
     }
     

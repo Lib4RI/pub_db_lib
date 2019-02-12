@@ -15,12 +15,14 @@ class MetaDataCruncher extends MetaDataAbstract{
     
     private $steps = array();
     
-    public function __construct() {
-        
+    public function __construct($dom) {
+        if (!empty($dom)){
+            $this->loadDom($dom);
+        }
     }
 
-    public function loadDoc($doc){
-        $this->doc = $doc;
+    public function loadDom($dom){
+        $this->dom = $dom;
         return $this;
     }
     
@@ -46,10 +48,10 @@ class MetaDataCruncher extends MetaDataAbstract{
                     }
                     $proc = new XSLTProcessor;
                     $proc->importStyleSheet($xsl); // attach the xsl rules
-                    $this->doc = $proc->transformToXML($xml);
+                    $this->dom = $proc->transformToXML($xml);
                     break;
                 case "callback":
-                    $this->doc = $step['rule']($this->doc, $step['params']);
+                    $this->dom = $step['rule']($this->dom, $step['params']);
                     break;
             }
         }
