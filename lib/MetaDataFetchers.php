@@ -13,7 +13,7 @@ require_once 'main.php';
 
 class MetaDataFetcher extends MetaDataAbstract{
     protected $uri = '';  // To be overridden with defaults in subclasses
-    protected $params=[]; // To be overridden with defaults in subclasses
+    protected $params = ''; // To be overridden with defaults in subclasses
                           // Parameters to construct URI must be in $params['uri_params']
     
     
@@ -26,11 +26,11 @@ class MetaDataFetcher extends MetaDataAbstract{
     }
     
     public function buildUrl(){
-        $this->url = $this->uri.'?';
-        foreach ($this->params['uri_params'] as $key => $val){
-            $this->url.= $key.'='.$val.'&';
-        }
-        
+//         $this->url = $this->uri.'?';
+//         foreach ($this->params['uri_params'] as $key => $val){
+//             $this->url.= $key.'='.$val.'&';
+//         }
+        $this->url = $this->uri.'?'.http_build_query($this->params['uri_params']);
         return $this;
     }
     
@@ -38,18 +38,38 @@ class MetaDataFetcher extends MetaDataAbstract{
         return $this->url;
     }
     
+    public function buildHeaders(){
+        if (empty($this->params['headers_params'])){
+            $this->headers = false;
+        }
+        else{
+            $this->headers = array();
+            foreach ($this->params['headers_params'] as $key => $value){
+                array_push($this->headers, "$key: $value");
+            }
+        }
+        
+        return $this;
+    }
+
+    public function getHeaders(){
+        return $this->headers;
+    }
+    
     public function fetch(){
         $this->buildUrl();
+        $this->buildHeaders();
         $cSession = curl_init();
         
         curl_setopt($cSession,CURLOPT_URL,$this->url);
         curl_setopt($cSession,CURLOPT_RETURNTRANSFER,true);
-        curl_setopt($cSession,CURLOPT_HEADER, false);
+        curl_setopt($cSession,CURLOPT_HTTPHEADER, $this->headers);
+        curl_setopt($cSession,CURLOPT_HEADER, false); 
         
         $this->dom->loadXML(curl_exec($cSession));
         
         curl_close($cSession);
-        
+
         return $this;
     }
         
@@ -89,5 +109,23 @@ class CrossrefFetcher extends MetaDataFetcher{
         $this->params['uri_params']['id'] = 'doi%3A'.$doi;
     }
     
+}
+
+class ScopusSearchFetcher extends  MetaDataFetcher{
+    protected $uri = "https://api.elsevier.com/content/search/scopus";
+    protected $params=array('uri_params' => array('query' => ''),
+                            'headers_params' => array('Accept' => 'application/xml')
+    );
+
+    public function setDoi($doi){
+        if (!empty($this->params['uri_params']['query'])){
+            $this->params['uri_params']['query'] .= '&';
+        }
+        $this->params['uri_params']['query'] .= "DOI($doi)";
+    }
+
+    public function setKey($key){
+        $this->params['headers_params']['X-ELS-APIKey'] = $key;
+    }
 }
 
