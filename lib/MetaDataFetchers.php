@@ -5,7 +5,7 @@
  * such us CrossRef, Scopus, Web of Science, Pubmed
  */ 
 
-require_once 'main.php';
+require_once 'MetaDataAbstract.php';
 
 /******************************************************************************
  * Classes for data fetching
@@ -57,13 +57,15 @@ class MetaDataFetcher extends MetaDataAbstract{
     }
     
     public function fetch(){
-        $this->buildUrl();
+        $this->buildUrl(); //echo $this->getUrl(); exit;
         $this->buildHeaders();
         $cSession = curl_init();
         
         curl_setopt($cSession,CURLOPT_URL,$this->url);
         curl_setopt($cSession,CURLOPT_RETURNTRANSFER,true);
-        curl_setopt($cSession,CURLOPT_HTTPHEADER, $this->headers);
+        if (!empty($this->getHeaders())){
+            curl_setopt($cSession,CURLOPT_HTTPHEADER, $this->headers);
+        }
         curl_setopt($cSession,CURLOPT_HEADER, false); 
         
         $this->dom->loadXML(curl_exec($cSession));
@@ -106,7 +108,7 @@ class CrossrefFetcher extends MetaDataFetcher{
     }
     
     public function setDoi($doi){
-        $this->params['uri_params']['id'] = 'doi%3A'.$doi;
+        $this->params['uri_params']['id'] = 'doi:'.$doi;
     }
     
 }
@@ -115,8 +117,8 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
     protected $uri = "https://api.elsevier.com/content/search/scopus";
     protected $params=array('uri_params' => array('query' => ''),
                             'headers_params' => array('Accept' => 'application/xml')
-    );
-
+     );
+    
     public function setDoi($doi){
         if (!empty($this->params['uri_params']['query'])){
             $this->params['uri_params']['query'] .= '&';
@@ -126,6 +128,7 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
 
     public function setKey($key){
         $this->params['headers_params']['X-ELS-APIKey'] = $key;
+//        $this->params['uri_params']['apiKey'] = $key;
     }
 }
 
