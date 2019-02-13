@@ -56,21 +56,24 @@ class MetaDataFetcher extends MetaDataAbstract{
         return $this->headers;
     }
     
+    private function setCurlOpt(){
+        curl_setopt($this->cSession,CURLOPT_URL,$this->url);
+        curl_setopt($this->cSession,CURLOPT_RETURNTRANSFER,true);
+        if (!empty($this->getHeaders())){
+            curl_setopt($this->cSession,CURLOPT_HTTPHEADER, $this->headers);
+        }
+        curl_setopt($this->cSession,CURLOPT_HEADER, false);
+    }
+    
     public function fetch(){
         $this->buildUrl(); //echo $this->getUrl(); exit;
         $this->buildHeaders();
-        $cSession = curl_init();
+        $this->cSession = curl_init();
+        $this->setCurlOpt();
         
-        curl_setopt($cSession,CURLOPT_URL,$this->url);
-        curl_setopt($cSession,CURLOPT_RETURNTRANSFER,true);
-        if (!empty($this->getHeaders())){
-            curl_setopt($cSession,CURLOPT_HTTPHEADER, $this->headers);
-        }
-        curl_setopt($cSession,CURLOPT_HEADER, false); 
+        $this->dom->loadXML(curl_exec($this->cSession));
         
-        $this->dom->loadXML(curl_exec($cSession));
-        
-        curl_close($cSession);
+        curl_close($this->cSession);
 
         return $this;
     }
@@ -132,3 +135,44 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
     }
 }
 
+class WosRedirectFetcher extends  MetaDataFetcher{
+    protected $uri = "http://ws.isiknowledge.com/cps/openurl/service";
+    protected $params=array('uri_params' => array('url_ver' => 'Z39.88-2004'));
+        
+    public function setDoi($doi){
+        $this->params['uri_params']['rft_id'] = "info:doi/$doi";
+    }
+    
+    // Need to override the follwing two functions as the fetching strategy does not match with the main implementation.
+    private function setCurlOpt(){
+        curl_setopt($this->cSession, CURLOPT_URL,$this->url);
+        curl_setopt($this->cSession, CURLOPT_HEADER, 1);
+        curl_setopt($this->cSession, CURLOPT_NOBODY, 1);
+        curl_setopt($this->cSession, CURLOPT_RETURNTRANSFER, 1);
+    }
+    
+    public function fetch(){
+        $this->buildUrl(); 
+        
+        $this->cSession = curl_init();
+        $this->setCurlOpt();
+        
+        $red_url = curl_exec($this->cSession);
+        curl_close($this->cSession);
+
+        // Check if there's a Location: header (redirect)
+        if (preg_match('/^Location: (.+)$/im', $red_url, $matches)){
+            $element = $this->dom->createElement('wos_redirect',trim(htmlspecialchars($matches[1])));
+        }
+            // If not, there was no redirect so return the original URL
+            // (Alternatively change this to return false)
+        else{
+            $element = $this->dom->createElement('wos_redirect');
+        }
+        $this->dom->appendChild($element);
+            
+        return $this;
+        
+    }
+    
+}
