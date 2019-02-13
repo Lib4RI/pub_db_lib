@@ -48,7 +48,7 @@ class MetaDataCruncher extends MetaDataAbstract{
                     }
                     $proc = new XSLTProcessor;
                     $proc->importStyleSheet($xsl); // attach the xsl rules
-                    $this->dom = $proc->transformToXML($xml);
+                    $this->dom->loadXML($proc->transformToXML($xsl));
                     break;
                 case "callback":
                     $this->dom = $step['rule']($this->dom, $step['params']);
