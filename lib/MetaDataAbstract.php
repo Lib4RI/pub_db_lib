@@ -25,6 +25,7 @@ abstract class MetaDataAbstract{
     }
     
     public function getXML(){
+        $this->dom->formatOutput = true;
         return $this->getDom()->saveXML();
     }
     
