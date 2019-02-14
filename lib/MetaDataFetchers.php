@@ -15,6 +15,8 @@ class MetaDataFetcher extends MetaDataAbstract{
     protected $uri = '';  // To be overridden with defaults in subclasses
     protected $params = ''; // To be overridden with defaults in subclasses
                           // Parameters to construct URI must be in $params['uri_params']
+    protected $error_queries = array(array('query' => '', 'check' => '', 'code' => '', 'message' => ''));
+    private $error = array('status' => FALSE, 'code' => '', 'message' => '');
     
     
     public function __construct() {
@@ -27,10 +29,6 @@ class MetaDataFetcher extends MetaDataAbstract{
     }
     
     public function buildUrl(){
-//         $this->url = $this->uri.'?';
-//         foreach ($this->params['uri_params'] as $key => $val){
-//             $this->url.= $key.'='.$val.'&';
-//         }
         $this->url = $this->uri.'?'.http_build_query($this->params['uri_params']);
         return $this;
     }
@@ -75,10 +73,34 @@ class MetaDataFetcher extends MetaDataAbstract{
         $this->dom->loadXML(curl_exec($this->cSession));
         
         curl_close($this->cSession);
-
+        
+        $this->checkError();
+        
         return $this;
     }
-        
+    
+    protected function checkError(){
+        $xpath = new DOMXPath($this->dom);
+        foreach ($this->error_queries as $key => $error_query){
+            $entries = $xpath->query($error_query['query']);
+            foreach ($entries as $entry) {
+                if ($entry->nodeValue == $error_query['check']){
+                    $this->setErrosStatus(TRUE, $error_query['code'], $error_query['message']);
+                    return;
+                }
+            }
+        }
+    }
+    
+    protected function setErrosStatus($status, $code, $message){
+        $this->error['status'] = $status;
+        $this->error['code'] = $code;
+        $this->error['message'] = $message;
+    }
+    
+    public function getErrorStatus(){
+        return $this->error;
+    }
 }
 
 class PubmedFetcher extends MetaDataFetcher{
@@ -86,6 +108,8 @@ class PubmedFetcher extends MetaDataFetcher{
     protected $params=array('uri_params' => array('tool' => '',
                                                   'email' => '',
                                                   'format' => 'xml'));
+    protected $error_queries = array(array('query' => '//errmsg', 'check' => 'invalid article id', 'code' => '', 'message' => 'Invalid ID'),
+    );
     
     public function setTool($tool){
         $this->params['uri_params']['tool'] = $tool;
@@ -122,6 +146,9 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
     protected $params=array('uri_params' => array('query' => ''),
                             'headers_params' => array('Accept' => 'application/xml')
      );
+    protected $error_queries = array(array('query' => '//atom:error', 'check' => 'Result set was empty', 'code' => '', 'message' => 'Result set was empty'),
+                               array('query' => '//statusText', 'check' => 'Invalid API Key', 'code' => 'Authentication error', 'message' => 'Invalid API Key'),
+    );
     
     public function setDoi($doi){
         if (!empty($this->params['uri_params']['query'])){
@@ -134,6 +161,7 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
         $this->params['headers_params']['X-ELS-APIKey'] = $key;
 //        $this->params['uri_params']['apiKey'] = $key;
     }
+    
 }
 
 class WosRedirectFetcher extends  MetaDataFetcher{
@@ -167,6 +195,12 @@ class WosRedirectFetcher extends  MetaDataFetcher{
             $url_array = parse_url(trim($matches[1]));
             parse_str($url_array['query'],$url_array['query']); 
             $this->array2dom($this->dom, $url_array, $element);
+            if(empty($url_array['query'])){
+                $this->setErrosStatus(TRUE, '', 'No results');
+            }
+        }
+        else{
+            $this->setErrosStatus(TRUE, '', 'No results');
         }
             
         $this->dom->appendChild($element);
@@ -179,7 +213,7 @@ class WosRedirectFetcher extends  MetaDataFetcher{
     private function array2dom($dom, $array, $node){
         
         foreach ($array as $key => $val){
-            $element = $dom->createElement($key, (is_array($val) ? null : $val));
+            $element = $dom->createElement($key, (is_array($val) ? null : htmlspecialchars($val)));
             $node->appendChild($element);
             
             if(is_array($val)){
