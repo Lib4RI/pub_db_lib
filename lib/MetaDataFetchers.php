@@ -19,6 +19,7 @@ class MetaDataFetcher extends MetaDataAbstract{
     
     public function __construct() {
         $this->dom = new DOMDocument();
+        $this->dom->formatOutput = true;
     }
 
     public function set_source_uri($uri){
@@ -160,19 +161,30 @@ class WosRedirectFetcher extends  MetaDataFetcher{
         $red_url = curl_exec($this->cSession);
         curl_close($this->cSession);
 
+        $element = $this->dom->createElement('wos_redirect_url');
         // Check if there's a Location: header (redirect)
         if (preg_match('/^Location: (.+)$/im', $red_url, $matches)){
-            $element = $this->dom->createElement('wos_redirect',trim(htmlspecialchars($matches[1])));
+            $url_array = parse_url(trim($matches[1]));
+            parse_str($url_array['query'],$url_array['query']); 
+            $this->array2dom($this->dom, $url_array, $element);
         }
-            // If not, there was no redirect so return the original URL
-            // (Alternatively change this to return false)
-        else{
-            $element = $this->dom->createElement('wos_redirect');
-        }
+            
         $this->dom->appendChild($element);
+        
             
         return $this;
         
     }
     
+    private function array2dom($dom, $array, $node){
+        
+        foreach ($array as $key => $val){
+            $element = $dom->createElement($key, (is_array($val) ? null : $val));
+            $node->appendChild($element);
+            
+            if(is_array($val)){
+                $this->array2dom($dom, $val, $element);
+            }
+        }
+    }
 }
