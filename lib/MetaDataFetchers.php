@@ -311,7 +311,20 @@ class CrossrefFetcher extends MetaDataFetcher{
         $this->params['uri_params']['id'] = 'doi:'.$doi;
         return $this;
     }
-    
+
+    /**
+     * Check the service's response for errors
+     */
+    protected function checkError(){
+        $xpath = new DOMXPath($this->dom);
+        $entries = $xpath->query('//error');
+        foreach ($entries as $entry) {
+            if ($entry->nodeValue == $this->params['uri_params']['id']){
+                $this->setErrosStatus(TRUE, '', 'DOI not found');
+                return;
+            }
+        }
+    }
 }
 
 /**
@@ -366,7 +379,6 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
         $this->params['headers_params']['X-ELS-APIKey'] = $key;
 //        $this->params['uri_params']['apiKey'] = $key; //alternative configuration
     }
-    
 }
 
 /**
