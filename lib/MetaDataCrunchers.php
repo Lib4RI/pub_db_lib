@@ -11,26 +11,62 @@ require_once  'MetaDataAbstract.php';
  * Classes for data manipulation
  *****************************************************************************/
 
+/**
+ * Generic class to perform metadata transformation, extraction, merging
+ */
 class MetaDataCruncher extends MetaDataAbstract{
     
+    /**
+     * Array of tranformation steps
+     * 
+     * Each element must be an array as follow
+     * array('type' => ['xslt' | 'callback'], 
+     *       'rule' => [path_to_xslt | string | function_name], 
+     *       'params' => ['file', 'str'])
+     */
     private $steps = array();
-    
+
+    /**
+     * Constructor
+     */
     public function __construct($dom) {
         if (!empty($dom)){
             $this->loadDom($dom);
         }
     }
 
+    /**
+     * Load a DOMDocument
+     *
+     * @param DOMDocument $dom
+     *
+     * @return MetaDataCruncher
+     *   The instatiated class.
+     */
     public function loadDom($dom){
         $this->dom = $dom;
         return $this;
     }
     
+    /**
+     * Add tranformation steps
+     *
+     * @param array $steps
+     *
+     * @return MetaDataCruncher
+     *   The instatiated class.
+     */
     public function addSteps($steps){
         array_push($this->steps, $steps);
         return $this;
     }
     
+    /**
+     * Perform the transformation chain
+     *
+     * @return MetaDataCruncher
+     *   The instatiated class.
+     */
     public function cruch(){
         foreach ($this->steps as $ii => $step){
             switch ($step['type']){
