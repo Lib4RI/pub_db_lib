@@ -22,7 +22,8 @@ class MetaDataCruncher extends MetaDataAbstract{
      * Each element must be an array as follow
      * array('type' => ['xslt' | 'callback'], 
      *       'rule' => [path_to_xslt | string | function_name], 
-     *       'params' => ['file', 'str'])
+     *       'source' => ['file', 'str'])
+     *       'params' => array of parameters to pass to the callback function or to the xslt processor
      */
     private $steps = array();
 
@@ -72,7 +73,7 @@ class MetaDataCruncher extends MetaDataAbstract{
             switch ($step['type']){
                 case "xslt":
                     $xsl = new DOMDocument;
-                    switch ($step['params']){
+                    switch ($step['source']){
                         case 'file':
                             $xsl->load($step['rule']);
                             break;
