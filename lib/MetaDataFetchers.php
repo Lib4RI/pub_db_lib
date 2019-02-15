@@ -457,6 +457,14 @@ class WosRedirectFetcher extends  MetaDataFetcher{
     
     /**
      * Build DOM from array. 
+     * 
+     * @param DOMDocument $dom
+     * 
+     * @param array $array
+     *   An array to convert to DOM
+     *   
+     * @param DOMNode $node
+     *   The DOMNode to append the DOM representation of the array to
      */
     private function array2dom($dom, $array, $node){
         
