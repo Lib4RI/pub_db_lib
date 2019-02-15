@@ -88,7 +88,7 @@ class MetaDataCruncher extends MetaDataAbstract{
                     $this->dom = $proc->transformToDoc($this->dom);
                     break;
                 case "callback":
-                    $this->dom = $step['rule']($this->dom, $step['params']);
+                    $this->dom = $step['rule']($this->dom, (isset($step['params']) ? $step['params'] : NULL)); // prevent warning if $step['params'] is undefined
                     break;
             }
         }

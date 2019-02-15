@@ -1,6 +1,6 @@
 <?php
 
-function get_pmid($dom){
+function get_pmid($dom, $params){
     $out = new DOMDocument('1.0', 'utf-8');
     $xpath = new DOMXPath($dom);
     $filtered = $xpath->query("//record");
@@ -16,7 +16,7 @@ function get_pmid($dom){
     return $out;
 }
 
-function crossref2mods($doi_xml){
+function crossref2mods($doi_xml, $params){
     // Create MODS XML.
     $mods = new DOMDocument('1.0');
     $mods->loadXML('<mods xmlns="http://www.loc.gov/mods/v3" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink"/>');
@@ -186,7 +186,7 @@ function crossref2mods($doi_xml){
                                         break;
                                         
                                     case 'subtitle':
-                                        if (variable_get('islandora_doi_insert_subtitle')){
+                                        if (!empty($params['subtitle'])){
                                             $article_subtitle = $mods->createElement('subTitle');
                                             if (!is_null($grandchild->firstChild)) {
                                                 $article_subtitle_text = $mods->importNode($grandchild->firstChild, TRUE);
@@ -239,7 +239,7 @@ function crossref2mods($doi_xml){
                             }
                             
                             foreach ($child->getElementsByTagName('person_name') as $person) {
-                                if ((strtolower($person->getAttribute('contributor_role')) != 'editor') /*|| variable_get('islandora_doi_insert_editor')*/){
+                                if ((strtolower($person->getAttribute('contributor_role')) != 'editor') || !empty($params['editor'])){
                                     
                                     $name = $mods->createElement('name');
                                     $mods->firstChild->appendChild($name);
@@ -302,7 +302,7 @@ function crossref2mods($doi_xml){
                                     foreach ($person->attributes as $att) {
                                         switch ($att->nodeName) {
                                             case 'contributor_role':
-                                                //                      if ((strtolower($att->nodeValue) != 'editor') || variable_get('islandora_doi_insert_editor')){
+                                               if ((strtolower($att->nodeValue) != 'editor') || !empty($params['editor'])){
                                                 $role = $mods->createElement('role');
                                                 $name->appendChild($role);
                                                 $roleterm = $mods->createElement('roleTerm');
@@ -319,7 +319,7 @@ function crossref2mods($doi_xml){
                                                     $roleterm_attribute->value = 'text';
                                                     $roleterm->appendChild($roleterm_attribute);
                                                 }
-                                                //                    }
+                                            }
                                                 break;
                                                 
                                             case 'sequence':
@@ -407,7 +407,7 @@ function crossref2mods($doi_xml){
                                             break;
                                             
                                         case 'resource':
-                                            if (!is_null($identifier->firstChild) /*&& variable_get('islandora_doi_insert_publisher')*/) {
+                                            if (!is_null($identifier->firstChild) && !empty($params['publisher'])) {
                                                 $uri = $mods->createElement('identifier');
                                                 $mods->firstChild->appendChild($uri);
                                                 $uri_attribute = $mods->createAttribute('type');
