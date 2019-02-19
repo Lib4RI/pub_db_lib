@@ -1,4 +1,17 @@
 <?php
+function add_element($dom, $params){
+    if (!isset($params['xquery'])){
+        $target_node = $dom;
+    }
+    else{
+        $target_node = $dom;
+    }
+    
+    $node = $params['element'];
+    $node = $target_node->importNode($node,true);
+    $target_node->getElementsByTagName('doi_record')[0]->appendChild($node);
+    return $dom;
+}
 
 function get_pmid($dom, $params){
     $out = new DOMDocument('1.0', 'utf-8');
