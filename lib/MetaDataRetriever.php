@@ -15,7 +15,7 @@ include_once '../callbacks/callbacks.php';
  *****************************************************************************/
 
 /**
- * Generic class to fetch data from metadta providers web services
+ * Generic class to fetch data from metadata providers web services and transforming it
  */
 class MetaDataRetriever{
     private $fetcher;
@@ -27,7 +27,7 @@ class MetaDataRetriever{
      */
     
     public function __construct() {
-        $fetcher = new CrossrefFetcher();
+        $fetcher = new MetaDataFetcher();
         $cruncher = new MetaDataCruncher(null);
     }
     
@@ -124,3 +124,79 @@ class MetaDataRetriever{
     }
 }
 
+/**
+ * Class to get MODS from DOI using Crossref data 
+ */
+class Crossref2ModsRetriever extends MetaDataRetriever{
+    
+    /**
+     * Constructor. 
+     */    
+    public function __construct() {
+        $fetcher = new CrossrefFetcher();
+        $cruncher = new MetaDataCruncher(null);
+        $this->cruncher->addSteps(array('type' => 'callback', 
+                                        'rule' => 'crossref2mods', 
+                                        'source' => '', 
+                                        'params' => array('editor' => FALSE, 
+                                                          'subtitle' => FALSE, 
+                                                          'publisher' => FALSE)
+                                        )
+                                  );
+    }
+    
+}
+
+/**
+ * Class to get Pubmed ID from DOI
+ */
+class PubmedIdRetriever extends MetaDataRetriever{
+    
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        $fetcher = new PubmedFetcher();
+        $cruncher = new MetaDataCruncher(null);
+        $this->cruncher->addSteps(array('type' => 'xslt', 
+                                        'rule' => '../xslts/pmed2pmed-id.xslt', 
+                                        'source' => 'file')
+                                 );
+    }
+}
+
+/**
+ * Class to get Web Of Science ID from DOI
+ */
+class WosIdRetriever extends MetaDataRetriever{
+    
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        $fetcher = new WosRedirectFetcher();
+        $cruncher = new MetaDataCruncher(null);
+        $cruncher->addSteps(array('type' => 'xslt', 
+                                  'rule' => '../xslts/wos2wos-id.xslt', 
+                                  'source' => 'file')
+                           );
+    }
+}
+
+/**
+ * Class to get Scopus ID from DOI
+ */
+class ScopusIdRetriever extends MetaDataRetriever{
+    
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        $fetcher = new ScopusSearchFetcher();
+        $cruncher = new MetaDataCruncher(null);
+        $cruncher->addSteps(array('type' => 'xslt', 
+                                  'rule' => '../xslts/scopus2scopus-id.xslt', 
+                                  'source' => 'file')
+                           );
+    }
+}
