@@ -60,6 +60,17 @@ class MetaDataFetcher extends MetaDataAbstract{
     }
 
     /**
+     * Convenience method to set the class specific URL parameter 'doi'
+     *
+     * @return MetaDataFetcher
+     *   The instatiated class.
+     */
+    public function setDoi($doi){
+        //To be implemented in subclasses
+        return $this;
+    }
+    
+    /**
      * Set the service's base URL.
      *
      * @param array $uri
