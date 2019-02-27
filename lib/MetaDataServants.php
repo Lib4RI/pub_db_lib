@@ -19,7 +19,7 @@ include_once '../callbacks/callbacks.php';
  */
 class MetaDataServant{
     private $fetcher;
-    private $cruncher;
+    private $processor;
 
     
     /**
@@ -49,7 +49,7 @@ class MetaDataServant{
      *   The instatiated class.
      */
     public function fetch(){
-        $this->cruncher->loadDom($fetcher->fetch()->getDom());
+        $this->processor->loadDom($fetcher->fetch()->getDom());
         return $this;
     }
     
@@ -59,8 +59,8 @@ class MetaDataServant{
      * @return MetaDataServant
      *   The instatiated class.
      */
-    public function cruch(){
-        $this->cruncher->crunch();
+    public function process(){
+        $this->processor->process();
         return $this;
     }
     
@@ -70,8 +70,8 @@ class MetaDataServant{
      * @return MetaDataServant
      *   The instatiated class.
      */
-    public function retrieve(){
-        $this->fetch()->cruch();
+    public function serve(){
+        $this->fetch()->process();
         return $this;
     }
     /**
@@ -111,7 +111,7 @@ class MetaDataServant{
      *   The XML representation of the crunched DOMDocument.
      */
     public function getCrunchedXML(){
-        return $this->cruncher->getXML();
+        return $this->processor->getXML();
     }
     
     /**
@@ -121,7 +121,7 @@ class MetaDataServant{
      *   The JSON representation of the crunched DOMDocument.
      */
     public function getCrunchedJSON(){
-        return $this->cruncher->getJSON();
+        return $this->processor->getJSON();
     }
     
     /**
@@ -131,14 +131,14 @@ class MetaDataServant{
      *   The array representation of the crunched DOMDocument.
      */
     public function getCrunchedArray(){
-        return $this->cruncher->getArray();
+        return $this->processor->getArray();
     }
 }
 
 /**
  * Class to get MODS from DOI using Crossref data 
  */
-class Crossref2ModsRetriever extends MetaDataServant{
+class Crossref2ModsServant extends MetaDataServant{
     
     /**
      * Constructor. 
@@ -161,7 +161,7 @@ class Crossref2ModsRetriever extends MetaDataServant{
 /**
  * Class to get Pubmed ID from DOI
  */
-class PubmedIdRetriever extends MetaDataServant{
+class PubmedIdServant extends MetaDataServant{
     
     /**
      * Constructor.
@@ -179,7 +179,7 @@ class PubmedIdRetriever extends MetaDataServant{
 /**
  * Class to get Web Of Science ID from DOI
  */
-class WosIdRetriever extends MetaDataServant{
+class WosIdServant extends MetaDataServant{
     
     /**
      * Constructor.
@@ -197,7 +197,7 @@ class WosIdRetriever extends MetaDataServant{
 /**
  * Class to get Scopus ID from DOI
  */
-class ScopusIdRetriever extends MetaDataServant{
+class ScopusIdServant extends MetaDataServant{
     
     /**
      * Constructor.
