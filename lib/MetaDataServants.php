@@ -17,7 +17,7 @@ include_once '../callbacks/callbacks.php';
 /**
  * Generic class to fetch data from metadata providers web services and transforming it
  */
-class MetaDataRetriever{
+class MetaDataServant{
     private $fetcher;
     private $cruncher;
 
@@ -34,7 +34,7 @@ class MetaDataRetriever{
     /**
      * Convenience method to set the class specific URL parameter 'doi'
      *
-     * @return MetaDataRetriever
+     * @return MetaDataServant
      *   The instatiated class.
      */
     public function setDoi($doi){
@@ -45,7 +45,7 @@ class MetaDataRetriever{
     /**
      * Fetch data from the selected web service
      *
-     * @return MetaDataRetriever
+     * @return MetaDataServant
      *   The instatiated class.
      */
     public function fetch(){
@@ -56,7 +56,7 @@ class MetaDataRetriever{
     /**
      * Perform the transformation chain
      *
-     * @return MetaDataRetriever
+     * @return MetaDataServant
      *   The instatiated class.
      */
     public function cruch(){
@@ -67,7 +67,7 @@ class MetaDataRetriever{
     /**
      * Fetch data from the selected web service and perform the transformation chain
      *
-     * @return MetaDataRetriever
+     * @return MetaDataServant
      *   The instatiated class.
      */
     public function retrieve(){
@@ -138,7 +138,7 @@ class MetaDataRetriever{
 /**
  * Class to get MODS from DOI using Crossref data 
  */
-class Crossref2ModsRetriever extends MetaDataRetriever{
+class Crossref2ModsRetriever extends MetaDataServant{
     
     /**
      * Constructor. 
@@ -161,7 +161,7 @@ class Crossref2ModsRetriever extends MetaDataRetriever{
 /**
  * Class to get Pubmed ID from DOI
  */
-class PubmedIdRetriever extends MetaDataRetriever{
+class PubmedIdRetriever extends MetaDataServant{
     
     /**
      * Constructor.
@@ -179,7 +179,7 @@ class PubmedIdRetriever extends MetaDataRetriever{
 /**
  * Class to get Web Of Science ID from DOI
  */
-class WosIdRetriever extends MetaDataRetriever{
+class WosIdRetriever extends MetaDataServant{
     
     /**
      * Constructor.
@@ -197,7 +197,7 @@ class WosIdRetriever extends MetaDataRetriever{
 /**
  * Class to get Scopus ID from DOI
  */
-class ScopusIdRetriever extends MetaDataRetriever{
+class ScopusIdRetriever extends MetaDataServant{
     
     /**
      * Constructor.
