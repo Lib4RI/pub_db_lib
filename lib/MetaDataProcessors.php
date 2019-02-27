@@ -68,7 +68,7 @@ class MetaDataProcessor extends MetaDataAbstract{
      * @return MetaDataProcessor
      *   The instatiated class.
      */
-    public function cruch(){
+    public function process(){
         foreach ($this->steps as $ii => $step){
             switch ($step['type']){
                 case "xslt":
