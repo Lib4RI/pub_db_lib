@@ -14,7 +14,7 @@ require_once  'MetaDataAbstract.php';
 /**
  * Generic class to perform metadata transformation, extraction, merging
  */
-class MetaDataCruncher extends MetaDataAbstract{
+class MetaDataProcessor extends MetaDataAbstract{
     
     /**
      * Array of tranformation steps
@@ -41,7 +41,7 @@ class MetaDataCruncher extends MetaDataAbstract{
      *
      * @param DOMDocument $dom
      *
-     * @return MetaDataCruncher
+     * @return MetaDataProcessor
      *   The instatiated class.
      */
     public function loadDom($dom){
@@ -54,7 +54,7 @@ class MetaDataCruncher extends MetaDataAbstract{
      *
      * @param array $steps
      *
-     * @return MetaDataCruncher
+     * @return MetaDataProcessor
      *   The instatiated class.
      */
     public function addSteps($steps){
@@ -65,7 +65,7 @@ class MetaDataCruncher extends MetaDataAbstract{
     /**
      * Perform the transformation chain
      *
-     * @return MetaDataCruncher
+     * @return MetaDataProcessor
      *   The instatiated class.
      */
     public function cruch(){

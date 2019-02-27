@@ -28,7 +28,7 @@ class MetaDataRetriever{
     
     public function __construct() {
         $fetcher = new MetaDataFetcher();
-        $cruncher = new MetaDataCruncher(null);
+        $cruncher = new MetaDataProcessor(null);
     }
     
     /**
@@ -145,7 +145,7 @@ class Crossref2ModsRetriever extends MetaDataRetriever{
      */    
     public function __construct() {
         $fetcher = new CrossrefFetcher();
-        $cruncher = new MetaDataCruncher(null);
+        $cruncher = new MetaDataProcessor(null);
         $this->cruncher->addSteps(array('type' => 'callback', 
                                         'rule' => 'crossref2mods', 
                                         'source' => '', 
@@ -168,7 +168,7 @@ class PubmedIdRetriever extends MetaDataRetriever{
      */
     public function __construct() {
         $fetcher = new PubmedFetcher();
-        $cruncher = new MetaDataCruncher(null);
+        $cruncher = new MetaDataProcessor(null);
         $this->cruncher->addSteps(array('type' => 'xslt', 
                                         'rule' => '../xslts/pmed2pmed-id.xslt', 
                                         'source' => 'file')
@@ -186,7 +186,7 @@ class WosIdRetriever extends MetaDataRetriever{
      */
     public function __construct() {
         $fetcher = new WosRedirectFetcher();
-        $cruncher = new MetaDataCruncher(null);
+        $cruncher = new MetaDataProcessor(null);
         $cruncher->addSteps(array('type' => 'xslt', 
                                   'rule' => '../xslts/wos2wos-id.xslt', 
                                   'source' => 'file')
@@ -204,7 +204,7 @@ class ScopusIdRetriever extends MetaDataRetriever{
      */
     public function __construct() {
         $fetcher = new ScopusSearchFetcher();
-        $cruncher = new MetaDataCruncher(null);
+        $cruncher = new MetaDataProcessor(null);
         $cruncher->addSteps(array('type' => 'xslt', 
                                   'rule' => '../xslts/scopus2scopus-id.xslt', 
                                   'source' => 'file')
