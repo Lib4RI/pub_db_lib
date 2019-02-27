@@ -45,7 +45,7 @@ class MetaDataRetriever{
     /**
      * Fetch data from the selected web service
      *
-     * @return MetaDataFetcher
+     * @return MetaDataRetriever
      *   The instatiated class.
      */
     public function fetch(){
@@ -56,13 +56,24 @@ class MetaDataRetriever{
     /**
      * Perform the transformation chain
      *
-     * @return MetaDataCruncher
+     * @return MetaDataRetriever
      *   The instatiated class.
      */
     public function cruch(){
         $this->cruncher->crunch();
+        return $this;
     }
     
+    /**
+     * Fetch data from the selected web service and perform the transformation chain
+     *
+     * @return MetaDataRetriever
+     *   The instatiated class.
+     */
+    public function retrieve(){
+        $this->fetch()->cruch();
+        return $this;
+    }
     /**
      * Return the XML representation of the fetched DOMDocument
      *
