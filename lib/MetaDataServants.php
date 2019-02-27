@@ -105,32 +105,32 @@ class MetaDataServant{
     }
     
     /**
-     * Return the XML representation of the crunched DOMDocument
+     * Return the XML representation of the processed DOMDocument
      *
      * @return string
-     *   The XML representation of the crunched DOMDocument.
+     *   The XML representation of the processed DOMDocument.
      */
-    public function getCrunchedXML(){
+    public function getProcessedXML(){
         return $this->processor->getXML();
     }
     
     /**
-     * Return the JSON representation of the crunched DOMDocument
+     * Return the JSON representation of the processed DOMDocument
      *
      * @return string
-     *   The JSON representation of the crunched DOMDocument.
+     *   The JSON representation of the processed DOMDocument.
      */
-    public function getCrunchedJSON(){
+    public function getProcessedJSON(){
         return $this->processor->getJSON();
     }
     
     /**
-     * Return the array representation of the crunched DOMDocument
+     * Return the array representation of the processed DOMDocument
      *
      * @return array
-     *   The array representation of the crunched DOMDocument.
+     *   The array representation of the processed DOMDocument.
      */
-    public function getCrunchedArray(){
+    public function getProcessedArray(){
         return $this->processor->getArray();
     }
 }
