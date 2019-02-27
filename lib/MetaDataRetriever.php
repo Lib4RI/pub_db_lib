@@ -6,7 +6,7 @@
  */ 
 
 include_once '../lib/MetaDataFetchers.php';
-include_once '../lib/MetaDataCrunchers.php';
+include_once '../lib/MetaDataProcessors.php';
 include_once '../callbacks/callbacks.php';
 
 
