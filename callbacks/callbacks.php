@@ -9,7 +9,7 @@ function add_element($dom, $params){
     
     $node = $params['element'];
     $node = $target_node->importNode($node,true);
-    $target_node->getElementsByTagName('doi_record')[0]->appendChild($node);
+    $target_node->getElementsByTagName($params['parent'])[0]->appendChild($node);
     return $dom;
 }
 
