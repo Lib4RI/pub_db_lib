@@ -38,7 +38,10 @@ abstract class MetaDataAbstract{
      *   The instatiated DOMDocument.
      */
     public function getDom(){
-        return $this->dom;
+        if (isset($this->dom))
+            return $this->dom;
+        else
+            return FALSE;
     }
     
     /**
