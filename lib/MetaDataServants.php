@@ -18,17 +18,31 @@ include_once '../callbacks/callbacks.php';
  * Generic class to fetch data from metadata providers web services and transforming it
  */
 class MetaDataServant{
-    private $fetcher;
-    private $processor;
-
+    protected $fetcher;
+    protected $processor;
+    private $fetched = FALSE;
+    private $processed = FALSE;
     
     /**
      * Constructor. To be implemented in subclasses
      */
-    
     public function __construct() {
-        $fetcher = new MetaDataFetcher();
-        $cruncher = new MetaDataProcessor(null);
+        $this->fetcher = new MetaDataFetcher();
+        $this->cruncher = new MetaDataProcessor(null);
+    }
+    
+    /**
+     * Return TRUE if MetaData is fetched
+     */
+    public function isFetched(){
+        return $this->fetched;        
+    }
+
+    /**
+     * Return TRUE if MetaData is processed
+     */
+    public function isProcessed(){
+        return $this->processed;
     }
     
     /**
@@ -41,6 +55,16 @@ class MetaDataServant{
         $this->fetcher->setDoi($doi);
         return $this;
     }
+
+    /**
+     * Return the current fetcher error status
+     *
+     * @return array
+     *   The array containing the error status, code and message.
+     */
+    public function getFetcherErrorStatus(){
+        return $this->fetcher->getErrorStatus();
+    }
     
     /**
      * Fetch data from the selected web service
@@ -49,7 +73,12 @@ class MetaDataServant{
      *   The instatiated class.
      */
     public function fetch(){
-        $this->processor->loadDom($fetcher->fetch()->getDom());
+        $this->fetcher->fetch();
+        $error = $this->getFetcherErrorStatus();
+        if ($error['status'] == FALSE){
+            $this->processor->loadDom($this->fetcher->getDom());
+            $this->fetched = TRUE;
+        }
         return $this;
     }
     
@@ -60,7 +89,10 @@ class MetaDataServant{
      *   The instatiated class.
      */
     public function process(){
-        $this->processor->process();
+        if ($this->isfetched()){
+            $this->processor->process();
+            $this->processed = TRUE;
+        }
         return $this;
     }
     
@@ -74,6 +106,17 @@ class MetaDataServant{
         $this->fetch()->process();
         return $this;
     }
+
+    /**
+     * Return the fetched DOMDocument
+     *
+     * @return DOMDocument
+     *   The fetched DOMDocument.
+     */
+    public function getFetchedDom(){
+        return $this->fetcher->getDom();
+    }
+    
     /**
      * Return the XML representation of the fetched DOMDocument
      *
@@ -102,6 +145,16 @@ class MetaDataServant{
      */
     public function getFetchedArray(){
         return $this->fetcher->getArray();
+    }
+
+    /**
+     * Return the procesed DOMDocument
+     *
+     * @return DOMDocument
+     *   The processed DOMDocument.
+     */
+    public function getProcessedDom(){
+        return $this->processor->getDom();
     }
     
     /**
@@ -144,9 +197,9 @@ class Crossref2ModsServant extends MetaDataServant{
      * Constructor. 
      */    
     public function __construct() {
-        $fetcher = new CrossrefFetcher();
-        $cruncher = new MetaDataProcessor(null);
-        $this->cruncher->addSteps(array('type' => 'callback', 
+        $this->fetcher = new CrossrefFetcher();
+        $this->processor = new MetaDataProcessor(null);
+        $this->processor->addSteps(array('type' => 'callback', 
                                         'rule' => 'crossref2mods', 
                                         'source' => '', 
                                         'params' => array('editor' => FALSE, 
@@ -155,7 +208,28 @@ class Crossref2ModsServant extends MetaDataServant{
                                         )
                                   );
     }
-    
+
+    /**
+     * Convenience method to set the class specific URL parameter 'pid' (the user's id)
+     *
+     * @return Crossref2ModsServant
+     *   The instatiated class.
+     */
+    public function setPid($pid){
+        $this->fetcher->setPid($pid);
+        return $this;
+    }
+
+    /**
+     * Convenience method to set the class specific URL parameter 'doi'
+     *
+     * @return Crossref2ModsServant
+     *   The instatiated class.
+     */
+    public function setDoi($doi){
+        $this->fetcher->setDoi($doi);
+        return $this;
+    }
 }
 
 /**
@@ -167,9 +241,9 @@ class PubmedIdServant extends MetaDataServant{
      * Constructor.
      */
     public function __construct() {
-        $fetcher = new PubmedFetcher();
-        $cruncher = new MetaDataProcessor(null);
-        $this->cruncher->addSteps(array('type' => 'xslt', 
+        $this->fetcher = new PubmedFetcher();
+        $this->processor = new MetaDataProcessor(null);
+        $this->processor->addSteps(array('type' => 'xslt', 
                                         'rule' => '../xslts/pmed2pmed-id.xslt', 
                                         'source' => 'file')
                                  );
@@ -185,9 +259,9 @@ class WosIdServant extends MetaDataServant{
      * Constructor.
      */
     public function __construct() {
-        $fetcher = new WosRedirectFetcher();
-        $cruncher = new MetaDataProcessor(null);
-        $cruncher->addSteps(array('type' => 'xslt', 
+        $this->fetcher = new WosRedirectFetcher();
+        $this->processor = new MetaDataProcessor(null);
+        $this->processor->addSteps(array('type' => 'xslt', 
                                   'rule' => '../xslts/wos2wos-id.xslt', 
                                   'source' => 'file')
                            );
@@ -203,9 +277,9 @@ class ScopusIdServant extends MetaDataServant{
      * Constructor.
      */
     public function __construct() {
-        $fetcher = new ScopusSearchFetcher();
-        $cruncher = new MetaDataProcessor(null);
-        $cruncher->addSteps(array('type' => 'xslt', 
+        $this->fetcher = new ScopusSearchFetcher();
+        $this->processor = new MetaDataProcessor(null);
+        $this->processor->addSteps(array('type' => 'xslt', 
                                   'rule' => '../xslts/scopus2scopus-id.xslt', 
                                   'source' => 'file')
                            );
