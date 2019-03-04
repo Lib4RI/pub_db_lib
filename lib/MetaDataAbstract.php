@@ -74,5 +74,14 @@ abstract class MetaDataAbstract{
     public function getArray(){
         return json_decode($this->getJSON(),TRUE);
     }
-    
+
+    /**
+     * Return plain string representation of the instatiated DOMDocument
+     *
+     * @return string
+     *   The string representation of the instatiated DOMDocument.
+     */
+    public function getString(){
+        return $this->getDom()->textContent;
+    }
 }

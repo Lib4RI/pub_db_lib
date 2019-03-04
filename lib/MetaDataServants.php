@@ -148,7 +148,17 @@ class MetaDataServant{
     }
 
     /**
-     * Return the procesed DOMDocument
+     * Return plain string representation of the fetched DOMDocument
+     *
+     * @return string
+     *   The string representation of the fetched DOMDocument.
+     */
+    public function getFetchedString(){
+        return $this->fetcher->getString();
+    }
+    
+    /**
+     * Return the processed DOMDocument
      *
      * @return DOMDocument
      *   The processed DOMDocument.
@@ -187,6 +197,16 @@ class MetaDataServant{
         return $this->processor->getArray();
     }
 
+    /**
+     * Return plain string representation of the processed DOMDocument
+     *
+     * @return string
+     *   The string representation of the processed DOMDocument.
+     */
+    public function getProcessedString(){
+        return $this->processor->getString();
+    }
+    
     /**
      * Return the instantiated fetcher
      *
