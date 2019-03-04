@@ -164,11 +164,13 @@ class MetaDataFetcher extends MetaDataAbstract{
     protected function checkError(){
         $xpath = new DOMXPath($this->dom);
         foreach ($this->error_queries as $key => $error_query){
-            $entries = $xpath->query($error_query['query']);
-            foreach ($entries as $entry) {
-                if ($entry->nodeValue == $error_query['check']){
-                    $this->setErrosStatus(TRUE, $error_query['code'], $error_query['message']);
-                    return;
+            $entries = @$xpath->query($error_query['query']);
+            if (!empty($entries)){
+                foreach ($entries as $entry) {
+                    if ($entry->nodeValue == $error_query['check']){
+                        $this->setErrosStatus(TRUE, $error_query['code'], $error_query['message']);
+                        return;
+                    }
                 }
             }
         }
