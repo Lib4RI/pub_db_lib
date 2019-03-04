@@ -95,3 +95,16 @@ class MetaDataProcessor extends MetaDataAbstract{
         return $this;
     }
 }
+
+
+class MetaDataMerger extends MetaDataProcessor{
+    
+/**
+     * Constructor
+     */
+    public function __construct($dom) {
+        parent::__construct($dom);
+        
+    }
+    
+}
