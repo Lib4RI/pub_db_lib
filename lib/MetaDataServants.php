@@ -291,7 +291,7 @@ class ScopusIdServant extends MetaDataServant{
      * @return MetaDataServant
      *   The instatiated class.
      */
-    public function settitle($title){
+    public function setTitle($title){
         $this->fetcher->setTitle($title);
         return $this;
     }
