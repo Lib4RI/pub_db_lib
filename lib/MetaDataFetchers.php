@@ -431,6 +431,36 @@ class ScopusArticleFetcher extends  MetaDataFetcher{
     public function setDoi($doi){
         $this->uri = $this->baseuri.'/doi/'.$doi;
     }
+
+    /**
+     * Convenience method to set the class specific URL parameter 'eid'
+     *
+     * @return ScopusSearchFetcher
+     *   The instatiated class.
+     */
+    public function setEid($eid){
+        $this->uri = $this->baseuri.'/eid/'.$eid;
+    }
+    
+    /**
+     * Convenience method to set the class specific URL parameter 'pii'
+     *
+     * @return ScopusSearchFetcher
+     *   The instatiated class.
+     */
+    public function setPii($pii){
+        $this->uri = $this->baseuri.'/pii/'.$pii;
+    }
+    
+    /**
+     * Convenience method to set the class specific URL parameter 'pmid'
+     *
+     * @return ScopusSearchFetcher
+     *   The instatiated class.
+     */
+    public function setPmid($pmid){
+        $this->uri = $this->baseuri.'/pubMed_id/'.$pmid;
+    }
     
     /**
      * Convenience method to set the class specific URL parameter 'key' (User specific)
