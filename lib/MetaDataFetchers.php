@@ -370,6 +370,19 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
     }
 
     /**
+     * Convenience method to set the class specific URL parameter 'title'
+     *
+     * @return ScopusSearchFetcher
+     *   The instatiated class.
+     */
+    public function setTitle($title){
+        if (!empty($this->params['uri_params']['query'])){
+            $this->params['uri_params']['query'] .= '&';
+        }
+        $this->params['uri_params']['query'] .= "TITLE($title)";
+    }
+    
+    /**
      * Convenience method to set the class specific URL parameter 'key' (User specific)
      *
      * @return ScopusSearchFetcher
