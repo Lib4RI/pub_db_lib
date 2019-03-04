@@ -382,6 +382,55 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
 }
 
 /**
+ * Class to fetch Scopus article metadata
+ */
+class ScopusArticleFetcher extends  MetaDataFetcher{
+    
+    /**
+     * Service's base URL
+     */
+    protected $baseuri = "https://api.elsevier.com/content/article";
+    protected $uri = "https://api.elsevier.com/content/article";
+    
+    /**
+     * URL parameters specific to the service
+     */
+    protected $params=array('uri_params' => array('query' => ''));
+    
+    /**
+     * Error check parameters
+     *
+     * query: Xpath query to extract error string from the response
+     * check: string to check for the error
+     * code: error code to write in the error status array
+     * message: error message to write in the error status array
+     */
+    protected $error_queries = array(array('query' => '//atom:error', 'check' => 'Result set was empty', 'code' => '', 'message' => 'Result set was empty'),
+        array('query' => '//statusText', 'check' => 'Invalid API Key', 'code' => 'Authentication error', 'message' => 'Invalid API Key'),
+    );
+    
+    /**
+     * Convenience method to set the class specific URL parameter 'doi'
+     *
+     * @return ScopusSearchFetcher
+     *   The instatiated class.
+     */
+    public function setDoi($doi){
+        $this->uri = $this->baseuri.'/doi/'.$doi;
+    }
+    
+    /**
+     * Convenience method to set the class specific URL parameter 'key' (User specific)
+     *
+     * @return ScopusSearchFetcher
+     *   The instatiated class.
+     */
+    public function setKey($key){
+        $this->params['uri_params']['apiKey'] = $key;
+    }
+}
+
+/**
  * lass to fetch WoS redirect url
  */
 class WosRedirectFetcher extends  MetaDataFetcher{
