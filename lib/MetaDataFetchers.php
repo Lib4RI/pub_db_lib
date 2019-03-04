@@ -459,7 +459,7 @@ class ScopusArticleFetcher extends  MetaDataFetcher{
      *   The instatiated class.
      */
     public function setPmid($pmid){
-        $this->uri = $this->baseuri.'/pubMed_id/'.$pmid;
+        $this->uri = $this->baseuri.'/pubmed_id/'.$pmid;
     }
     
     /**
