@@ -284,4 +284,15 @@ class ScopusIdServant extends MetaDataServant{
                                   'source' => 'file')
                            );
     }
+    
+    /**
+     * Convenience method to set the class specific URL parameter 'title'
+     *
+     * @return MetaDataServant
+     *   The instatiated class.
+     */
+    public function settitle($title){
+        $this->fetcher->setTitle($title);
+        return $this;
+    }
 }
