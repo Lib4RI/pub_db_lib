@@ -186,6 +186,14 @@ class MetaDataServant{
     public function getProcessedArray(){
         return $this->processor->getArray();
     }
+    
+    public function getFetcher(){
+        return $this->fetcher;
+    }
+    
+    public function getProcessor(){
+        return $this->processor;
+    }
 }
 
 /**
