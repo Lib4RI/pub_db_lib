@@ -539,3 +539,30 @@ return $mods;
 }
 
 }
+
+function get_authorsaffiliations($dom, $params){
+    $out = new DOMDocument('1.0', 'utf-8');
+    $root_element = $out->createElement('result');
+    $out->appendChild($root_element);
+    $xpath = new DOMXPath($dom);
+    $authors = $xpath->query("//ce:author");
+    $affiliations = $xpath->query("//ce:affiliation");
+    $affiliationsArray = array();
+    foreach($affiliations as $affiliation){
+        $affiliationsArray[$affiliation->getAttribute('id')] = $affiliation->getElementsByTagName("textfn")->item(0)->nodeValue;
+    }
+    
+    $authStr = '';
+    foreach($authors as $author){
+        $author->getElementsByTagName("given-name")->item(0);
+        $given = $author->getElementsByTagName("given-name")->item(0)->nodeValue;
+        $family = $author->getElementsByTagName("surname")->item(0)->nodeValue;
+        $affilId = $author->getElementsByTagName("cross-ref")->item(0)->getAttribute('refid');
+        $authStr .= "$family, $given, $affiliationsArray[$affilId]; ";
+    }
+    $authStr = substr($authStr ,0, -2);
+    
+    $element = $out->createElement('authorsaffiliations', $authStr);
+    $root_element->appendChild($element);
+    return $out;
+}
