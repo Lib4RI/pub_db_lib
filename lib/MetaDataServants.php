@@ -295,4 +295,15 @@ class ScopusIdServant extends MetaDataServant{
         $this->fetcher->setTitle($title);
         return $this;
     }
+    
+    /**
+     * Convenience method to set the class specific parameter 'key'
+     *
+     * @return MetaDataServant
+     *   The instatiated class.
+     */
+    public function setKey($key){
+        $this->fetcher->setKey($key);
+        return $this;
+    }
 }
