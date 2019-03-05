@@ -98,7 +98,7 @@ class MetaDataProcessor extends MetaDataAbstract{
 }
 
 
-class MetaDataMerger extends MetaDataProcessor{
+class MetaDataAppend extends MetaDataProcessor{
     
     private $add_step;
     
@@ -114,7 +114,7 @@ class MetaDataMerger extends MetaDataProcessor{
     /**
      * Convenience method to set the DOM element to add 
      *
-     * @return MetaDataMerger
+     * @return MetaDataAppend
      *   The instatiated class.
      */
     public function setElement($element){
@@ -125,7 +125,7 @@ class MetaDataMerger extends MetaDataProcessor{
     /**
      * Convenience method to set the parent to add the DOM element to
      *
-     * @return MetaDataMerger
+     * @return MetaDataAppend
      *   The instatiated class.
      */
     public function setParent($parent){
