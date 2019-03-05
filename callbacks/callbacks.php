@@ -566,3 +566,37 @@ function get_else_authorsaffiliations($dom, $params){
     $root_element->appendChild($element);
     return $out;
 }
+
+function get_scopus_authorsaffiliations($dom, $params){
+    $out = new DOMDocument('1.0', 'utf-8');
+    $root_element = $out->createElement('result');
+    $out->appendChild($root_element);
+    $xpath = new DOMXPath($dom);
+    $authors = $xpath->query("/dn:abstracts-retrieval-response/dn:authors/dn:author");
+    $affiliations = $xpath->query("/dn:abstracts-retrieval-response/dn:affiliation");
+    $affiliationsArray = array();
+    foreach($affiliations as $affiliation){
+        $affilName = $affiliation->getElementsByTagName("affilname")->item(0)->nodeValue;
+        $affilCity = $affiliation->getElementsByTagName("affiliation-city")->item(0)->nodeValue;
+        $affilCountry = $affiliation->getElementsByTagName("affiliation-country")->item(0)->nodeValue;
+        $affiliationsArray[$affiliation->getAttribute('id')] = $affilName.', '.$affilCity.', '.$affilCountry;
+    }
+    
+    $authStr = '';
+    foreach($authors as $author){
+        $given = $author->getElementsByTagName("given-name")->item(0)->nodeValue;
+        $family = $author->getElementsByTagName("surname")->item(0)->nodeValue;
+        $affils = $author->getElementsByTagName("affiliation");
+        $affilStr = '';
+        foreach ($affils as $affil){
+            $affilStr .= $affiliationsArray[$affil->getAttribute('id')].', ';
+        }
+        $affilStr = substr($affilStr ,0, -2);
+        $authStr .= "$family, $given, $affilStr; ";
+    }
+    $authStr = substr($authStr ,0, -2);
+    
+    $element = $out->createElement('authorsaffiliations', $authStr);
+    $root_element->appendChild($element);
+    return $out;
+}

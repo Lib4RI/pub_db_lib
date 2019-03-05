@@ -397,15 +397,15 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
 }
 
 /**
- * Class to fetch Scopus article metadata
+ * Class to fetch some Elsevier and Scopus metadata
  */
-class ElsevierArticleFetcher extends  MetaDataFetcher{
+class ElsevierScopusFetcher extends  MetaDataFetcher{
     
     /**
-     * Service's base URL
+     * Service's base URL (to be overridden in subclasses)
      */
-    protected $baseuri = "https://api.elsevier.com/content/article";
-    protected $uri = "https://api.elsevier.com/content/article";
+    protected $baseuri; 
+    protected $uri;
     
     /**
      * URL parameters specific to the service
@@ -473,6 +473,28 @@ class ElsevierArticleFetcher extends  MetaDataFetcher{
     public function setKey($key){
         $this->params['uri_params']['apiKey'] = $key;
     }
+}
+
+/**
+ * Class to fetch Elsevier article metadata
+ */
+class ElsevierArticleFetcher extends ElsevierScopusFetcher{
+    /**
+     * Service's base URL
+     */
+    protected $baseuri = "https://api.elsevier.com/content/article";
+    protected $uri = "https://api.elsevier.com/content/article";
+}
+
+/**
+ * Class to fetch Scopus abstract metadata
+ */
+class ScopusAbstractFetcher extends ElsevierScopusFetcher{
+    /**
+     * Service's base URL
+     */
+    protected $baseuri = "https://api.elsevier.com/content/abstract";
+    protected $uri = "https://api.elsevier.com/content/abstract";
 }
 
 /**
