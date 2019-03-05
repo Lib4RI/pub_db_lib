@@ -111,11 +111,23 @@ class MetaDataMerger extends MetaDataProcessor{
         $this->addSteps($this->add_step);
     }
     
+    /**
+     * Convenience method to set the DOM element to add 
+     *
+     * @return MetaDataMerger
+     *   The instatiated class.
+     */
     public function setElement($element){
         $this->add_step['params']['element'] = $element;
         return $this;
     }
     
+    /**
+     * Convenience method to set the parent to add the DOM element to
+     *
+     * @return MetaDataMerger
+     *   The instatiated class.
+     */
     public function setParent($parent){
         $this->add_step['params']['parent'] = $parent;
         return $this;
