@@ -557,8 +557,13 @@ function get_else_authorsaffiliations($dom, $params){
         $author->getElementsByTagName("given-name")->item(0);
         $given = $author->getElementsByTagName("given-name")->item(0)->nodeValue;
         $family = $author->getElementsByTagName("surname")->item(0)->nodeValue;
-        $affilId = $author->getElementsByTagName("cross-ref")->item(0)->getAttribute('refid');
-        $authStr .= "$family, $given, $affiliationsArray[$affilId]; ";
+        $affils = $author->getElementsByTagName("cross-ref");
+        $affilStr = '';
+        foreach ($affils as $affil){
+            $affilStr .= $affiliationsArray[$affil->getAttribute('refid')].', ';
+        }
+        $affilStr = substr($affilStr ,0, -2);
+        $authStr .= "$family, $given, $affilStr; ";
     }
     $authStr = substr($authStr ,0, -2);
     
