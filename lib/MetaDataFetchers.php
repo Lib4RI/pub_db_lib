@@ -399,7 +399,7 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
 /**
  * Class to fetch Scopus article metadata
  */
-class ScopusArticleFetcher extends  MetaDataFetcher{
+class ElsevierArticleFetcher extends  MetaDataFetcher{
     
     /**
      * Service's base URL

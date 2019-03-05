@@ -540,7 +540,7 @@ return $mods;
 
 }
 
-function get_authorsaffiliations($dom, $params){
+function get_else_authorsaffiliations($dom, $params){
     $out = new DOMDocument('1.0', 'utf-8');
     $root_element = $out->createElement('result');
     $out->appendChild($root_element);
