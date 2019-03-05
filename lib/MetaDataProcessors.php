@@ -99,12 +99,25 @@ class MetaDataProcessor extends MetaDataAbstract{
 
 class MetaDataMerger extends MetaDataProcessor{
     
-/**
+    private $add_step;
+    
+    /**
      * Constructor
      */
     public function __construct($dom) {
         parent::__construct($dom);
-        
+        $this->add_step = array('type' => 'callback', 'rule' => 'add_element', 'source' => '', 'params' => array('element' => NULL, 'parent' => NULL));
+        $this->addSteps($this->add_step);
+    }
+    
+    public function setElement($element){
+        $this->add_step['params']['element'] = $element;
+        return $this;
+    }
+    
+    public function setParent($parent){
+        $this->add_step['params']['parent'] = $parent;
+        return $this;
     }
     
 }
