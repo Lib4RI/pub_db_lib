@@ -5,7 +5,8 @@
  * such us CrossRef, Scopus, Web of Science, Pubmed
  */ 
 
-require_once  'MetaDataAbstract.php';
+require_once 'MetaDataAbstract.php';
+require_once '../callbacks/callbacks.php';
 
 /******************************************************************************
  * Classes for data manipulation
