@@ -74,6 +74,37 @@ class MetaDataFetcher extends MetaDataAbstract{
     }
   
     /**
+     * Set URI parameter
+     *
+     * @param string $key
+     *   A string containing parameter's key
+     *   
+     * @param string $value
+     *   A string containing parameter's value
+     *
+     * @return MetaDataFetcher
+     *   The instatiated class.
+     */
+    public function setUriParam($key, $value){
+        $this->params['uri_params'][$key] = $value;
+        return $this;
+    }
+    
+    /**
+     * Set URI parameters
+     *
+     * @param array $params
+     *   An array containing parameters in the form $key => $value
+     *
+     * @return MetaDataFetcher
+     *   The instatiated class.
+     */
+    public function setUriParams($params){
+        array_push($this->params['uri_params'], $params);
+        return $this;
+    }
+    
+    /**
      * Build the full URL to fetch metadata
      *
      * @return MetaDataFetcher
