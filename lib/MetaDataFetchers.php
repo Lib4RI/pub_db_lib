@@ -394,6 +394,7 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
             $this->params['uri_params']['query'] .= 'AND';
         }
         $this->params['uri_params']['query'] .= "DOI($doi)";
+        return $this;
     }
 
     /**
@@ -407,6 +408,7 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
             $this->params['uri_params']['query'] .= 'AND';
         }
         $this->params['uri_params']['query'] .= "TITLE($title)";
+        return $this;
     }
     
     /**
@@ -418,6 +420,7 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
     public function setKey($key){
         $this->params['headers_params']['X-ELS-APIKey'] = $key;
 //        $this->params['uri_params']['apiKey'] = $key; //alternative configuration
+        return $this;
     }
 }
 
@@ -457,6 +460,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
      */
     public function setDoi($doi){
         $this->uri = $this->baseuri.'/doi/'.$doi;
+        return $this;
     }
 
     /**
@@ -467,6 +471,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
      */
     public function setEid($eid){
         $this->uri = $this->baseuri.'/eid/'.$eid;
+        return $this;
     }
     
     /**
@@ -477,6 +482,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
      */
     public function setPii($pii){
         $this->uri = $this->baseuri.'/pii/'.$pii;
+        return $this;
     }
     
     /**
@@ -487,6 +493,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
      */
     public function setPmid($pmid){
         $this->uri = $this->baseuri.'/pubmed_id/'.$pmid;
+        return $this;
     }
     
     /**
@@ -529,6 +536,7 @@ class ScopusAbstractFetcher extends ElsevierScopusFetcher{
      */
     public function setPui($pui){
         $this->uri = $this->baseuri.'/pui/'.$pui;
+        return $this;
     }
     
     /**
@@ -539,6 +547,7 @@ class ScopusAbstractFetcher extends ElsevierScopusFetcher{
      */
     public function setScopusId($scopus_id){
         $this->uri = $this->baseuri.'/scopus_id/'.$scopus_id;
+        return $this;
     }
 }
 
@@ -565,6 +574,7 @@ class WosRedirectFetcher extends  MetaDataFetcher{
      */
     public function setDoi($doi){
         $this->params['uri_params']['rft_id'] = "info:doi/$doi";
+        return $this;
     }
     
     /**
