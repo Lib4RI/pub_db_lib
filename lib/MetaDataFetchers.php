@@ -495,6 +495,26 @@ class ScopusAbstractFetcher extends ElsevierScopusFetcher{
      */
     protected $baseuri = "https://api.elsevier.com/content/abstract";
     protected $uri = "https://api.elsevier.com/content/abstract";
+    
+    /**
+     * Convenience method to set the class specific URL parameter 'pui'
+     *
+     * @return ScopusAbstractFetcher
+     *   The instatiated class.
+     */
+    public function setPui($pui){
+        $this->uri = $this->baseuri.'/pui/'.$pui;
+    }
+    
+    /**
+     * Convenience method to set the class specific URL parameter 'scopus_id'
+     *
+     * @return ScopusAbstractFetcher
+     *   The instatiated class.
+     */
+    public function setScopusId($scopus_id){
+        $this->uri = $this->baseuri.'/scopus_id/'.$scopus_id;
+    }
 }
 
 /**
