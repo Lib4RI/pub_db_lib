@@ -44,12 +44,17 @@ class MetaDataFetcher extends MetaDataAbstract{
      * Error status array
      * 
      * status: TRUE or FALSE
-     * code: string contaoning the error code
+     * code: string containing the error code
      * message: string containing the error message
      */
     private $error = array('status' => FALSE, 
                            'code' => '', 
                            'message' => '');
+    
+    /**
+     * Steps done flag (TRUE or FALSE)
+     */
+    protected $fetch_steps_done = FALSE;
     
     /**
      * Constructor 
@@ -66,7 +71,7 @@ class MetaDataFetcher extends MetaDataAbstract{
      *   A string containing the service's base URL
      *
      * @return MetaDataFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setUri($uri){
         $this->uri = $uri;
@@ -83,7 +88,7 @@ class MetaDataFetcher extends MetaDataAbstract{
      *   A string containing parameter's value
      *
      * @return MetaDataFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setUriParam($key, $value){
         $this->params['uri_params'][$key] = $value;
@@ -97,7 +102,7 @@ class MetaDataFetcher extends MetaDataAbstract{
      *   An array containing parameters in the form $key => $value
      *
      * @return MetaDataFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setUriParams($params){
         array_push($this->params['uri_params'], $params);
@@ -108,7 +113,7 @@ class MetaDataFetcher extends MetaDataAbstract{
      * Build the full URL to fetch metadata
      *
      * @return MetaDataFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function buildUrl(){
         $this->url = $this->uri.'?'.http_build_query($this->params['uri_params']);
@@ -129,7 +134,7 @@ class MetaDataFetcher extends MetaDataAbstract{
      * Build the HTTP header to submit the request
      *
      * @return MetaDataFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function buildHeaders(){
         if (empty($this->params['headers_params'])){
@@ -172,7 +177,7 @@ class MetaDataFetcher extends MetaDataAbstract{
      * Fetch data from the selected web service
      *
      * @return MetaDataFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function fetch(){
         $this->buildUrl(); //echo $this->getUrl(); exit;
@@ -233,7 +238,7 @@ class MetaDataFetcher extends MetaDataAbstract{
      *   An associative array containing the error check parameters.
      *
      * @return MetaDataFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setErrorParams($error_queries){
         $this->error_queries = $error_queries;
@@ -244,14 +249,24 @@ class MetaDataFetcher extends MetaDataAbstract{
      * Steps Generator
      *
      * @return MetaDataFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function getSteps(){
-        while (!$this->fetchStepsDone()){
-            $this->nextStep();
-            $this->fetch();
+        while (!$this->fetch_steps_done){
+            $this->fetch()->nextStep();
             yield $this;
         }
+    }
+    
+    /**
+     * Steps "iterator"
+     *
+     * @return MetaDataFetcher
+     *   The instantiated class.
+     */
+    public function nextStep(){
+        $this->fetch_steps_done = TRUE;
+        return $this;
     }
 }
 
@@ -289,7 +304,7 @@ class PubmedFetcher extends MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'tool'
      *
      * @return PubmedFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setTool($tool){
         $this->params['uri_params']['tool'] = $tool;
@@ -300,7 +315,7 @@ class PubmedFetcher extends MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'email'
      *
      * @return PubmedFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setEmail($email){
         $this->params['uri_params']['email'] = $email;
@@ -311,7 +326,7 @@ class PubmedFetcher extends MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'doi'
      *
      * @return PubmedFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setDoi($doi){
         $this->params['uri_params']['ids'] = $doi;
@@ -341,7 +356,7 @@ class CrossrefFetcher extends MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'pid' (the user's id)
      *
      * @return CrossrefFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setPid($pid){
         $this->params['uri_params']['pid'] = $pid;
@@ -352,7 +367,7 @@ class CrossrefFetcher extends MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'doi'
      *
      * @return CrossrefFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setDoi($doi){
         $this->params['uri_params']['id'] = 'doi:'.$doi;
@@ -402,12 +417,12 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
     protected $error_queries = array(array('query' => '//atom:error', 'check' => 'Result set was empty', 'code' => '', 'message' => 'Result set was empty'),
                                array('query' => '//statusText', 'check' => 'Invalid API Key', 'code' => 'Authentication error', 'message' => 'Invalid API Key'),
     );
-
+    
     /**
      * Convenience method to set the URL query
      *
      * @return ScopusSearchFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setQuery($query){
         $this->params['uri_params']['query'] .= $query;
@@ -418,7 +433,7 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'doi'
      *
      * @return ScopusSearchFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setDoi($doi){
         if (!empty($this->params['uri_params']['query'])){
@@ -432,7 +447,7 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'title'
      *
      * @return ScopusSearchFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setTitle($title){
         if (!empty($this->params['uri_params']['query'])){
@@ -446,11 +461,45 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'key' (User specific)
      *
      * @return ScopusSearchFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setKey($key){
         $this->params['headers_params']['X-ELS-APIKey'] = $key;
 //        $this->params['uri_params']['apiKey'] = $key; //alternative configuration
+        return $this;
+    }
+
+
+    /**
+     * Convenience internal method to get relevant values from DOM
+     *
+     * @return String
+     *   The value of the relevant node
+     */
+    private function getValueFromDom($query){
+        $xpath = new DOMXPath($this->getDom());
+        $results = $xpath->query($query);
+        return $results[0]->nodeValue;
+    }
+        
+    /**
+     * Steps "iterator"
+     *
+     * @return MetaDataFetcher
+     *   The instantiated class.
+     */
+    public function nextStep(){
+        $total_results = $this->getValueFromDom("//opensearch:totalResults");
+        $start_index = $this->getValueFromDom("opensearch:startIndex");
+        $items_par_page = $this->getValueFromDom("opensearch:itemsPerPage");
+        
+        if (($start_index + $items_par_page) >= $total_results){
+            $this->fetch_steps_done = TRUE;
+        }
+        else{
+            $this->setUriParam('start', $start_index + $items_par_page);
+        }
+        
         return $this;
     }
 }
@@ -487,7 +536,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'doi'
      *
      * @return ElsevierScopusFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setDoi($doi){
         $this->uri = $this->baseuri.'/doi/'.$doi;
@@ -498,7 +547,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'eid'
      *
      * @return ElsevierScopusFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setEid($eid){
         $this->uri = $this->baseuri.'/eid/'.$eid;
@@ -509,7 +558,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'pii'
      *
      * @return ElsevierScopusFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setPii($pii){
         $this->uri = $this->baseuri.'/pii/'.$pii;
@@ -520,7 +569,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'pmid'
      *
      * @return ElsevierScopusFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setPmid($pmid){
         $this->uri = $this->baseuri.'/pubmed_id/'.$pmid;
@@ -531,7 +580,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'key' (User specific)
      *
      * @return ElsevierScopusFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setKey($key){
         $this->params['uri_params']['apiKey'] = $key;
@@ -563,7 +612,7 @@ class ScopusAbstractFetcher extends ElsevierScopusFetcher{
      * Convenience method to set the class specific URL parameter 'pui'
      *
      * @return ScopusAbstractFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setPui($pui){
         $this->uri = $this->baseuri.'/pui/'.$pui;
@@ -574,7 +623,7 @@ class ScopusAbstractFetcher extends ElsevierScopusFetcher{
      * Convenience method to set the class specific URL parameter 'scopus_id'
      *
      * @return ScopusAbstractFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setScopusId($scopus_id){
         $this->uri = $this->baseuri.'/scopus_id/'.$scopus_id;
@@ -601,7 +650,7 @@ class WosRedirectFetcher extends  MetaDataFetcher{
      * Convenience method to set the class specific URL parameter 'doi'
      *
      * @return WosRedirectFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function setDoi($doi){
         $this->params['uri_params']['rft_id'] = "info:doi/$doi";
@@ -624,7 +673,7 @@ class WosRedirectFetcher extends  MetaDataFetcher{
      * Need to override the parent's method as the fetching strategy does not fit with the main implementation.
      *
      * @return WosRedirectFetcher
-     *   The instatiated class.
+     *   The instantiated class.
      */
     public function fetch(){
         $this->buildUrl(); 
