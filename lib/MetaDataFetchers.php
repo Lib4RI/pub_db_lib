@@ -201,7 +201,7 @@ class MetaDataFetcher extends MetaDataAbstract{
      * @param array $error_queries
      *   An associative array containing the error check parameters.
      *
-     * @return MetaDataAbstract
+     * @return MetaDataFetcher
      *   The instatiated class.
      */
     public function setErrorParams($error_queries){
@@ -427,7 +427,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
     /**
      * Convenience method to set the class specific URL parameter 'doi'
      *
-     * @return ScopusSearchFetcher
+     * @return ElsevierScopusFetcher
      *   The instatiated class.
      */
     public function setDoi($doi){
@@ -437,7 +437,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
     /**
      * Convenience method to set the class specific URL parameter 'eid'
      *
-     * @return ScopusSearchFetcher
+     * @return ElsevierScopusFetcher
      *   The instatiated class.
      */
     public function setEid($eid){
@@ -447,7 +447,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
     /**
      * Convenience method to set the class specific URL parameter 'pii'
      *
-     * @return ScopusSearchFetcher
+     * @return ElsevierScopusFetcher
      *   The instatiated class.
      */
     public function setPii($pii){
@@ -457,7 +457,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
     /**
      * Convenience method to set the class specific URL parameter 'pmid'
      *
-     * @return ScopusSearchFetcher
+     * @return ElsevierScopusFetcher
      *   The instatiated class.
      */
     public function setPmid($pmid){
@@ -467,7 +467,7 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
     /**
      * Convenience method to set the class specific URL parameter 'key' (User specific)
      *
-     * @return ScopusSearchFetcher
+     * @return ElsevierScopusFetcher
      *   The instatiated class.
      */
     public function setKey($key){
@@ -498,7 +498,7 @@ class ScopusAbstractFetcher extends ElsevierScopusFetcher{
 }
 
 /**
- * lass to fetch WoS redirect url
+ * Class to fetch WoS redirect url
  */
 class WosRedirectFetcher extends  MetaDataFetcher{
     
@@ -537,7 +537,7 @@ class WosRedirectFetcher extends  MetaDataFetcher{
      * Fetch data from the selected web service
      * Need to override the parent's method as the fetching strategy does not fit with the main implementation.
      *
-     * @return MetaDataFetcher
+     * @return WosRedirectFetcher
      *   The instatiated class.
      */
     public function fetch(){
