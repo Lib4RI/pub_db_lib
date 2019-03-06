@@ -373,6 +373,17 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
     );
 
     /**
+     * Convenience method to set the URL query
+     *
+     * @return ScopusSearchFetcher
+     *   The instatiated class.
+     */
+    public function setQuery($query){
+        $this->params['uri_params']['query'] .= $query;
+        return $this;
+    }
+    
+    /**
      * Convenience method to set the class specific URL parameter 'doi'
      *
      * @return ScopusSearchFetcher
@@ -380,7 +391,7 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
      */
     public function setDoi($doi){
         if (!empty($this->params['uri_params']['query'])){
-            $this->params['uri_params']['query'] .= '&';
+            $this->params['uri_params']['query'] .= 'AND';
         }
         $this->params['uri_params']['query'] .= "DOI($doi)";
     }
@@ -393,7 +404,7 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
      */
     public function setTitle($title){
         if (!empty($this->params['uri_params']['query'])){
-            $this->params['uri_params']['query'] .= '&';
+            $this->params['uri_params']['query'] .= 'AND';
         }
         $this->params['uri_params']['query'] .= "TITLE($title)";
     }
