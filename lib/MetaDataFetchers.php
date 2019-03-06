@@ -208,6 +208,20 @@ class MetaDataFetcher extends MetaDataAbstract{
         $this->error_queries = $error_queries;
         return $this;
     }
+
+    /**
+     * Steps Generator
+     *
+     * @return MetaDataFetcher
+     *   The instatiated class.
+     */
+    public function getSteps(){
+        while (!$this->fetchStepsDone()){
+            $this->nextStep();
+            $this->fetch();
+            yield $this;
+        }
+    }
 }
 
 /**
