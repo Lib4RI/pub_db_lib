@@ -241,15 +241,25 @@ class MetaDataFetcher extends MetaDataAbstract{
     }
 
     /**
-     * Return the current error status
+     * Return the current error details
      *
      * @return array
-     *   The array containing the error status, code and message.
+     *   The array containing the error status and details
      */
-    public function getErrorStatus(){
+    public function getError(){
         return $this->error;
     }
- 
+
+    /**
+     * Return the current error status
+     *
+     * @return bool
+     *   The error status
+     */
+    public function getErrorStatus(){
+        return $this->error['status'];
+    }
+    
     /**
      * Set error check parameters.
      *
@@ -270,8 +280,12 @@ class MetaDataFetcher extends MetaDataAbstract{
      * @return MetaDataFetcher
      *   The instantiated class.
      */
-    public function getSteps(){
+    public function steps(){
         while (!$this->fetch_steps_done){
+            if ($this->getErrorStatus()){
+                $this->fetch_steps_done = TRUE;
+                break;
+            }
             $this->fetch()->nextStep();
             yield $this;
         }
@@ -497,8 +511,11 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
      */
     private function getValueFromDom($query){
         $xpath = new DOMXPath($this->getDom());
-        $results = $xpath->query($query);
-        return $results[0]->nodeValue;
+        $results = @$xpath->query($query);
+        if (!empty($results)){
+            var_dump($results);
+            return $results[0]->nodeValue;
+        }
     }
         
     /**
