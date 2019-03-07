@@ -26,7 +26,7 @@ class MetaDataFetcher extends MetaDataAbstract{
      * Parameters to construct URI must be in $params['uri_params']
      */
     protected $params = '';
-                          
+                                  
     /**
      * Error check parameters (To be overridden with defaults in subclasses or set with setErrorsParams())
      *
@@ -41,6 +41,13 @@ class MetaDataFetcher extends MetaDataAbstract{
                                            'message' => ''));
     
     /**
+     * Array containing a list of http response code that will not trigger an error 
+     * Can be overridden in subclasses
+     */
+    protected $allowed_http_response_code = array(200);
+    
+    
+    /**
      * Error status array
      * 
      * status: TRUE or FALSE
@@ -48,8 +55,9 @@ class MetaDataFetcher extends MetaDataAbstract{
      * message: string containing the error message
      */
     private $error = array('status' => FALSE, 
-                           'code' => '', 
-                           'message' => '');
+                           'connection' => array('err_no' => NULL, 'error' => NULL),
+                           'http_response' => array('code' => NULL),
+                           'content' => array('code' => '', 'message' => ''));
     
     /**
      * Steps done flag (TRUE or FALSE)
@@ -186,10 +194,10 @@ class MetaDataFetcher extends MetaDataAbstract{
         $this->setCurlOpt();
         
         $this->dom->loadXML(curl_exec($this->cSession));
+        $this->checkError();
         
         curl_close($this->cSession);
         
-        $this->checkError();
         
         return $this;
     }
@@ -198,6 +206,17 @@ class MetaDataFetcher extends MetaDataAbstract{
      * Check the service's response for errors
      */
     protected function checkError(){
+        $this->error['connection']['err_no'] = curl_errno($this->cSession);
+        $this->error['connection']['error'] = curl_error($this->cSession);
+        if ($this->error['connection']['err_no']){
+            $this->error['status'] = TRUE;
+        }
+            
+        $this->error['http_response']['code'] = curl_getinfo($this->cSession, CURLINFO_RESPONSE_CODE);
+        if (!in_array($this->error['http_response']['code'], $this->allowed_http_response_code)){
+            $this->error['status'] = TRUE;
+        }
+        
         $xpath = new DOMXPath($this->dom);
         foreach ($this->error_queries as $key => $error_query){
             $entries = @$xpath->query($error_query['query']);
@@ -217,8 +236,8 @@ class MetaDataFetcher extends MetaDataAbstract{
      */    
     protected function setErrosStatus($status, $code, $message){
         $this->error['status'] = $status;
-        $this->error['code'] = $code;
-        $this->error['message'] = $message;
+        $this->error['content']['code'] = $code;
+        $this->error['content']['message'] = $message;
     }
 
     /**
