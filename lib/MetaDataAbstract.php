@@ -50,9 +50,12 @@ abstract class MetaDataAbstract{
      * @return string
      *   The XML representation of the instatiated DOMDocument.
      */
-    public function getXML(){
-        $this->dom->formatOutput = true;
-        return $this->getDom()->saveXML();
+    public function getXML($dom = NULL){
+        if (!isset($dom))
+            $dom = $this->getDom();
+        
+        $dom->formatOutput = true;
+        return $dom->saveXML();
     }
 
     /**
@@ -61,8 +64,11 @@ abstract class MetaDataAbstract{
      * @return string
      *   The JSON representation of the instatiated DOMDocument.
      */
-    public function getJSON(){
-        return json_encode(simplexml_load_string($this->getXML()), JSON_PRETTY_PRINT);
+    public function getJSON($dom = NULL){
+        if (!isset($dom))
+            $dom = $this->getDom();
+            
+        return json_encode(simplexml_load_string($this->getXML($dom)), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -71,8 +77,11 @@ abstract class MetaDataAbstract{
      * @return array
      *   The array representation of the instatiated DOMDocument.
      */
-    public function getArray(){
-        return json_decode($this->getJSON(),TRUE);
+    public function getArray($dom = NULL){
+        if (!isset($dom))
+            $dom = $this->getDom();
+            
+        return json_decode($this->getJSON($dom),TRUE);
     }
 
     /**
@@ -81,7 +90,10 @@ abstract class MetaDataAbstract{
      * @return string
      *   The string representation of the instatiated DOMDocument.
      */
-    public function getString(){
-        return $this->getDom()->textContent;
+    public function getString($dom = NULL){
+        if (!isset($dom))
+            $dom = $this->getDom();
+            
+        return $dom->textContent;
     }
 }
