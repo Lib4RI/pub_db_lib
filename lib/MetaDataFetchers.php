@@ -513,7 +513,6 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
         $xpath = new DOMXPath($this->getDom());
         $results = @$xpath->query($query);
         if (!empty($results)){
-            var_dump($results);
             return $results[0]->nodeValue;
         }
     }
