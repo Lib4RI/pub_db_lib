@@ -22,6 +22,8 @@ class MetaDataServant{
     protected $processor;
     private $fetched = FALSE;
     private $processed = FALSE;
+    private $fetched_stack = array();
+    private $processed_stack = array();
     
     /**
      * Constructor. To be implemented in subclasses
@@ -57,6 +59,37 @@ class MetaDataServant{
     }
 
     /**
+     * Set URI parameter
+     *
+     * @param string $key
+     *   A string containing parameter's key
+     *
+     * @param string $value
+     *   A string containing parameter's value
+     *
+     * @return MetaDataServant
+     *   The instantiated class.
+     */
+    public function setUriParam($key, $value){
+        $this->fetcher->setUriParam($key, $value);
+        return $this;
+    }
+    
+    /**
+     * Set URI parameters
+     *
+     * @param array $params
+     *   An array containing parameters in the form $key => $value
+     *
+     * @return MetaDataServant
+     *   The instantiated class.
+     */
+    public function setUriParams($params){
+        $this->fetcher->setUriParams($params);
+        return $this;
+    }
+    
+    /**
      * Return the current fetcher error status
      *
      * @return array
@@ -73,12 +106,16 @@ class MetaDataServant{
      *   The instatiated class.
      */
     public function fetch(){
-        $this->fetcher->fetch();
-        $error = $this->getFetcherErrorStatus();
-        if ($error['status'] == FALSE){
-            $this->processor->loadDom($this->fetcher->getDom());
-            $this->fetched = TRUE;
+        foreach ($this->fetcher->steps() as $step){
+            $dom = new DOMDocument( "1.0", "ISO-8859-15" );
+            $dom->loadXML($step->getXML()); //This must be improved!!!
+            array_push($this->fetched_stack, $dom);
+            if($this->getFetcherErrorStatus()){
+                $this->fetched = FALSE;
+                return $this;
+            }
         }
+        $this->fetched = TRUE;
         return $this;
     }
     
@@ -90,7 +127,12 @@ class MetaDataServant{
      */
     public function process(){
         if ($this->isfetched()){
-            $this->processor->process();
+            foreach ($this->fetched_stack as $step){
+                $this->processor->loadDom($step);
+                $dom = new DOMDocument( "1.0", "ISO-8859-15" );
+                $dom->loadXML($this->processor->process()->getXML()); //This must be improved!!!
+                array_push($this->processed_stack, $dom);
+            }
             $this->processed = TRUE;
         }
         return $this;
@@ -114,7 +156,7 @@ class MetaDataServant{
      *   The fetched DOMDocument.
      */
     public function getFetchedDom(){
-        return $this->fetcher->getDom();
+        return $this->fetched_stack;
     }
     
     /**
@@ -124,6 +166,8 @@ class MetaDataServant{
      *   The XML representation of the fetched DOMDocument.
      */
     public function getFetchedXML(){
+        $out = array();
+        foreach ($this->fetched_stack as $dom)
         return $this->fetcher->getXML();
     }
     
@@ -310,9 +354,9 @@ class WosIdServant extends MetaDataServant{
 }
 
 /**
- * Class to get Scopus ID from DOI
+ * Generic Class for Scopus search 
  */
-class ScopusIdServant extends MetaDataServant{
+class ScopusSearchServant extends MetaDataServant{
     
     /**
      * Constructor.
@@ -320,16 +364,12 @@ class ScopusIdServant extends MetaDataServant{
     public function __construct() {
         $this->fetcher = new ScopusSearchFetcher();
         $this->processor = new MetaDataProcessor(null);
-        $this->processor->addSteps(array('type' => 'xslt', 
-                                  'rule' => '../xslts/scopus2scopus-id.xslt', 
-                                  'source' => 'file')
-                           );
     }
     
     /**
      * Convenience method to set the class specific URL parameter 'title'
      *
-     * @return MetaDataServant
+     * @return ScopusSearchServant
      *   The instatiated class.
      */
     public function setTitle($title){
@@ -337,14 +377,61 @@ class ScopusIdServant extends MetaDataServant{
         return $this;
     }
     
+    
     /**
      * Convenience method to set the class specific parameter 'key'
      *
-     * @return MetaDataServant
+     * @return ScopusSearchServant
      *   The instatiated class.
      */
     public function setKey($key){
         $this->fetcher->setKey($key);
         return $this;
+    }
+    
+    /**
+     * Convenience method to set the URL query
+     *
+     * @return ScopusSearchServant
+     *   The instatiated class.
+     */
+    public function setQuery($query){
+        $this->fetcher->setQuery($query);
+        return $this;
+    }
+    
+}
+
+/**
+ * Class to get Scopus ID from DOI
+ */
+class ScopusIdServant extends ScopusSearchServant{
+    
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        parent::__construct();
+        $this->processor->addSteps(array('type' => 'xslt', 
+                                  'rule' => '../xslts/scopus2scopus-id.xslt', 
+                                  'source' => 'file')
+                           );
+    }
+}
+
+/**
+ * Class to get Web Of Science ID from DOI
+ */
+class ScopusIdListServant extends ScopusSearchServant{
+    
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        parent::__construct();
+        $this->processor->addSteps(array('type' => 'xslt',
+            'rule' => '../xslts/scopusIdList.xslt',
+            'source' => 'file')
+            );
     }
 }
