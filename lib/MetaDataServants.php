@@ -167,8 +167,10 @@ class MetaDataServant{
      */
     public function getFetchedXML(){
         $out = array();
-        foreach ($this->fetched_stack as $dom)
-        return $this->fetcher->getXML();
+        foreach ($this->fetched_stack as $dom){
+            array_push($out, $this->fetcher->getXML($dom));
+        }
+        return $out;
     }
     
     /**
@@ -178,7 +180,11 @@ class MetaDataServant{
      *   The JSON representation of the fetched DOMDocument.
      */
     public function getFetchedJSON(){
-        return $this->fetcher->getJSON();
+        $out = array();
+        foreach ($this->fetched_stack as $dom){
+            array_push($out, $this->fetcher->getJSON($dom));
+        }
+        return $out;
     }
     
     /**
@@ -188,7 +194,11 @@ class MetaDataServant{
      *   The array representation of the fetched DOMDocument.
      */
     public function getFetchedArray(){
-        return $this->fetcher->getArray();
+        $out = array();
+        foreach ($this->fetched_stack as $dom){
+            array_push($out, $this->fetcher->getArray($dom));
+        }
+        return $out;
     }
 
     /**
@@ -198,7 +208,11 @@ class MetaDataServant{
      *   The string representation of the fetched DOMDocument.
      */
     public function getFetchedString(){
-        return $this->fetcher->getString();
+        $out = array();
+        foreach ($this->fetched_stack as $dom){
+            array_push($out, $this->fetcher->getString($dom));
+        }
+        return $out;
     }
     
     /**
@@ -208,7 +222,7 @@ class MetaDataServant{
      *   The processed DOMDocument.
      */
     public function getProcessedDom(){
-        return $this->processor->getDom();
+        return $this->processed_stack;
     }
     
     /**
@@ -218,7 +232,11 @@ class MetaDataServant{
      *   The XML representation of the processed DOMDocument.
      */
     public function getProcessedXML(){
-        return $this->processor->getXML();
+        $out = array();
+        foreach ($this->processed_stack as $dom){
+            array_push($out, $this->processor->getXML($dom));
+        }
+        return $out;
     }
     
     /**
@@ -228,7 +246,11 @@ class MetaDataServant{
      *   The JSON representation of the processed DOMDocument.
      */
     public function getProcessedJSON(){
-        return $this->processor->getJSON();
+        $out = array();
+        foreach ($this->processed_stack as $dom){
+            array_push($out, $this->processor->getJSON($dom));
+        }
+        return $out;
     }
     
     /**
@@ -238,7 +260,11 @@ class MetaDataServant{
      *   The array representation of the processed DOMDocument.
      */
     public function getProcessedArray(){
-        return $this->processor->getArray();
+        $out = array();
+        foreach ($this->processed_stack as $dom){
+            array_push($out, $this->processor->getArray($dom));
+        }
+        return $out;
     }
 
     /**
@@ -248,7 +274,11 @@ class MetaDataServant{
      *   The string representation of the processed DOMDocument.
      */
     public function getProcessedString(){
-        return $this->processor->getString();
+        $out = array();
+        foreach ($this->processed_stack as $dom){
+            array_push($out, $this->processor->getString($dom));
+        }
+        return $out;
     }
     
     /**
