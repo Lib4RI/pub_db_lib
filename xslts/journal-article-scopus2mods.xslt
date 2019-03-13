@@ -24,13 +24,14 @@
 		<originInfo>
     		<dateIssued encoding="w3cdtf" keyDate="yes"><xsl:value-of select="/dtd:abstracts-retrieval-response/item/ait:process-info/ait:date-sort/@year"/></dateIssued>
   		</originInfo>
-  		<identifier type="doi"><xsl:value-of select="/dtd:abstracts-retrieval-response/item/bibrecord/item-info/itemidlist/ce:doi"/></identifier>
+  		<identifier type="doi"><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/prism:doi"/></identifier>
+  		<identifier type="scopus"><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/dtd:eid"/></identifier>
   		<xsl:for-each select="/dtd:abstracts-retrieval-response/dtd:authors/dtd:author">
   			<xsl:choose>
   				<xsl:when test="@seq=1">
   					<name type="personal" usage="primary">
-  					<namePart type="family"><xsl:value-of select="ce:surname"/></namePart>
-  					<namePart type="given"><xsl:value-of select="ce:given-name"/></namePart>
+  					<namePart type="family"><xsl:value-of select="dtd:preferred-name/ce:surname"/></namePart>
+  					<namePart type="given"><xsl:value-of select="dtd:preferred-name/ce:given-name"/></namePart> <!--To be checked--> 
   					<role>
   						<roleTerm authority="marcrelator" type="text">author</roleTerm>
   					</role>
@@ -47,7 +48,31 @@
   				 </xsl:otherwise>
   			</xsl:choose>
 		</xsl:for-each>  
-  		<abstract><xsl:value-of select=""/></abstract>
+  		<abstract><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/dc:description/abstract/ce:para"/></abstract>
+  		<relatedItem type="host">
+  			<titleInfo>
+  				<title><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/prism:publicationName"/></title>
+  			</titleInfo>
+  			<titleInfo type="abbreviated">
+  				<title><xsl:value-of select="/dtd:abstracts-retrieval-response/item/bibrecord/head/source/sourcetitle-abbrev"/></title>
+  				</titleInfo>
+  			<originInfo>
+  				<publisher><xsl:value-of select="/dtd:abstracts-retrieval-response/item/bibrecord/head/source/publisher/publishername"/></publisher>
+  			</originInfo>
+			<identifier type="journal id"></identifier>
+			<identifier type="issn"><xsl:value-of select="/dtd:abstracts-retrieval-response/item/bibrecord/head/source/issn[@type='print']"/></identifier>
+			<identifier type="e-issn"><xsl:value-of select="/dtd:abstracts-retrieval-response/item/bibrecord/head/source/issn[@type='electronic']"/></identifier>
+			<part>
+				<detail type="volume">
+					<number>120</number>
+				</detail><detail type="issue">
+					<number>13</number>
+				</detail>
+				<extent unit="pages">
+					<start>137201</start>
+				</extent>
+			</part>
+  		</relatedItem>
 	</mods>
 	</xsl:template>
 </xsl:stylesheet>
