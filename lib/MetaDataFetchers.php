@@ -599,6 +599,18 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
                                      array('query' => '//error-response/error-code', 'check' => 'QUOTAEXCEEDED', 'code' => 'Quota Exceeded', 'message' => 'Quota Excedeed'),
     );
     
+    
+    public function getError(){
+        $error = parent::getError();
+        if ($error['content']['code'] == "Quota Exceeded"){
+            if (isset($this->getParsedHeader()['X-RateLimit-Reset'])){
+                $error['content']['message'] .=  '. Reset: '.$this->getParsedHeader()['X-RateLimit-Reset'];
+            }
+        }
+        
+        return $error;
+    }
+    
     /**
      * Convenience method to set the class specific URL parameter 'doi'
      *
