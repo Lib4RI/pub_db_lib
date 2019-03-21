@@ -64,12 +64,12 @@
 			<identifier type="e-issn"><xsl:value-of select="/dtd:abstracts-retrieval-response/item/bibrecord/head/source/issn[@type='electronic']"/></identifier>
 			<part>
 				<detail type="volume">
-					<number>120</number>
+					<number><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/prism:volume"/></number>
 				</detail><detail type="issue">
-					<number>13</number>
+					<number><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/prism:issueIdentifier"/></number>
 				</detail>
 				<extent unit="pages">
-					<start>137201</start>
+					<start><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/dtd:article-number"/></start>
 				</extent>
 			</part>
   		</relatedItem>
