@@ -164,10 +164,20 @@ class MetaDataFetcher extends MetaDataAbstract{
      * @return string
      *   An array containing the HTTP headers or FALSE
      */
-    public function getHeaders(){
+    public function getHttpHeaders(){
         return $this->headers;
     }
 
+    /**
+     * Return the response header
+     *
+     * @return string
+     *   An array containing the HTTP headers or FALSE
+     */
+    public function getResponseHeader(){
+        return $this->response_header;
+    }
+    
     /**
      * Set options for the curl library
      *
@@ -175,10 +185,11 @@ class MetaDataFetcher extends MetaDataAbstract{
     private function setCurlOpt(){
         curl_setopt($this->cSession,CURLOPT_URL,$this->url);
         curl_setopt($this->cSession,CURLOPT_RETURNTRANSFER,TRUE);
-        if (!empty($this->getHeaders())){
-            curl_setopt($this->cSession,CURLOPT_HTTPHEADER, $this->headers);
+        if (!empty($this->getHttpHeaders())){
+            curl_setopt($this->cSession,CURLOPT_HTTPHEADER, $this->getHttpHeaders());
         }
-        curl_setopt($this->cSession,CURLOPT_HEADER, FALSE);
+//        curl_setopt($this->cSession,CURLOPT_VERBOSE, TRUE);
+        curl_setopt($this->cSession,CURLOPT_HEADER, TRUE);
     }
 
     /**
@@ -192,8 +203,12 @@ class MetaDataFetcher extends MetaDataAbstract{
         $this->buildHeaders();
         $this->cSession = curl_init();
         $this->setCurlOpt();
+        $response = curl_exec($this->cSession);
+        $header_size = curl_getinfo($this->cSession, CURLINFO_HEADER_SIZE);
+        $this->response_header = substr($response, 0, $header_size);
+        $body = substr($response, $header_size);
         
-        $this->dom->loadXML(curl_exec($this->cSession));
+        $this->dom->loadXML($body);
         $this->checkError();
         
         curl_close($this->cSession);
@@ -564,7 +579,8 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
      * message: error message to write in the error status array
      */
     protected $error_queries = array(array('query' => '//atom:error', 'check' => 'Result set was empty', 'code' => '', 'message' => 'Result set was empty'),
-        array('query' => '//statusText', 'check' => 'Invalid API Key', 'code' => 'Authentication error', 'message' => 'Invalid API Key'),
+                                     array('query' => '//statusText', 'check' => 'Invalid API Key', 'code' => 'Authentication error', 'message' => 'Invalid API Key'),
+                                     array('query' => '//error-response/error-code', 'check' => 'QUOTAEXCEEDED', 'code' => 'Quota Exceeded', 'message' => 'Quota Excedeed'),
     );
     
     /**
