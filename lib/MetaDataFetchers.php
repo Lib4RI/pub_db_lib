@@ -288,7 +288,27 @@ class MetaDataFetcher extends MetaDataAbstract{
      *   The error status
      */
     public function getErrorStatus(){
-        return $this->error['status'];
+        return $this->getError()['status'];
+    }
+
+    /**
+     * Return the current error code
+     *
+     * @return string
+     *   The error code
+     */
+    public function getErrorCode(){
+        return $this->getError()['content']['code'];
+    }
+
+    /**
+     * Return the current error message
+     *
+     * @return string
+     *   The error message
+     */
+    public function getErrorMessage(){
+        return $this->getError()['content']['message'];
     }
     
     /**
@@ -599,12 +619,64 @@ class ElsevierScopusFetcher extends  MetaDataFetcher{
                                      array('query' => '//error-response/error-code', 'check' => 'QUOTAEXCEEDED', 'code' => 'Quota Exceeded', 'message' => 'Quota Excedeed'),
     );
     
+
+    /**
+     * Get the request number limit allowed by the current key
+     *
+     * @return string
+     *   A string containing the number of the request allowed with the current key
+     */
+    public function getRequestLimit(){
+        if (isset($this->getParsedHeader()['X-RateLimit-Limit'])){
+            return $this->getParsedHeader()['X-RateLimit-Limit'];
+        }
+        else{
+            return null;
+        }
+        
+    }
+
+    /**
+     * Get the number of the request left before reset
+     *
+     * @return string
+     *   A string containing the number of the request left before reset
+     */
+    public function getRequestRemaining(){
+        if (isset($this->getParsedHeader()['X-RateLimit-Remaining'])){
+            return $this->getParsedHeader()['X-RateLimit-Remaining'];
+        }
+        else{
+            return null;
+        }
+    }
     
+    /**
+     * Get the request reset date
+     *
+     * @return string
+     *   A string containing the request reset date
+     */
+    public function getRequestReset(){
+        if (isset($this->getParsedHeader()['X-RateLimit-Reset'])){
+            return $this->getParsedHeader()['X-RateLimit-Reset'];
+        }
+        else{
+            return null;
+        }
+    }
+    
+    /**
+     * Overridding parent's method to add info about key reset time
+     *
+     * @return array
+     *   The array containing the error status and details
+     */
     public function getError(){
         $error = parent::getError();
         if ($error['content']['code'] == "Quota Exceeded"){
-            if (isset($this->getParsedHeader()['X-RateLimit-Reset'])){
-                $error['content']['message'] .=  '. Reset: '.$this->getParsedHeader()['X-RateLimit-Reset'];
+            if (null !== $this->getRequestReset()){
+                $error['content']['message'] .=  '. Reset: '.$this->getRequestReset();
             }
         }
         
