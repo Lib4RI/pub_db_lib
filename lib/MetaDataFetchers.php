@@ -172,10 +172,26 @@ class MetaDataFetcher extends MetaDataAbstract{
      * Return the response header
      *
      * @return string
-     *   An array containing the HTTP headers or FALSE
+     *   A strin containing the response header
      */
     public function getResponseHeader(){
         return $this->response_header;
+    }
+
+    /**
+     * Return the parsed response header
+     *
+     * @return array
+     *   An array containing the parsed version of the response header
+     */
+    public function getParsedHeader(){
+        $s = $this->getResponseHeader();
+        $s = str_replace("\n", '&', $s);
+        $s = str_replace("\r", '', $s);
+        $s = str_replace(': ', '=', $s);
+        
+        parse_str($s,$out);
+        return $out;
     }
     
     /**
