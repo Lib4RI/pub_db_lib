@@ -19,8 +19,14 @@ function publication_DB_menu() {
 function publication_DB_get_mods($query = NULL, $params = NULL){
     module_load_include('php', 'publication_DB', 'lib/MetaDataFetchers');
     
-    $fetcher = new ScopusSearchFetcher();
+    $fetcher = new ScopusAbstractFetcher();
     $fetcher->setKey(variable_get('lib4ri_citco_api_key_scopus',''));
-    $fetcher->setDoi();
-    echo 'OK!';
+    $fetcher->setDoi($_GET['doi']);
+    $fetcher->getDom()->formatOutput = true;
+    $fetcher->fetch();
+    
+    drupal_add_http_header('Content-Type', 'application/xml');
+    echo ($fetcher->getXML());
+    
+    
 }
