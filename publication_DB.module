@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function publication_DB_menu() {
+    $items = array();
+    $items['islandora/pubdb/get_mods'] = array(
+        'page callback' => 'publication_DB_get_mods',
+        'access arguments' => array('search islandora solr'),
+        'type' => MENU_CALLBACK,
+        //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
+    );
+    
+    return $items;
+}
+
+
+function publication_DB_get_mods($query = NULL, $params = NULL){
+    module_load_include('php', 'publication_DB', 'lib/MetaDataFetchers');
+    
+    $fetcher = new ScopusSearchFetcher();
+    $fetcher->setKey(variable_get('lib4ri_citco_api_key_scopus',''));
+    $fetcher->setDoi();
+    echo 'OK!';
+}
