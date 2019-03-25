@@ -5,9 +5,9 @@
  * such us CrossRef, Scopus, Web of Science, Pubmed
  */ 
 
-include_once '../lib/MetaDataFetchers.php';
-include_once '../lib/MetaDataProcessors.php';
-include_once '../callbacks/callbacks.php';
+include_once dirname(__FILE__).'/../lib/MetaDataFetchers.php';
+include_once dirname(__FILE__).'/../lib/MetaDataProcessors.php';
+include_once dirname(__FILE__).'/../callbacks/callbacks.php';
 
 
 /******************************************************************************
@@ -359,8 +359,8 @@ class PubmedIdServant extends MetaDataServant{
         $this->fetcher = new PubmedFetcher();
         $this->processor = new MetaDataProcessor(null);
         $this->processor->addSteps(array('type' => 'xslt', 
-                                        'rule' => '../xslts/pmed2pmed-id.xslt', 
-                                        'source' => 'file')
+                                  'rule' => dirname(__FILE__).'/../xslts/pmed2pmed-id.xslt', 
+                                  'source' => 'file')
                                  );
     }
 }
@@ -377,7 +377,7 @@ class WosIdServant extends MetaDataServant{
         $this->fetcher = new WosRedirectFetcher();
         $this->processor = new MetaDataProcessor(null);
         $this->processor->addSteps(array('type' => 'xslt', 
-                                  'rule' => '../xslts/wos2wos-id.xslt', 
+                                  'rule' => dirname(__FILE__).'/../xslts/wos2wos-id.xslt', 
                                   'source' => 'file')
                            );
     }
@@ -443,7 +443,7 @@ class ScopusIdServant extends ScopusSearchServant{
     public function __construct() {
         parent::__construct();
         $this->processor->addSteps(array('type' => 'xslt', 
-                                  'rule' => '../xslts/scopus2scopus-id.xslt', 
+                                  'rule' => dirname(__FILE__).'/../xslts/scopus2scopus-id.xslt', 
                                   'source' => 'file')
                            );
     }
@@ -460,7 +460,7 @@ class ScopusIdListServant extends ScopusSearchServant{
     public function __construct() {
         parent::__construct();
         $this->processor->addSteps(array('type' => 'xslt',
-            'rule' => '../xslts/scopusIdList.xslt',
+            'rule' => dirname(__FILE__).'/../xslts/scopusIdList.xslt',
             'source' => 'file')
             );
     }

@@ -5,7 +5,7 @@
  * such us CrossRef, Scopus, Web of Science, Pubmed
  */ 
 
-require_once 'MetaDataAbstract.php';
+require_once dirname(__FILE__).'/MetaDataAbstract.php';
 
 /******************************************************************************
  * Classes for data fetching
