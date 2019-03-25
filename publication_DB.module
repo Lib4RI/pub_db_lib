@@ -12,6 +12,13 @@ function publication_DB_menu() {
         //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
     );
     
+    $items['islandora/pubdb/scopus_alert'] = array(
+        'page callback' => 'publication_DB_scopus_alert',
+        'access arguments' => array('search islandora solr'),
+        'type' => MENU_CALLBACK,
+        //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
+    );
+    
     return $items;
 }
 
@@ -29,4 +36,37 @@ function publication_DB_get_mods($query = NULL, $params = NULL){
     echo ($fetcher->getXML());
     
     
+}
+
+function publication_DB_scopus_alert($query = NULL, $params = NULL){
+    module_load_include('php', 'publication_DB', 'lib/MetaDataServants');
+    module_load_include('module', 'lib4ri_json_search', 'lib4ri_json_search');
+
+    $serv = new ScopusIdListServant();
+    $serv->setKey(variable_get('lib4ri_citco_api_key_scopus',''));
+    $serv->setQuery('(AFFIL(Paul Scherrer) OR AFFIL(PSI)) AND PUBYEAR = 2019');
+    $serv->setUriParam('field', 'eid,doi');
+    $serv->setUriParam('count', '200');
+    
+    $serv->serve();
+    
+    $list = array();
+//    drupal_add_http_header('Content-Type', 'application/xml');
+    foreach ($serv->getProcessedArray() as $page){
+        foreach ($page['item'] as $pub){
+            array_push($list, $pub);
+        }
+    }
+    
+    global $base_url;
+    $current_url = url(current_path(), array('absolute' => TRUE));
+    
+    $params['f'][0] = 'mods_originInfo_encoding_w3cdtf_keyDate_yes_dateIssued_dt:[2019-01-01T00:00:00Z TO 2019-12-31T23:59:59Z]';
+    $params['q'] = str_replace($base_url.'/', '', $current_url); 
+    
+    var_dump($params);
+    
+    $pids = get_pids('*:*', $params);
+    var_dump($pids);
+    //var_dump($list);
 }
