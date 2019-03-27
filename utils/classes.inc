@@ -46,8 +46,8 @@ class lib4riPubAlert{
     
     protected $namespace;
     
-    private $searchYear;
-    private $metaDataServant;
+    protected $searchYear;
+    protected $metaDataServant;
 
     /**
      * Constructor
@@ -117,6 +117,7 @@ class lib4riPubAlert{
     }
 
     public function setNewPubs(){
+        $this->setQuery();
         $this->fetch();
         $this->getInDora();
         $this->removeInDora();
@@ -151,7 +152,7 @@ class lib4riPubAlert{
 
 class lib4riScopusAlert extends lib4riPubAlert{
     
-    public function setQuery($query){
+    public function setQuery(){
         $this->metaDataServant->setQuery('(AFFIL(Paul Scherrer) OR AFFIL(PSI)) AND PUBYEAR = '.$this->searchYear);
         return $this;
     }

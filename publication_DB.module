@@ -39,12 +39,12 @@ function publication_DB_get_mods($query = NULL, $params = NULL){
 }
 
 function publication_DB_scopus_alert($query = NULL, $params = NULL){
-    drupal_add_http_header('Content-Type', 'text/plain');
 
-    module_load_include('php', 'publication_DB', 'lib/MetaDataServants');
+    module_load_include('inc', 'publication_DB', 'utils/classes');
 //    module_load_include('inc', 'publication_DB', 'utils/functions');
 //    module_load_include('module', 'lib4ri_json_search', 'lib4ri_json_search');
 
+//    drupal_add_http_header('Content-Type', 'text/plain');
     $alert = new lib4riScopusAlert('2019');
     $list = $alert->setNewPubs()->getNewPubs();
     var_dump($list);
