@@ -24,7 +24,7 @@ function publication_DB_menu() {
 
 
 function publication_DB_get_mods($query = NULL, $params = NULL){
-    module_load_include('php', 'publication_DB', 'lib/MetaDataFetchers');
+    module_load_include('inc', 'publication_DB', 'utils/classes');
     
     $fetcher = new ScopusAbstractFetcher();
     $fetcher->setKey(variable_get('lib4ri_citco_api_key_scopus',''));
@@ -39,53 +39,16 @@ function publication_DB_get_mods($query = NULL, $params = NULL){
 }
 
 function publication_DB_scopus_alert($query = NULL, $params = NULL){
+    drupal_add_http_header('Content-Type', 'text/plain');
+
     module_load_include('php', 'publication_DB', 'lib/MetaDataServants');
-    module_load_include('inc', 'publication_DB', 'utils/functions');
+//    module_load_include('inc', 'publication_DB', 'utils/functions');
 //    module_load_include('module', 'lib4ri_json_search', 'lib4ri_json_search');
 
-    $serv = new ScopusIdListServant();
-    $serv->setKey(variable_get('lib4ri_citco_api_key_scopus',''));
-    $serv->setQuery('(AFFIL(Paul Scherrer) OR AFFIL(PSI)) AND PUBYEAR = 2019');
-    $serv->setUriParam('field', 'eid,doi');
-    $serv->setUriParam('count', '200');
-    
-    $serv->serve();
-    
-    $list = array();
-//    drupal_add_http_header('Content-Type', 'text/xml');
-    foreach ($serv->getProcessedArray() as $page){
-        foreach ($page['item'] as $pub){
-            array_push($list, $pub);
-        }
-    }
-    
-    global $base_url;
-    $current_url = url(current_path(), array('absolute' => TRUE));
-    
-    $params['f'][0] = 'mods_originInfo_encoding_w3cdtf_keyDate_yes_dateIssued_dt:[2019-01-01T00:00:00Z TO 2019-12-31T23:59:59Z]';
-    $params['f'][1] = 'mods_identifier_doi_ms:[* TO *] OR mods_identifier_scopus_ms:[* TO *]';
-    
-    $params['q'] = str_replace($base_url.'/', '', $current_url); 
-    $sq = new IslandoraSolrQueryProcessor();
-    
-    // Build and execute Apache Solr query.
-    $sq->buildQuery($query, $params);
-    $sq->solrParams['facet'] = "false";
-    $sq->solrParams['fl'] = 'PID, mods_identifier_doi_ms, mods_identifier_scopus_ms';
-    $sq->solrLimit = '100000';
-    $sq->executeQuery(FALSE, TRUE);
-    
-    $indora = array();
-    $ii = 0;
-    foreach ($sq->islandoraSolrResult['response']['objects'] as $object) {
-        array_push($indora, $object['solr_doc']);
-    }
-    
-    
-    var_dump($params);
-    
-//    $pids = get_pids('*:*', $params);
-    $list = publication_DB_in_dora($indora, $list);
-    
+    $alert = new lib4riScopusAlert('2019');
+    $list = $alert->setNewPubs()->getNewPubs();
     var_dump($list);
 }
+
+
+    
