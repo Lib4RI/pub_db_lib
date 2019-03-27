@@ -4,6 +4,13 @@
  * Implements hook_form().
  */
 function publication_DB_admin_form() {
+    $form['publication_DB_search_year'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Search Year'),
+        '#default_value' => variable_get('publication_DB_search_year', ''),
+        '#required' => TRUE,
+    );
+    
     $form['publication_DB_scopus_alert_query'] = array(
         '#type' => 'textfield',
         '#title' => t('Scopus Alert Query'),
