@@ -153,7 +153,7 @@ class lib4riPubAlert{
 class lib4riScopusAlert extends lib4riPubAlert{
     
     public function setQuery(){
-        $this->metaDataServant->setQuery('(AFFIL(Paul Scherrer) OR AFFIL(PSI)) AND PUBYEAR = '.$this->searchYear);
+        $this->metaDataServant->setQuery('('.variable_get('publication_DB_scopus_alert_query', '').') AND PUBYEAR = '.$this->searchYear);
         return $this;
     }
     
