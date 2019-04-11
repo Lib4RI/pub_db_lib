@@ -193,6 +193,7 @@ class lib4riScopusAlert extends lib4riPubAlert{
                     'doi' => (!empty($data['doi']) ? $data['doi'] : ''),
                     'eid' => (!empty($data['eid']) ? $data['eid'] : ''),
                     'status' => 'queued',
+                    'tstmp' => REQUEST_TIME,
                 );
     }
         

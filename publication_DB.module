@@ -13,7 +13,7 @@ function publication_DB_menu() {
     );
     
     $items['islandora/pubdb/scopus_alert'] = array(
-        'page callback' => 'publication_DB_scopus_alert',
+        'page callback' => 'publication_DB_scopus_alert_batch',
         'access arguments' => array('search islandora solr'),
         'type' => MENU_CALLBACK,
         //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
@@ -47,8 +47,15 @@ function publication_DB_get_mods($query = NULL, $params = NULL){
     
 }
 
-function publication_DB_scopus_alert($query = NULL, $params = NULL){
-
+function publication_DB_scopus_alert(&$context){
+    if (!isset($context['sandbox']['progress'])) {
+        $context['sandbox']['progress'] = 0;
+        $context['sandbox']['current_node'] = 0;
+        $context['sandbox']['max'] = 1;
+    }
+    
+    
+    
     module_load_include('inc', 'publication_DB', 'utils/classes');
 //    module_load_include('inc', 'publication_DB', 'utils/functions');
 //    module_load_include('module', 'lib4ri_json_search', 'lib4ri_json_search');
@@ -56,10 +63,57 @@ function publication_DB_scopus_alert($query = NULL, $params = NULL){
 //    drupal_add_http_header('Content-Type', 'text/plain');
     $alert = new lib4riScopusAlert(variable_get('publication_DB_search_year', ''));
     $list = $alert->setNewPubs()->getNewPubs();
-    var_dump($list);
+//    var_dump($list);
+
+    $context['sandbox']['current_node']++;
+    $context['sandbox']['progress']++;
+    
 }
 
-function publication_DB_scopus_alert_batch($query = NULL, $params = NULL){
+function publication_DB_scopus_alert_batch(){
+    $batch = array(
+        'operations' => array(
+            array('publication_DB_scopus_alert', array()),
+        ),
+        'finished' => 'publication_DB_scopus_alert_batch_finished',
+        'title' => t('Processing Example Batch'),
+        'init_message' => t('Example Batch is starting.'),
+        'progress_message' => t('Processed @current out of @total.'),
+        'error_message' => t('Example Batch has encountered an error.'),
+        'file' => drupal_get_path('module', 'publication_DB') . '/publication_DB.module',
+    );
+    batch_set($batch);
     
+    // If this function was called from a form submit handler, stop here,
+    // FAPI will handle calling batch_process().
+    
+    // If not called from a submit handler, add the following,
+    // noting the url the user should be sent to once the batch
+    // is finished.
+    // IMPORTANT:
+    // If you set a blank parameter, the batch_process() will cause an infinite loop
+    
+    batch_process('node/1');
 }
     
+
+/**
+ * Batch 'finished' callback
+ */
+function publication_DB_scopus_alert_batch_finished($success, $results, $operations) {
+    if ($success) {
+        // Here we do something meaningful with the results.
+        $message = t('Scopus alert list updated');
+        // $message .= theme('item_list', $results);  // D6 syntax
+//        $message .= theme('item_list', array('items' => $results));
+        drupal_set_message($message);
+    }
+    else {
+        // An error occurred.
+        // $operations contains the operations that remained unprocessed.
+        $error_operation = reset($operations);
+        $message = t('An error occurred while processing %error_operation with arguments: @arguments', array('%error_operation' => $error_operation[0], '@arguments' => print_r($error_operation[1], TRUE)));
+        drupal_set_message($message, 'error');
+    }
+    
+}

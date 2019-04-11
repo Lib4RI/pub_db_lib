@@ -23,6 +23,11 @@ function publication_DB_schema() {
                 'default' => '',
                 'not null' => TRUE,
             ),
+            'tstmp' => array(
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
             
         ),
 //         'primary key' => array(
