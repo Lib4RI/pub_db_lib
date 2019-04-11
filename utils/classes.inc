@@ -1,5 +1,7 @@
 <?php
 
+
+
 class lib4riMetaDataIntegrator{
     
     private $authors = array(); //DOM element?
@@ -54,7 +56,7 @@ class lib4riPubAlert{
      */
     public function __construct($year = null) {
         module_load_include('php', 'publication_DB', 'lib/MetaDataServants');
-        $this->metaDataServant = new ScopusIdListServant();
+//        $this->metaDataServant = new ScopusIdListServant();
         $this->metaDataServant->setKey(variable_get('lib4ri_citco_api_key_scopus',''));
         $this->metaDataServant->setUriParam('field', 'eid,doi');
         $this->metaDataServant->setUriParam('count', '200');
@@ -109,6 +111,15 @@ class lib4riPubAlert{
     }
 
     public function getQueued(){
+        $query = db_select($this->queued_table, 'g');
+        $query->fields('g');
+        $res = $query->execute();
+        
+        $this->queued_pubs = [];
+        foreach ($res as $pub) {
+            array_push($this->queued_pubs, $pub);
+        }
+        
         return $this;
     }
 
@@ -121,7 +132,17 @@ class lib4riPubAlert{
         $this->fetch();
         $this->getInDora();
         $this->removeInDora();
+        $this->getQueued();
+        $this->removeQueued();
+        $this->insertPubs();
         return $this;
+    }
+    
+    private function insertPubs(){
+        foreach ($this->new_pubs as $key => $pub)
+         db_insert($this->queued_table)
+        ->fields($this->buildFieldsArray($pub))
+        ->execute();
     }
     
     public function getNewPubs(){
@@ -141,6 +162,14 @@ class lib4riPubAlert{
     }
 
     private function removeQueued(){
+        foreach ($this->new_pubs as $key => $elem){
+            foreach ($this->queued_pubs as $key_q => $queued){
+                if (($queued->doi == $elem['doi']) or ($queued->eid == $elem['eid'])){
+                    unset($this->new_pubs[$key]);
+                    break;
+                }
+            }
+        }
         return $this;
     }
 
@@ -151,7 +180,22 @@ class lib4riPubAlert{
 }
 
 class lib4riScopusAlert extends lib4riPubAlert{
+    protected $queued_table = 'publication_DB_scopus_alert_list';
     
+    public function __construct($year = null) {
+        module_load_include('php', 'publication_DB', 'lib/MetaDataServants');
+        $this->metaDataServant = new ScopusIdListServant();
+        parent::__construct($year);
+    }
+    
+    protected function buildFieldsArray($data){
+        return array(
+                    'doi' => (!empty($data['doi']) ? $data['doi'] : ''),
+                    'eid' => (!empty($data['eid']) ? $data['eid'] : ''),
+                    'status' => 'queued',
+                );
+    }
+        
     public function setQuery(){
         $this->metaDataServant->setQuery('('.variable_get('publication_DB_scopus_alert_query', '').') AND PUBYEAR = '.$this->searchYear);
         return $this;

@@ -59,5 +59,7 @@ function publication_DB_scopus_alert($query = NULL, $params = NULL){
     var_dump($list);
 }
 
-
+function publication_DB_scopus_alert_batch($query = NULL, $params = NULL){
+    
+}
     

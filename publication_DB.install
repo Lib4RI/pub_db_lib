@@ -1,0 +1,34 @@
+<?php
+
+/**
+* Implements hook_schema().
+*/
+function publication_DB_schema() {
+    $schema['publication_DB_scopus_alert_list'] = array(
+        'description' => '-',
+        'fields' => array(
+            'doi' => array(
+                'type' => 'varchar',
+                'length' => 40,
+                'default' => '',
+            ),
+            'eid' => array(
+                'type' => 'varchar',
+                'length' => 40,
+                'default' => '',
+            ),
+            'status' => array( //queued|blacklisted
+                'type' => 'varchar',
+                'length' => 10,
+                'default' => '',
+                'not null' => TRUE,
+            ),
+            
+        ),
+//         'primary key' => array(
+//             'id'
+//         )
+    );
+   
+    return $schema;
+}
