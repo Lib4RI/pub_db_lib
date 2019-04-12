@@ -117,3 +117,13 @@ function publication_DB_scopus_alert_batch_finished($success, $results, $operati
     }
     
 }
+
+/**
+ * Implements hook_views_api().
+ */
+function publication_DB_views_api() {
+    return array(
+        'api' => 3,
+        'path' => drupal_get_path('module', 'publication_DB') . '/views',
+    );
+}
