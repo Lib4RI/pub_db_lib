@@ -7,6 +7,12 @@ function publication_DB_schema() {
     $schema['publication_DB_scopus_alert_list'] = array(
         'description' => '-',
         'fields' => array(
+            'id' => array(
+                'description' => 'key',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE
+            ),
             'doi' => array(
                 'type' => 'varchar',
                 'length' => 40,
@@ -30,9 +36,12 @@ function publication_DB_schema() {
             ),
             
         ),
-//         'primary key' => array(
-//             'id'
-//         )
+        'unique keys' => array(
+            'id' => array('id')
+        ),
+        'primary key' => array(
+            'id'
+        )
     );
    
     return $schema;
