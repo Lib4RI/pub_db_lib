@@ -25,7 +25,7 @@ function publication_DB_schema() {
             ),
             'status' => array( //queued|blacklisted
                 'type' => 'varchar',
-                'length' => 10,
+                'length' => 11,
                 'default' => '',
                 'not null' => TRUE,
             ),
