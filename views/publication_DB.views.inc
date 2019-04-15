@@ -77,6 +77,20 @@ function publication_DB_views_data() {
             //             ),
             ),
         
+        'status' => array(
+            'title' => t('Pub status'),
+            'help' => t(''),
+            'field' => array(
+                'handler' => 'views_handler_field_markup',
+                'click sortable' => TRUE,
+            ),
+            //             'sort' => array(
+            //                 'handler' => 'views_handler_sort_date',
+            //             ),
+                        'filter' => array(
+                            'handler' => 'views_handler_filter_string',
+                        ),
+        ),
         
     );
     
