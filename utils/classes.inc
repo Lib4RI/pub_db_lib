@@ -89,6 +89,7 @@ class lib4riPubAlert{
         global $base_url;
         $current_url = url(current_path(), array('absolute' => TRUE));
         
+        //TODO Parametrize query and add hook 
         $params['f'][0] = 'mods_originInfo_encoding_w3cdtf_keyDate_yes_dateIssued_dt:['.$this->searchYear.'-01-01T00:00:00Z TO '.$this->searchYear.'-12-31T23:59:59Z]';
         $params['f'][1] = 'mods_identifier_doi_ms:[* TO *] OR mods_identifier_scopus_ms:[* TO *]';
         
