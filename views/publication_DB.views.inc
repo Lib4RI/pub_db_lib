@@ -35,7 +35,7 @@ function publication_DB_views_data() {
             ),
         ),
         'tstmp' => array(
-            'title' => t('Fetched Date'),
+            'title' => t('Fetching Date'),
             'help' => t('The date on which the given pub was fetched.'),
             'field' => array(
                 'handler' => 'views_handler_field_date',
