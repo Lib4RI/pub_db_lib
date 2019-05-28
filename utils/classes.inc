@@ -5,7 +5,7 @@
 
 class PubAlert{
     protected $fetched_pubs = array();
-    protected $in_dora_pubs = array();
+    protected $in_repo_pubs = array();
     protected $queued_pubs = array();
     protected $blacklisted_pubs = array();
     protected $new_pubs = array();
@@ -67,10 +67,9 @@ class PubAlert{
         $sq->solrLimit = '100000';
         $sq->executeQuery(FALSE, TRUE);
         
-        $indora = array();
         $ii = 0;
         foreach ($sq->islandoraSolrResult['response']['objects'] as $object) {
-            array_push($this->in_dora_pubs, $object['solr_doc']);
+            array_push($this->in_repo_pubs, $object['solr_doc']);
         }
         return $this;
     }
@@ -96,7 +95,7 @@ class PubAlert{
         $this->setQuery();
         $this->fetch();
         $this->getInRepo();
-        $this->removeInDora();
+        $this->removeInRepo();
         $this->getQueued();
         $this->removeQueued();
         $this->insertPubs();
@@ -114,10 +113,10 @@ class PubAlert{
         return $this->new_pubs;
     }
     
-    private function removeInDora(){
+    private function removeInRepo(){
         foreach ($this->new_pubs as $key => $elem){
-            foreach ($this->in_dora_pubs as $doraobj){
-                if (in_array($elem['doi'], $doraobj['mods_identifier_doi_ms']) or in_array($elem['eid'], $doraobj['mods_identifier_scopus_ms'])){
+            foreach ($this->in_repo_pubs as $repoobj){
+                if (in_array($elem['doi'], $repoobj['mods_identifier_doi_ms']) or in_array($elem['eid'], $repoobj['mods_identifier_scopus_ms'])){
                     unset($this->new_pubs[$key]);
                     break;
                 }
