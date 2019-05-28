@@ -49,7 +49,7 @@ class PubAlert{
         return $this;
     }
     
-    public function getInDora(){
+    public function getInRepo(){
         global $base_url;
         $current_url = url(current_path(), array('absolute' => TRUE));
         
@@ -95,7 +95,7 @@ class PubAlert{
     public function setNewPubs(){
         $this->setQuery();
         $this->fetch();
-        $this->getInDora();
+        $this->getInRepo();
         $this->removeInDora();
         $this->getQueued();
         $this->removeQueued();
