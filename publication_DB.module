@@ -63,7 +63,7 @@ function publication_DB_scopus_alert(&$context){
 //    drupal_add_http_header('Content-Type', 'text/plain');
 
 //TODO Implemet list of fetching sources (alert defined and selectable + defined in submodule)
-    $alert = new lib4riScopusAlert(variable_get('publication_DB_search_year', ''));
+    $alert = new ScopusAlert(variable_get('publication_DB_search_year', ''));
     $list = $alert->setNewPubs()->getNewPubs();
 //TODO maybe hook here to get data    
     

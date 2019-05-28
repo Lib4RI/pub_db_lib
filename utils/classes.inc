@@ -3,7 +3,7 @@
 
 
 
-class lib4riPubAlert{
+class PubAlert{
     protected $fetched_pubs = array();
     protected $in_dora_pubs = array();
     protected $queued_pubs = array();
@@ -144,7 +144,7 @@ class lib4riPubAlert{
     
 }
 
-class lib4riScopusAlert extends lib4riPubAlert{
+class ScopusAlert extends PubAlert{
     protected $queued_table = 'publication_DB_scopus_alert_list';
     
     public function __construct($year = null) {
