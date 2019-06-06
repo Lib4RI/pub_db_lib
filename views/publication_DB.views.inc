@@ -9,9 +9,10 @@
  */
  
 function publication_DB_views_data() {
+//    module_load_include('inc', 'publication_DB', 'utils/define');
     $data = array();
-    
-    $data['publication_DB_scopus_alert_list'] = array(
+    // TODO: fix problems using define
+    $data[publication_DB_scopus_alert_list] = array(
         'table' => array(
             'group' => t('Scopus Alert'),
             'base' => array(
