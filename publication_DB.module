@@ -36,7 +36,7 @@ function publication_DB_get_mods($query = NULL, $params = NULL){
     module_load_include('inc', 'publication_DB', 'utils/classes');
     
     $fetcher = new ScopusAbstractFetcher();
-    $fetcher->setKey(variable_get('lib4ri_citco_api_key_scopus',''));
+    $fetcher->setKey(variable_get('publication_DB_scopus_api_key',''));
     $fetcher->setDoi($_GET['doi']);
     $fetcher->getDom()->formatOutput = true;
     $fetcher->fetch();
@@ -63,8 +63,10 @@ function publication_DB_scopus_alert(&$context){
 //    drupal_add_http_header('Content-Type', 'text/plain');
 
 //TODO Implemet list of fetching sources (alert defined and selectable + defined in submodule)
-    $alert = new ScopusAlert(variable_get('publication_DB_search_year', ''));
-    $list = $alert->setNewPubs()->getNewPubs();
+    if (variable_get('publication_DB_scopus_alert')){
+        $alert = new ScopusAlert(variable_get('publication_DB_scopus_search_year', ''));
+        $list = $alert->setNewPubs()->getNewPubs();
+    }
 //TODO maybe hook here to get data    
     
     
@@ -98,7 +100,7 @@ function publication_DB_scopus_alert_batch(){
     // IMPORTANT:
     // If you set a blank parameter, the batch_process() will cause an infinite loop
     
-    batch_process('node/1');
+    batch_process('qqq');
 }
     
 
