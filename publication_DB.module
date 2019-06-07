@@ -145,28 +145,14 @@ function publication_DB_views_api() {
 }
 
 function publication_db_blacklist(){
-    module_load_include('inc', 'publication_DB', 'includes/define');
-    
-    $doi = trim($_GET['DOI'],'_');
-    $eid = trim($_GET['EID'],'_');
-    
-    
-   $query = db_update(PUB_DB_ALERT_TABLE);
-    $query->fields(array(
-        'status' => 'blacklisted',
-    ));
-    
-    if (!empty($doi)){
-        $query->condition('doi', $doi, '=')->execute();
-    }
-    else{
-        $query->condition('eid', $eid, '=')->execute();
-    }
-    
-    drupal_goto('http://localhost/qqq');
+    publication_db_set_status('blacklisted', 'http://localhost/qqq');
 }
 
 function publication_db_whitelist(){
+    publication_db_set_status('queued', 'http://localhost/bbb');
+}
+
+function publication_db_set_status($status, $landing_page){
     module_load_include('inc', 'publication_DB', 'includes/define');
     
     $doi = trim($_GET['DOI'],'_');
@@ -175,7 +161,7 @@ function publication_db_whitelist(){
     
     $query = db_update(PUB_DB_ALERT_TABLE);
     $query->fields(array(
-        'status' => 'queued',
+        'status' => $status,
     ));
     
     if (!empty($doi)){
@@ -185,5 +171,5 @@ function publication_db_whitelist(){
         $query->condition('eid', $eid, '=')->execute();
     }
     
-    drupal_goto('http://localhost/bbb');
+    drupal_goto($landing_page);
 }
