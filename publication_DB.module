@@ -25,6 +25,13 @@ function publication_DB_menu() {
         'type' => MENU_CALLBACK,
         //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
     );
+
+    $items['islandora/pubdb/whitelist'] = array(
+        'page callback' => 'publication_DB_whitelist',
+        'access arguments' => array('search islandora solr'),
+        'type' => MENU_CALLBACK,
+        //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
+    );
     
     $items['admin/islandora/publication_DB'] = array(
         'title' => 'Publication Alert',
@@ -157,4 +164,26 @@ function publication_db_blacklist(){
     }
     
     drupal_goto('http://localhost/qqq');
+}
+
+function publication_db_whitelist(){
+    module_load_include('inc', 'publication_DB', 'includes/define');
+    
+    $doi = trim($_GET['DOI'],'_');
+    $eid = trim($_GET['EID'],'_');
+    
+    
+    $query = db_update(PUB_DB_ALERT_TABLE);
+    $query->fields(array(
+        'status' => 'queued',
+    ));
+    
+    if (!empty($doi)){
+        $query->condition('doi', $doi, '=')->execute();
+    }
+    else{
+        $query->condition('eid', $eid, '=')->execute();
+    }
+    
+    drupal_goto('http://localhost/bbb');
 }
