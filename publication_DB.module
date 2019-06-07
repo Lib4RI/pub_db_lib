@@ -79,6 +79,23 @@ function publication_DB_scopus_alert(&$context){
     
 }
 
+function publication_DB_test_alert(&$context){
+    if (!isset($context['sandbox']['progress'])) {
+        $context['sandbox']['progress'] = 0;
+        $context['sandbox']['current_node'] = 0;
+        $context['sandbox']['max'] = 1;
+    }
+
+    module_load_include('inc', 'publication_DB', 'utils/classes');
+    $alert = new TestAlert();
+    $list = $alert->setNewPubs()->getNewPubs();
+    
+    
+    $context['sandbox']['current_node']++;
+    $context['sandbox']['progress']++;
+    
+}
+
 function publication_DB_alert_batch(){
     $batch = array(
         'operations' => array(
@@ -96,7 +113,7 @@ function publication_DB_alert_batch(){
     if (variable_get('publication_DB_scopus_alert')){
         array_push($batch['operations'], array('publication_DB_scopus_alert', array()));
     }
-    
+    array_push($batch['operations'], array('publication_DB_test_alert', array()));
     
     batch_set($batch);
     

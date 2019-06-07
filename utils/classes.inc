@@ -1,9 +1,10 @@
 <?php
 
-
-
+module_load_include('inc', 'publication_DB', 'includes/define');
 
 class PubAlert{
+    protected $queued_table = PUB_DB_ALERT_TABLE;
+    
     protected $fetched_pubs = array();
     protected $in_repo_pubs = array();
     protected $queued_pubs = array();
@@ -102,7 +103,7 @@ class PubAlert{
         return $this;
     }
     
-    private function insertPubs(){
+    protected function insertPubs(){
         foreach ($this->new_pubs as $key => $pub)
          db_insert($this->queued_table)
         ->fields($this->buildFieldsArray($pub))
@@ -141,29 +142,41 @@ class PubAlert{
         return $this;
     }
     
+    protected function buildFieldsArray($data){
+        return array(
+            'doi' => (!empty($data['doi']) ? $data['doi'] : ''),
+            'eid' => (!empty($data['eid']) ? $data['eid'] : ''),
+            'status' => 'queued',
+            'tstmp' => REQUEST_TIME,
+        );
+    }
+    
 }
 
 class ScopusAlert extends PubAlert{
-    protected $queued_table = 'publication_DB_scopus_alert_list';
     
     public function __construct($year = null) {
         module_load_include('php', 'publication_DB', 'lib/MetaDataServants');
         $this->metaDataServant = new ScopusIdListServant();
         parent::__construct($year);
     }
-    
-    protected function buildFieldsArray($data){
-        return array(
-                    'doi' => (!empty($data['doi']) ? $data['doi'] : ''),
-                    'eid' => (!empty($data['eid']) ? $data['eid'] : ''),
-                    'status' => 'queued',
-                    'tstmp' => REQUEST_TIME,
-                );
-    }
-        
+            
     public function setQuery(){
         $this->metaDataServant->setQuery('('.variable_get('publication_DB_scopus_alert_query', '').') AND PUBYEAR = '.$this->searchYear);
         return $this;
     }
+}
+
+
+class TestAlert extends PubAlert{
     
+    public function __construct($year = null) {
+                
+    }
+    
+    public function setNewPubs(){
+        $this->new_pubs = array(array('doi' => 'Test doi', 'eid' => 'Test eid'));
+        $this->insertPubs();
+        return $this;
+    }
 }
