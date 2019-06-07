@@ -70,7 +70,7 @@ function publication_DB_scopus_alert(&$context){
     
     module_load_include('inc', 'publication_DB', 'utils/classes');
     if (variable_get('publication_DB_scopus_alert')){
-        $alert = new ScopusAlert(variable_get('publication_DB_scopus_search_year', ''));
+        $alert = new ScopusAlert();
         $list = $alert->setNewPubs()->getNewPubs();
     }
 
@@ -96,7 +96,24 @@ function publication_DB_test_alert(&$context){
     
 }
 
+function publication_DB_alert($AlertClass, &$context){
+    if (!isset($context['sandbox']['progress'])) {
+        $context['sandbox']['progress'] = 0;
+        $context['sandbox']['current_node'] = 0;
+        $context['sandbox']['max'] = 1;
+    }
+    
+    module_load_include('inc', 'publication_DB', 'utils/classes');
+    $list = $AlertClass->setNewPubs()->getNewPubs();
+    
+    
+    $context['sandbox']['current_node']++;
+    $context['sandbox']['progress']++;
+    
+}
+
 function publication_DB_alert_batch(){
+    module_load_include('inc', 'publication_DB', 'utils/classes');
     $batch = array(
         'operations' => array(
 //            array('publication_DB_scopus_alert', array()),
@@ -111,6 +128,8 @@ function publication_DB_alert_batch(){
     
     //Populating batch operation
     if (variable_get('publication_DB_scopus_alert')){
+//        $AlertClass = new ScopusAlert();
+//        array_push($batch['operations'], array('publication_DB_alert', array($AlertClass)));
         array_push($batch['operations'], array('publication_DB_scopus_alert', array()));
     }
     array_push($batch['operations'], array('publication_DB_test_alert', array()));

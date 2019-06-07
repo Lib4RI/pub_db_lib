@@ -22,10 +22,10 @@ class PubAlert{
     public function __construct($year = null) {
         module_load_include('php', 'publication_DB', 'lib/MetaDataServants');
 //        $this->metaDataServant = new ScopusIdListServant();
-        $this->metaDataServant->setKey(variable_get('lib4ri_citco_api_key_scopus',''));
+//        $this->metaDataServant->setKey(variable_get('publication_DB_scopus_api_key',''));
         $this->metaDataServant->setUriParam('field', 'eid,doi');
         $this->metaDataServant->setUriParam('count', '200');
-        $this->setSearchYear($year);
+        $this->setSearchYear(variable_get('publication_DB_scopus_search_year'));
     }
     
     public function setSearchYear($year){
@@ -158,6 +158,7 @@ class ScopusAlert extends PubAlert{
     public function __construct($year = null) {
         module_load_include('php', 'publication_DB', 'lib/MetaDataServants');
         $this->metaDataServant = new ScopusIdListServant();
+        $this->metaDataServant->setKey(variable_get('publication_DB_scopus_api_key',''));
         parent::__construct($year);
     }
             
