@@ -132,7 +132,7 @@ function publication_DB_alert_batch(){
 //        array_push($batch['operations'], array('publication_DB_alert', array($AlertClass)));
         array_push($batch['operations'], array('publication_DB_scopus_alert', array()));
     }
-    array_push($batch['operations'], array('publication_DB_test_alert', array()));
+//    array_push($batch['operations'], array('publication_DB_test_alert', array()));
     
     batch_set($batch);
     
