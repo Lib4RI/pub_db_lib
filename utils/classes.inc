@@ -23,7 +23,7 @@ class PubAlert{
         module_load_include('php', 'publication_DB', 'lib/MetaDataServants');
 //        $this->metaDataServant = new ScopusIdListServant();
 //        $this->metaDataServant->setKey(variable_get('publication_DB_scopus_api_key',''));
-        $this->metaDataServant->setUriParam('field', 'eid,doi');
+        $this->metaDataServant->setUriParam('field', 'eid,doi,title,aggregationType,subtypeDescription');
         $this->metaDataServant->setUriParam('count', '200');
         $this->setSearchYear(variable_get('publication_DB_scopus_search_year'));
     }
@@ -144,8 +144,10 @@ class PubAlert{
     
     protected function buildFieldsArray($data){
         return array(
+            'title' => (!empty($data['title']) ? $data['title'] : ''),
             'doi' => (!empty($data['doi']) ? $data['doi'] : ''),
             'eid' => (!empty($data['eid']) ? $data['eid'] : ''),
+            'type' => (!empty($data['type']) ? $data['type'] : ''),
             'status' => 'queued',
             'tstmp' => REQUEST_TIME,
         );

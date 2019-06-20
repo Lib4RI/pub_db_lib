@@ -13,12 +13,22 @@ function publication_DB_schema() {
                 'unsigned' => TRUE,
                 'not null' => TRUE
             ),
+            'title' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => '',
+            ),
             'doi' => array(
                 'type' => 'varchar',
                 'length' => 40,
                 'default' => '',
             ),
             'eid' => array(
+                'type' => 'varchar',
+                'length' => 40,
+                'default' => '',
+            ),
+            'type' => array(
                 'type' => 'varchar',
                 'length' => 40,
                 'default' => '',

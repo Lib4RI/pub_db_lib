@@ -15,8 +15,23 @@
     <results>
     	<xsl:for-each select="/atom:search-results/atom:entry">
     		<item>
+    			<title><xsl:value-of select="dc:title" /></title>
     			<doi><xsl:value-of select="prism:doi" /></doi>
     			<eid><xsl:value-of select="atom:eid" /></eid>
+    			<xsl:choose>
+    				<xsl:when test="prism:aggregationType = 'Journal' and atom:subtypeDescription = 'Article'">
+    					<type>Journal Article</type>
+    				</xsl:when>
+    				<xsl:when test="prism:aggregationType = 'Book' and atom:subtypeDescription = 'Book'">
+    					<type>Book</type>
+    				</xsl:when>
+    				<xsl:when test="prism:aggregationType = 'Conference Proceeding' and atom:subtypeDescription = 'Conference Paper'">
+    					<type>Proceeding Paper</type>
+    				</xsl:when>    				
+    				 <xsl:otherwise>
+    				 	<type></type>
+    				 </xsl:otherwise>
+    			</xsl:choose>
     		</item>
 		</xsl:for-each>  
     </results>

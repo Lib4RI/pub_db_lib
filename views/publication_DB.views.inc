@@ -49,6 +49,34 @@ function publication_DB_views_data() {
                 'handler' => 'views_handler_filter_date',
             ),
         ),
+        'title' => array(
+            'title' => t('Title'),
+            'help' => t(''),
+            'field' => array(
+                'handler' => 'views_handler_field_markup',
+                'click sortable' => TRUE,
+            ),
+            //             'sort' => array(
+                //                 'handler' => 'views_handler_sort_date',
+                //             ),
+            //             'filter' => array(
+                //                 'handler' => 'views_handler_filter_date',
+            //             ),
+            ),
+        'type' => array(
+            'title' => t('Type'),
+            'help' => t(''),
+            'field' => array(
+                'handler' => 'views_handler_field_markup',
+                'click sortable' => TRUE,
+            ),
+            //             'sort' => array(
+                //                 'handler' => 'views_handler_sort_date',
+                //             ),
+            //             'filter' => array(
+                //                 'handler' => 'views_handler_filter_date',
+            //             ),
+            ),
         'doi' => array(
             'title' => t('DOI'),
             'help' => t(''),
