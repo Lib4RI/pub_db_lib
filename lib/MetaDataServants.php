@@ -348,6 +348,50 @@ class Crossref2ModsServant extends MetaDataServant{
 }
 
 /**
+ * Class to get MODS from DOI using Scopus data
+ */
+class Scopus2ModsServant extends MetaDataServant{
+    
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        $this->fetcher = new ScopusAbstractFetcher();
+        $this->processor = new MetaDataProcessor(null);
+        $this->processor->addSteps(array('type' => 'xslt',
+            'rule' => dirname(__FILE__).'/../xslts/journal-article-scopus2mods.xslt',
+            'source' => 'file',
+            'params' => array('editor' => FALSE,
+                'subtitle' => FALSE,
+                'publisher' => FALSE)
+        )
+            );
+    }
+    
+    /**
+     * Convenience method to set the class specific URL parameter 'key' 
+     *
+     * @return Scopus2ModsServant
+     *   The instatiated class.
+     */
+    public function setKey($pid){
+        $this->fetcher->setKey($pid);
+        return $this;
+    }
+    
+    /**
+     * Convenience method to set the class specific URL parameter 'doi'
+     *
+     * @return Scopus2ModsServant
+     *   The instatiated class.
+     */
+    public function setDoi($doi){
+        $this->fetcher->setDoi($doi);
+        return $this;
+    }
+}
+
+/**
  * Class to get Pubmed ID from DOI
  */
 class PubmedIdServant extends MetaDataServant{
