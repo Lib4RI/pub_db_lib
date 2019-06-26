@@ -39,8 +39,8 @@
   				 </xsl:when>
   				 <xsl:otherwise>
     				<name type="personal">
-  					<namePart type="family"><xsl:value-of select="ce:surname"/></namePart>
-  					<namePart type="given"><xsl:value-of select="ce:given-name"/></namePart>
+  					<namePart type="family"><xsl:value-of select="dtd:preferred-name/ce:surname"/></namePart>
+  					<namePart type="given"><xsl:value-of select="dtd:preferred-name/ce:given-name"/></namePart>
   					<role>
   						<roleTerm authority="marcrelator" type="text">author</roleTerm>
   					</role>
