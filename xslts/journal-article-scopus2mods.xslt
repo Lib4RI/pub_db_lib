@@ -46,13 +46,13 @@
   					<role>
   						<roleTerm authority="marcrelator" type="text">author</roleTerm>
   					</role>
+		  			<xsl:choose>
+		  				<xsl:when test="dtd:affiliation/@id=$internal_affiliation">
+		  					<fourri>true</fourri>
+		  				</xsl:when>
+		  			</xsl:choose>  					
   					</name>    				
   				 </xsl:otherwise>
-  			</xsl:choose>
-  			<xsl:choose>
-  				<xsl:when test="dtd:affiliation/@id=$internal_affiliation">
-  					<nameIdentifier type="organizational unit id">INTERNAL</nameIdentifier>
-  				</xsl:when>
   			</xsl:choose>
 		</xsl:for-each>  
   		<abstract><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/dc:description/abstract/ce:para"/></abstract>
