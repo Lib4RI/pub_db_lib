@@ -181,11 +181,11 @@ function publication_DB_views_api() {
 }
 
 function publication_db_blacklist(){
-    publication_db_set_status('blacklisted', 'http://localhost/qqq');
+    publication_db_set_status('blacklisted', variable_get('publication_DB_blacklist_landing'));
 }
 
 function publication_db_whitelist(){
-    publication_db_set_status('queued', 'http://localhost/bbb');
+    publication_db_set_status('queued', variable_get('publication_DB_whitelist_landing'));
 }
 
 function publication_db_set_status($status, $landing_page){

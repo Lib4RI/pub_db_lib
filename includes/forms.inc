@@ -46,5 +46,20 @@ function publication_DB_admin_form() {
             ),
         ),
     );
+    
+    $form['publication_DB_blacklist_landing'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Blacklist action landing page'),
+        '#default_value' => variable_get('publication_DB_blacklist_landing', ''),
+        '#required' => FALSE,
+    );
+
+    $form['publication_DB_whitelist_landing'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Whitelist action landing page'),
+        '#default_value' => variable_get('publication_DB_whitelist_landing', ''),
+        '#required' => FALSE,
+    );
+    
     return system_settings_form($form);
 }
