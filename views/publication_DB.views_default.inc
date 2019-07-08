@@ -79,14 +79,28 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['fields']['id']['id'] = 'id';
   $handler->display->display_options['fields']['id']['table'] = 'publication_DB_scopus_alert_list';
   $handler->display->display_options['fields']['id']['field'] = 'id';
+  /* Field: Scopus Alert: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'publication_DB_scopus_alert_list';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  /* Field: Scopus Alert: Type */
+  $handler->display->display_options['fields']['type']['id'] = 'type';
+  $handler->display->display_options['fields']['type']['table'] = 'publication_DB_scopus_alert_list';
+  $handler->display->display_options['fields']['type']['field'] = 'type';
   /* Field: Scopus Alert: DOI */
   $handler->display->display_options['fields']['doi']['id'] = 'doi';
   $handler->display->display_options['fields']['doi']['table'] = 'publication_DB_scopus_alert_list';
   $handler->display->display_options['fields']['doi']['field'] = 'doi';
+  $handler->display->display_options['fields']['doi']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['doi']['alter']['path'] = 'http://dx.doi.org/[doi]';
+  $handler->display->display_options['fields']['doi']['alter']['target'] = '_blank';
   /* Field: Scopus Alert: Scopus ID */
   $handler->display->display_options['fields']['eid']['id'] = 'eid';
   $handler->display->display_options['fields']['eid']['table'] = 'publication_DB_scopus_alert_list';
   $handler->display->display_options['fields']['eid']['field'] = 'eid';
+  $handler->display->display_options['fields']['eid']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['eid']['alter']['path'] = 'http://www.scopus.com/scopus/openurl/link.url%3Fctx_ver=Z39.88-2004&rft_id=info:eid/[eid]';
+  $handler->display->display_options['fields']['eid']['alter']['target'] = '_blank';
   /* Field: Scopus Alert: Fetching Date */
   $handler->display->display_options['fields']['tstmp_1']['id'] = 'tstmp_1';
   $handler->display->display_options['fields']['tstmp_1']['table'] = 'publication_DB_scopus_alert_list';
@@ -159,6 +173,8 @@ function publication_DB_views_default_views() {
       t('ID'),
       t('.'),
       t(','),
+      t('Title'),
+      t('Type'),
       t('DOI'),
       t('Scopus ID'),
       t('Fetching Date'),
@@ -168,6 +184,7 @@ function publication_DB_views_default_views() {
       t('Block'),
       t('Page'),
   );
+  
   
   $views['scopus_alert_blacklisted'] = $view;
   
@@ -239,14 +256,29 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['fields']['id']['id'] = 'id';
   $handler->display->display_options['fields']['id']['table'] = 'publication_DB_scopus_alert_list';
   $handler->display->display_options['fields']['id']['field'] = 'id';
+  /* Field: Scopus Alert: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'publication_DB_scopus_alert_list';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  /* Field: Scopus Alert: Type */
+  $handler->display->display_options['fields']['type']['id'] = 'type';
+  $handler->display->display_options['fields']['type']['table'] = 'publication_DB_scopus_alert_list';
+  $handler->display->display_options['fields']['type']['field'] = 'type';
+  $handler->display->display_options['fields']['type']['label'] = 'Publication type';
   /* Field: Scopus Alert: DOI */
   $handler->display->display_options['fields']['doi']['id'] = 'doi';
   $handler->display->display_options['fields']['doi']['table'] = 'publication_DB_scopus_alert_list';
   $handler->display->display_options['fields']['doi']['field'] = 'doi';
+  $handler->display->display_options['fields']['doi']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['doi']['alter']['path'] = 'http://dx.doi.org/[doi]';
+  $handler->display->display_options['fields']['doi']['alter']['target'] = '_blank';
   /* Field: Scopus Alert: Scopus ID */
   $handler->display->display_options['fields']['eid']['id'] = 'eid';
   $handler->display->display_options['fields']['eid']['table'] = 'publication_DB_scopus_alert_list';
   $handler->display->display_options['fields']['eid']['field'] = 'eid';
+  $handler->display->display_options['fields']['eid']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['eid']['alter']['path'] = 'http://www.scopus.com/scopus/openurl/link.url%3Fctx_ver=Z39.88-2004&rft_id=info:eid/[eid]';
+  $handler->display->display_options['fields']['eid']['alter']['target'] = '_blank';
   /* Field: Scopus Alert: Fetching Date */
   $handler->display->display_options['fields']['tstmp_1']['id'] = 'tstmp_1';
   $handler->display->display_options['fields']['tstmp_1']['table'] = 'publication_DB_scopus_alert_list';
@@ -315,6 +347,8 @@ function publication_DB_views_default_views() {
       t('ID'),
       t('.'),
       t(','),
+      t('Title'),
+      t('Publication type'),
       t('DOI'),
       t('Scopus ID'),
       t('Fetching Date'),
