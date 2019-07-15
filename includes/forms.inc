@@ -60,6 +60,13 @@ function publication_DB_admin_form() {
         '#default_value' => variable_get('publication_DB_whitelist_landing', ''),
         '#required' => FALSE,
     );
+
+    $form['publication_DB_search_collections'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Collection to search for existing publications'),
+        '#default_value' => variable_get('publication_DB_search_collections', ''),
+        '#required' => FALSE,
+    );
     
     return system_settings_form($form);
 }
