@@ -37,6 +37,11 @@
   					<role>
   						<roleTerm authority="marcrelator" type="text">author</roleTerm>
   					</role>
+  					<xsl:choose>
+		  				<xsl:when test="dtd:affiliation/@id=$internal_affiliation">
+		  					<fourri>true</fourri>
+		  				</xsl:when>
+		  			</xsl:choose>  					
   					</name>
   				 </xsl:when>
   				 <xsl:otherwise>
