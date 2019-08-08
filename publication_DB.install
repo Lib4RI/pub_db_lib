@@ -28,6 +28,11 @@ function publication_DB_schema() {
                 'length' => 40,
                 'default' => '',
             ),
+            'sourceType' => array(
+                'type' => 'varchar',
+                'length' => 40,
+                'default' => '',
+            ),
             'type' => array(
                 'type' => 'varchar',
                 'length' => 40,

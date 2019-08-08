@@ -18,6 +18,7 @@
     			<title><xsl:value-of select="dc:title" /></title>
     			<doi><xsl:value-of select="prism:doi" /></doi>
     			<eid><xsl:value-of select="atom:eid" /></eid>
+    			<sourceType><xsl:value-of select="prism:aggregationType" />/<xsl:value-of select="atom:subtypeDescription" /></sourceType>
     			<xsl:choose>
     				<xsl:when test="prism:aggregationType = 'Journal' and atom:subtypeDescription = 'Article'">
     					<type>Journal Article</type>
@@ -26,6 +27,15 @@
     					<type>Journal Article</type>
     				</xsl:when>
     				<xsl:when test="prism:aggregationType = 'Journal' and atom:subtypeDescription = 'Conference Paper'">
+    					<type>Journal Article</type>    					
+    				</xsl:when>
+    				<xsl:when test="prism:aggregationType = 'Journal' and atom:subtypeDescription = 'Letter'">
+    					<type>Journal Article</type>    					
+    				</xsl:when>
+    				<xsl:when test="prism:aggregationType = 'Journal' and atom:subtypeDescription = 'Note'">
+    					<type>Journal Article</type>    					
+    				</xsl:when>
+    				<xsl:when test="prism:aggregationType = 'Journal' and atom:subtypeDescription = 'Editorial'">
     					<type>Journal Article</type>    					
     				</xsl:when>
     				<xsl:when test="prism:aggregationType = 'Book' and atom:subtypeDescription = 'Book'">

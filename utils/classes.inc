@@ -149,6 +149,7 @@ class PubAlert{
             'title' => (!empty($data['title']) ? $data['title'] : ''),
             'doi' => (!empty($data['doi']) ? $data['doi'] : ''),
             'eid' => (!empty($data['eid']) ? $data['eid'] : ''),
+            'sourceType' => (!empty($data['sourceType']) ? $data['sourceType'] : ''),
             'type' => (!empty($data['type']) ? $data['type'] : ''),
             'status' => 'queued',
             'tstmp' => REQUEST_TIME,

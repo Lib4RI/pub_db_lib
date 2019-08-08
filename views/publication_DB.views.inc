@@ -63,6 +63,14 @@ function publication_DB_views_data() {
                 //                 'handler' => 'views_handler_filter_date',
             //             ),
             ),
+        'sourceType' => array(
+            'title' => t('Source type'),
+            'help' => t(''),
+            'field' => array(
+                'handler' => 'views_handler_field_markup',
+                'click sortable' => TRUE,
+            ),
+         ),
         'type' => array(
             'title' => t('Type'),
             'help' => t(''),
