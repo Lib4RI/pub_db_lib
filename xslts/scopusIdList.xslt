@@ -21,8 +21,10 @@
     			<xsl:choose>
     				<xsl:when test="prism:aggregationType = 'Journal' and atom:subtypeDescription = 'Article'">
     					<type>Journal Article</type>
+    				</xsl:when>
     				<xsl:when test="prism:aggregationType = 'Journal' and atom:subtypeDescription = 'Review'">
     					<type>Journal Article</type>
+    				</xsl:when>
     				<xsl:when test="prism:aggregationType = 'Journal' and atom:subtypeDescription = 'Conference Paper'">
     					<type>Journal Article</type>    					
     				</xsl:when>
