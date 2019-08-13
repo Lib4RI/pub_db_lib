@@ -78,6 +78,20 @@ function publication_DB_admin_form() {
         '#required' => FALSE,
     );
 
+    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_ingest_landing'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Ingest action landing page'),
+        '#default_value' => variable_get('publication_DB_ingest_landing', ''),
+        '#required' => FALSE,
+    );
+
+    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_restore_landing'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Restore action landing page'),
+        '#default_value' => variable_get('publication_DB_restore_landing', ''),
+        '#required' => FALSE,
+    );
+    
     $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_search_collections'] = array(
         '#type' => 'textfield',
         '#title' => t('Collection to search for existing publications'),
