@@ -101,3 +101,12 @@ function publication_DB_admin_form() {
     
     return system_settings_form($form);
 }
+
+function publication_DB_run_batch_form() {
+    $form['publication_DB_run_batch'] = array(
+        '#type' => 'markup',
+        '#markup' => l('Run alert batch', 'islandora/pubdb/alert'),
+    );
+    
+    return($form);
+}
