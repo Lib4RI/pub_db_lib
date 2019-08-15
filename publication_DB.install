@@ -38,7 +38,7 @@ function publication_DB_schema() {
                 'length' => 40,
                 'default' => '',
             ),
-            'status' => array( //queued|blacklisted
+            'status' => array( //queued|blacklisted|ingested|inprocess
                 'type' => 'varchar',
                 'length' => 11,
                 'default' => '',

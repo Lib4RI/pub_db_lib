@@ -63,6 +63,34 @@ function publication_DB_admin_form() {
             ),
         ),
     );
+
+    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_queued_url'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Queued publications url'),
+        '#default_value' => variable_get('publication_DB_queued_url', ''),
+        '#required' => FALSE,
+    );
+    
+    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_inprocess_url'] = array(
+        '#type' => 'textfield',
+        '#title' => t('In process publications url'),
+        '#default_value' => variable_get('publication_DB_inprocess_url', ''),
+        '#required' => FALSE,
+    );
+    
+    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_blacklisted_url'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Blacklisted publications url'),
+        '#default_value' => variable_get('publication_DB_blacklisted_url', ''),
+        '#required' => FALSE,
+    );
+
+    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_ingested_url'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Ingested publications url'),
+        '#default_value' => variable_get('publication_DB_ingested_url', ''),
+        '#required' => FALSE,
+    );
     
     $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_blacklist_landing'] = array(
         '#type' => 'textfield',
@@ -78,10 +106,10 @@ function publication_DB_admin_form() {
         '#required' => FALSE,
     );
 
-    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_ingest_landing'] = array(
+    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_remove_landing'] = array(
         '#type' => 'textfield',
-        '#title' => t('Ingest action landing page'),
-        '#default_value' => variable_get('publication_DB_ingest_landing', ''),
+        '#title' => t('Remove action landing page'),
+        '#default_value' => variable_get('publication_DB_remove_landing', ''),
         '#required' => FALSE,
     );
 
@@ -106,6 +134,30 @@ function publication_DB_run_batch_form() {
     $form['publication_DB_run_batch'] = array(
         '#type' => 'markup',
         '#markup' => l('Run alert batch', 'islandora/pubdb/alert'),
+    );
+    
+    return($form);
+}
+
+function publication_DB_lists_form() {
+        $form['publication_DB_queued'] = array(
+        '#type' => 'markup',
+        '#markup' => l('Queued publications | ', variable_get('publication_DB_queued_url')),
+    );
+
+    $form['publication_DB_inprocess'] = array(
+        '#type' => 'markup',
+        '#markup' => l('In process publications | ', variable_get('publication_DB_inprocess_url')),
+    );
+
+    $form['publication_DB_blacklisted'] = array(
+        '#type' => 'markup',
+        '#markup' => l('Blacklisted publications | ', variable_get('publication_DB_blacklisted_url')),
+    );
+
+    $form['publication_DB_ingested'] = array(
+        '#type' => 'markup',
+        '#markup' => l('Ingested publications', variable_get('publication_DB_ingested_url')),
     );
     
     return($form);
