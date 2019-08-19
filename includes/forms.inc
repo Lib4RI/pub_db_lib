@@ -91,6 +91,13 @@ function publication_DB_admin_form() {
         '#default_value' => variable_get('publication_DB_ingested_url', ''),
         '#required' => FALSE,
     );
+
+    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_inprocess_landing'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Set in process action landing page'),
+        '#default_value' => variable_get('publication_DB_inprocess_landing', ''),
+        '#required' => FALSE,
+    );
     
     $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_blacklist_landing'] = array(
         '#type' => 'textfield',
@@ -99,6 +106,27 @@ function publication_DB_admin_form() {
         '#required' => FALSE,
     );
 
+    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_restore_landing'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Put in queue action landing page'),
+        '#default_value' => variable_get('publication_DB_restore_landing', ''),
+        '#required' => FALSE,
+    );
+
+    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_restore_landing'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Put in queue action landing page'),
+        '#default_value' => variable_get('publication_DB_restore_landing', ''),
+        '#required' => FALSE,
+    );
+    
+    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_ingested_landing'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Set ingested action landing page'),
+        '#default_value' => variable_get('publication_DB_ingested_landing', ''),
+        '#required' => FALSE,
+    );
+    
     $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_whitelist_landing'] = array(
         '#type' => 'textfield',
         '#title' => t('Whitelist action landing page'),
@@ -113,12 +141,7 @@ function publication_DB_admin_form() {
         '#required' => FALSE,
     );
 
-    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_restore_landing'] = array(
-        '#type' => 'textfield',
-        '#title' => t('Restore action landing page'),
-        '#default_value' => variable_get('publication_DB_restore_landing', ''),
-        '#required' => FALSE,
-    );
+
     
     $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_search_collections'] = array(
         '#type' => 'textfield',
