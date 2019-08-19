@@ -67,28 +67,28 @@ function publication_DB_admin_form() {
     $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_queued_url'] = array(
         '#type' => 'textfield',
         '#title' => t('Queued publications url'),
-        '#default_value' => variable_get('publication_DB_queued_url', ''),
+        '#default_value' => variable_get('publication_DB_queued_url', 'admin/islandora/publication_DB/queued'),
         '#required' => FALSE,
     );
     
     $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_inprocess_url'] = array(
         '#type' => 'textfield',
         '#title' => t('In process publications url'),
-        '#default_value' => variable_get('publication_DB_inprocess_url', ''),
+        '#default_value' => variable_get('publication_DB_inprocess_url', 'admin/islandora/publication_DB/inprocess'),
         '#required' => FALSE,
     );
     
     $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_blacklisted_url'] = array(
         '#type' => 'textfield',
         '#title' => t('Blacklisted publications url'),
-        '#default_value' => variable_get('publication_DB_blacklisted_url', ''),
+        '#default_value' => variable_get('publication_DB_blacklisted_url', 'admin/islandora/publication_DB/blacklisted'),
         '#required' => FALSE,
     );
 
     $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_ingested_url'] = array(
         '#type' => 'textfield',
         '#title' => t('Ingested publications url'),
-        '#default_value' => variable_get('publication_DB_ingested_url', ''),
+        '#default_value' => variable_get('publication_DB_ingested_url', 'admin/islandora/publication_DB/ingested'),
         '#required' => FALSE,
     );
 
