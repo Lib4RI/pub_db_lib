@@ -26,10 +26,16 @@ function publication_DB_views_default_views() {
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Scopus alert - blacklisted publications';
   $handler->display->display_options['use_more_always'] = FALSE;
-  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['access']['type'] = 'role';
+  $handler->display->display_options['access']['role'] = array(
+      3 => '3',
+      4 => '4',
+      5 => '5',
+  );
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['exposed_form']['options']['autosubmit'] = TRUE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '50';
   $handler->display->display_options['pager']['options']['offset'] = '0';
@@ -119,7 +125,12 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['header']['area_text_custom']['field'] = 'area_text_custom';
   $handler->display->display_options['header']['area_text_custom']['label'] = 'list links';
   $handler->display->display_options['header']['area_text_custom']['empty'] = TRUE;
-  $handler->display->display_options['header']['area_text_custom']['content'] = '<a href="http://localhost/admin/islandora/publication_DB/queued">Queued</a> - <a href="http://localhost/admin/islandora/publication_DB/ingested">Ingested</a>';
+  $handler->display->display_options['header']['area_text_custom']['content'] = '<a href="queued">Queued publications | </a><a href="inprocess">In process publications | </a><a href="blacklisted">Blacklisted publications | </a><a href="ingested">Ingested publications</a>';
+  /* Header: Global: Result summary */
+  $handler->display->display_options['header']['result']['id'] = 'result';
+  $handler->display->display_options['header']['result']['table'] = 'views';
+  $handler->display->display_options['header']['result']['field'] = 'result';
+  $handler->display->display_options['header']['result']['content'] = '<br>Displaying @start - @end of @total';
   /* Field: Scopus Alert: ID */
   $handler->display->display_options['fields']['id']['id'] = 'id';
   $handler->display->display_options['fields']['id']['table'] = 'publication_DB_scopus_alert_list';
@@ -168,7 +179,7 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['fields']['nothing']['label'] = '';
   $handler->display->display_options['fields']['nothing']['alter']['text'] = 'Whitelist';
   $handler->display->display_options['fields']['nothing']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['nothing']['alter']['path'] = 'http://localhost/islandora/pubdb/whitelist?DOI=[doi]&EID=[eid]';
+  $handler->display->display_options['fields']['nothing']['alter']['path'] = 'https://www.dora-dev.lib4ri.ch/psi/islandora/pubdb/whitelist?DOI=[doi]&EID=[eid]';
   $handler->display->display_options['fields']['nothing']['alter']['absolute'] = TRUE;
   $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
   /* Contextual filter: Global: Null */
@@ -196,6 +207,35 @@ function publication_DB_views_default_views() {
       7 => 0,
       8 => 0,
   );
+  /* Filter criterion: Scopus Alert: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'publication_DB_scopus_alert_list';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
+  $handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
+  $handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
+  $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
+  $handler->display->display_options['filters']['type']['is_grouped'] = TRUE;
+  $handler->display->display_options['filters']['type']['group_info']['label'] = 'Filter by publication type';
+  $handler->display->display_options['filters']['type']['group_info']['identifier'] = 'type';
+  $handler->display->display_options['filters']['type']['group_info']['group_items'] = array(
+      1 => array(
+          'title' => 'Journal Article',
+          'operator' => '=',
+          'value' => 'Journal Article',
+      ),
+      2 => array(
+          'title' => 'Proceedings Paper',
+          'operator' => '=',
+          'value' => 'Proceedings Paper',
+      ),
+      3 => array(
+          'title' => '',
+          'operator' => '=',
+          'value' => '',
+      ),
+  );
   
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block_1');
@@ -220,7 +260,8 @@ function publication_DB_views_default_views() {
       t('next ›'),
       t('last »'),
       t('list links'),
-      t('<a href="http://localhost/admin/islandora/publication_DB/queued">Queued</a> - <a href="http://localhost/admin/islandora/publication_DB/ingested">Ingested</a>'),
+      t('<a href="queued">Queued publications | </a><a href="inprocess">In process publications | </a><a href="blacklisted">Blacklisted publications | </a><a href="ingested">Ingested publications</a>'),
+      t('<br>Displaying @start - @end of @total'),
       t('ID'),
       t('.'),
       t(','),
@@ -233,11 +274,11 @@ function publication_DB_views_default_views() {
       t('Pub status'),
       t('Whitelist'),
       t('All'),
+      t('Filter by publication type'),
       t('Block'),
       t('Page'),
   );
-  
-    
+      
   $views['scopus_alert_blacklisted'] = $view;
   
   /*******************************************************************************************************/
@@ -255,10 +296,16 @@ function publication_DB_views_default_views() {
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Scopus alert - queued publications';
   $handler->display->display_options['use_more_always'] = FALSE;
-  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['access']['type'] = 'role';
+  $handler->display->display_options['access']['role'] = array(
+      3 => '3',
+      4 => '4',
+      5 => '5',
+  );
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['exposed_form']['options']['autosubmit'] = TRUE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '50';
   $handler->display->display_options['pager']['options']['offset'] = '0';
@@ -349,7 +396,12 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['header']['area_text_custom']['field'] = 'area_text_custom';
   $handler->display->display_options['header']['area_text_custom']['label'] = 'Alert lists';
   $handler->display->display_options['header']['area_text_custom']['empty'] = TRUE;
-  $handler->display->display_options['header']['area_text_custom']['content'] = '<a href="http://localhost/admin/islandora/publication_DB/queued">Queued publications | </a><a href="http://localhost/admin/islandora/publication_DB/inprocess">In process publications | </a><a href="http://localhost/admin/islandora/publication_DB/blacklisted">Blacklisted publications | </a><a href="http://localhost/admin/islandora/publication_DB/ingested">Ingested publications</a>';
+  $handler->display->display_options['header']['area_text_custom']['content'] = '<a href="queued">Queued publications | </a><a href="inprocess">In process publications | </a><a href="blacklisted">Blacklisted publications | </a><a href="ingested">Ingested publications</a>';
+  /* Header: Global: Result summary */
+  $handler->display->display_options['header']['result']['id'] = 'result';
+  $handler->display->display_options['header']['result']['table'] = 'views';
+  $handler->display->display_options['header']['result']['field'] = 'result';
+  $handler->display->display_options['header']['result']['content'] = '<br>Displaying @start - @end of @total';
   /* Field: Scopus Alert: ID */
   $handler->display->display_options['fields']['id']['id'] = 'id';
   $handler->display->display_options['fields']['id']['table'] = 'publication_DB_scopus_alert_list';
@@ -400,7 +452,7 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['fields']['nothing']['label'] = '';
   $handler->display->display_options['fields']['nothing']['alter']['text'] = 'Set in process';
   $handler->display->display_options['fields']['nothing']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['nothing']['alter']['path'] = 'http://localhost/islandora/pubdb/inprocess?DOI=[doi]&EID=[eid]';
+  $handler->display->display_options['fields']['nothing']['alter']['path'] = 'https://www.dora-dev.lib4ri.ch/psi/islandora/pubdb/inprocess?DOI=[doi]&EID=[eid]';
   $handler->display->display_options['fields']['nothing']['alter']['absolute'] = TRUE;
   $handler->display->display_options['fields']['nothing']['alter']['external'] = TRUE;
   $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
@@ -415,6 +467,35 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['filters']['status']['table'] = 'publication_DB_scopus_alert_list';
   $handler->display->display_options['filters']['status']['field'] = 'status';
   $handler->display->display_options['filters']['status']['value'] = 'queued';
+  /* Filter criterion: Scopus Alert: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'publication_DB_scopus_alert_list';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
+  $handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
+  $handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
+  $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
+  $handler->display->display_options['filters']['type']['is_grouped'] = TRUE;
+  $handler->display->display_options['filters']['type']['group_info']['label'] = 'Filter by publication type';
+  $handler->display->display_options['filters']['type']['group_info']['identifier'] = 'type';
+  $handler->display->display_options['filters']['type']['group_info']['group_items'] = array(
+      1 => array(
+          'title' => 'Journal Article',
+          'operator' => '=',
+          'value' => 'Journal Article',
+      ),
+      2 => array(
+          'title' => 'Proceedings Paper',
+          'operator' => '=',
+          'value' => 'Proceedings Paper',
+      ),
+      3 => array(
+          'title' => '',
+          'operator' => '=',
+          'value' => '',
+      ),
+  );
   
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block_1');
@@ -449,7 +530,8 @@ function publication_DB_views_default_views() {
       t('next ›'),
       t('last »'),
       t('Alert lists'),
-      t('<a href="http://localhost/admin/islandora/publication_DB/queued">Queued publications | </a><a href="http://localhost/admin/islandora/publication_DB/inprocess">In process publications | </a><a href="http://localhost/admin/islandora/publication_DB/blacklisted">Blacklisted publications | </a><a href="http://localhost/admin/islandora/publication_DB/ingested">Ingested publications</a>'),
+      t('<a href="queued">Queued publications | </a><a href="inprocess">In process publications | </a><a href="blacklisted">Blacklisted publications | </a><a href="ingested">Ingested publications</a>'),
+      t('<br>Displaying @start - @end of @total'),
       t('ID'),
       t('.'),
       t(','),
@@ -462,10 +544,12 @@ function publication_DB_views_default_views() {
       t('Pub status'),
       t('Set in process'),
       t('All'),
+      t('Type'),
+      t('Filter by publication type'),
       t('Block'),
       t('Page'),
   );
-    
+  
   $views['scopus_alert_queued'] = $view;
   
   /*******************************************************************************************************/
@@ -483,10 +567,16 @@ function publication_DB_views_default_views() {
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Scopus alert - ingested publications';
   $handler->display->display_options['use_more_always'] = FALSE;
-  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['access']['type'] = 'role';
+  $handler->display->display_options['access']['role'] = array(
+      3 => '3',
+      4 => '4',
+      5 => '5',
+  );
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['exposed_form']['options']['autosubmit'] = TRUE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '50';
   $handler->display->display_options['pager']['options']['offset'] = '0';
@@ -581,7 +671,12 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['header']['area_text_custom']['field'] = 'area_text_custom';
   $handler->display->display_options['header']['area_text_custom']['label'] = 'Alert lists';
   $handler->display->display_options['header']['area_text_custom']['empty'] = TRUE;
-  $handler->display->display_options['header']['area_text_custom']['content'] = '<a href="http://localhost/admin/islandora/publication_DB/queued">Queued</a> - <a href="http://localhost/admin/islandora/publication_DB/blacklisted">Blacklisted</a>';
+  $handler->display->display_options['header']['area_text_custom']['content'] = '<a href="queued">Queued publications | </a><a href="inprocess">In process publications | </a><a href="blacklisted">Blacklisted publications | </a><a href="ingested">Ingested publications</a>';
+  /* Header: Global: Result summary */
+  $handler->display->display_options['header']['result']['id'] = 'result';
+  $handler->display->display_options['header']['result']['table'] = 'views';
+  $handler->display->display_options['header']['result']['field'] = 'result';
+  $handler->display->display_options['header']['result']['content'] = '<br>Displaying @start - @end of @total';
   /* Field: Scopus Alert: ID */
   $handler->display->display_options['fields']['id']['id'] = 'id';
   $handler->display->display_options['fields']['id']['table'] = 'publication_DB_scopus_alert_list';
@@ -632,7 +727,7 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['fields']['nothing_1']['label'] = '';
   $handler->display->display_options['fields']['nothing_1']['alter']['text'] = 'Remove';
   $handler->display->display_options['fields']['nothing_1']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['nothing_1']['alter']['path'] = 'http://localhost/islandora/pubdb/remove?DOI=[doi]&EID=[eid]';
+  $handler->display->display_options['fields']['nothing_1']['alter']['path'] = 'https://www.dora-dev.lib4ri.ch/psi/islandora/pubdb/remove?DOI=[doi]&EID=[eid]';
   $handler->display->display_options['fields']['nothing_1']['alter']['absolute'] = TRUE;
   $handler->display->display_options['fields']['nothing_1']['alter']['external'] = TRUE;
   $handler->display->display_options['fields']['nothing_1']['element_label_colon'] = FALSE;
@@ -647,6 +742,35 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['filters']['status']['table'] = 'publication_DB_scopus_alert_list';
   $handler->display->display_options['filters']['status']['field'] = 'status';
   $handler->display->display_options['filters']['status']['value'] = 'ingested';
+  /* Filter criterion: Scopus Alert: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'publication_DB_scopus_alert_list';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
+  $handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
+  $handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
+  $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
+  $handler->display->display_options['filters']['type']['is_grouped'] = TRUE;
+  $handler->display->display_options['filters']['type']['group_info']['label'] = 'Filter by publication type';
+  $handler->display->display_options['filters']['type']['group_info']['identifier'] = 'type';
+  $handler->display->display_options['filters']['type']['group_info']['group_items'] = array(
+      1 => array(
+          'title' => 'Journal Article',
+          'operator' => '=',
+          'value' => 'Journal Article',
+      ),
+      2 => array(
+          'title' => 'Proceedings Paper',
+          'operator' => '=',
+          'value' => 'Proceedings Paper',
+      ),
+      3 => array(
+          'title' => '',
+          'operator' => '=',
+          'value' => '',
+      ),
+  );
   
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block_1');
@@ -671,7 +795,8 @@ function publication_DB_views_default_views() {
       t('next ›'),
       t('last »'),
       t('Alert lists'),
-      t('<a href="http://localhost/admin/islandora/publication_DB/queued">Queued</a> - <a href="http://localhost/admin/islandora/publication_DB/blacklisted">Blacklisted</a>'),
+      t('<a href="queued">Queued publications | </a><a href="inprocess">In process publications | </a><a href="blacklisted">Blacklisted publications | </a><a href="ingested">Ingested publications</a>'),
+      t('<br>Displaying @start - @end of @total'),
       t('ID'),
       t('.'),
       t(','),
@@ -684,10 +809,12 @@ function publication_DB_views_default_views() {
       t('Pub status'),
       t('Remove'),
       t('All'),
+      t('Type'),
+      t('Filter by publication type'),
       t('Block'),
       t('Page'),
   );
-     
+  
   $views['scopus_alert_ingested'] = $view;
   /*******************************************************************************************************/
   $view = new view();
@@ -704,10 +831,16 @@ function publication_DB_views_default_views() {
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['title'] = 'Scopus alert - in process publications';
   $handler->display->display_options['use_more_always'] = FALSE;
-  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['access']['type'] = 'role';
+  $handler->display->display_options['access']['role'] = array(
+      3 => '3',
+      4 => '4',
+      5 => '5',
+  );
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['exposed_form']['options']['autosubmit'] = TRUE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '50';
   $handler->display->display_options['pager']['options']['offset'] = '0';
@@ -815,7 +948,12 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['header']['area_text_custom']['field'] = 'area_text_custom';
   $handler->display->display_options['header']['area_text_custom']['label'] = 'list links';
   $handler->display->display_options['header']['area_text_custom']['empty'] = TRUE;
-  $handler->display->display_options['header']['area_text_custom']['content'] = '<a href="queued">Queued publications | </a><a href="http://localhost/admin/islandora/publication_DB/inprocess">In process publications | </a><a href="http://localhost/admin/islandora/publication_DB/blacklisted">Blacklisted publications | </a><a href="http://localhost/admin/islandora/publication_DB/ingested">Ingested publications</a>';
+  $handler->display->display_options['header']['area_text_custom']['content'] = '<a href="queued">Queued publications | </a><a href="inprocess">In process publications | </a><a href="blacklisted">Blacklisted publications | </a><a href="ingested">Ingested publications</a>';
+  /* Header: Global: Result summary */
+  $handler->display->display_options['header']['result']['id'] = 'result';
+  $handler->display->display_options['header']['result']['table'] = 'views';
+  $handler->display->display_options['header']['result']['field'] = 'result';
+  $handler->display->display_options['header']['result']['content'] = '<br>Displaying @start - @end of @total';
   /* Field: Scopus Alert: ID */
   $handler->display->display_options['fields']['id']['id'] = 'id';
   $handler->display->display_options['fields']['id']['table'] = 'publication_DB_scopus_alert_list';
@@ -865,8 +1003,9 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['fields']['nothing']['label'] = '';
   $handler->display->display_options['fields']['nothing']['alter']['text'] = 'Ingest';
   $handler->display->display_options['fields']['nothing']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['nothing']['alter']['path'] = 'http://localhost/islandora/object/eawag%3Apublications/manage/overview/ingest?doi=[doi]&eid=[eid]&type=[type]';
+  $handler->display->display_options['fields']['nothing']['alter']['path'] = 'https://www.dora-dev.lib4ri.ch/psi/islandora/object/psi%3Apublications/manage/overview/ingest?doi=[doi]&eid=[eid]&type=[type]';
   $handler->display->display_options['fields']['nothing']['alter']['absolute'] = TRUE;
+  $handler->display->display_options['fields']['nothing']['alter']['target'] = '_blank';
   $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
   /* Field: blacklist */
   $handler->display->display_options['fields']['nothing_3']['id'] = 'nothing_3';
@@ -876,7 +1015,7 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['fields']['nothing_3']['label'] = '';
   $handler->display->display_options['fields']['nothing_3']['alter']['text'] = 'Blacklist';
   $handler->display->display_options['fields']['nothing_3']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['nothing_3']['alter']['path'] = 'http://localhost/islandora/pubdb/blacklist?DOI=[doi]&EID=[eid]';
+  $handler->display->display_options['fields']['nothing_3']['alter']['path'] = 'https://www.dora-dev.lib4ri.ch/psi/islandora/pubdb/blacklist?DOI=[doi]&EID=[eid]';
   $handler->display->display_options['fields']['nothing_3']['alter']['absolute'] = TRUE;
   $handler->display->display_options['fields']['nothing_3']['alter']['external'] = TRUE;
   $handler->display->display_options['fields']['nothing_3']['element_label_colon'] = FALSE;
@@ -888,7 +1027,7 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['fields']['nothing_2']['label'] = '';
   $handler->display->display_options['fields']['nothing_2']['alter']['text'] = 'Queue';
   $handler->display->display_options['fields']['nothing_2']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['nothing_2']['alter']['path'] = 'http://localhost/islandora/pubdb/restore?DOI=[doi]&EID=[eid]';
+  $handler->display->display_options['fields']['nothing_2']['alter']['path'] = 'https://www.dora-dev.lib4ri.ch/psi/islandora/pubdb/restore?DOI=[doi]&EID=[eid]';
   $handler->display->display_options['fields']['nothing_2']['alter']['absolute'] = TRUE;
   $handler->display->display_options['fields']['nothing_2']['alter']['external'] = TRUE;
   $handler->display->display_options['fields']['nothing_2']['element_label_colon'] = FALSE;
@@ -900,7 +1039,7 @@ function publication_DB_views_default_views() {
   $handler->display->display_options['fields']['nothing_1']['label'] = '';
   $handler->display->display_options['fields']['nothing_1']['alter']['text'] = 'Set ingested';
   $handler->display->display_options['fields']['nothing_1']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['nothing_1']['alter']['path'] = 'http://localhost/islandora/pubdb/ingested?DOI=[doi]&EID=[eid]';
+  $handler->display->display_options['fields']['nothing_1']['alter']['path'] = 'https://www.dora-dev.lib4ri.ch/psi/islandora/pubdb/ingested?DOI=[doi]&EID=[eid]';
   $handler->display->display_options['fields']['nothing_1']['alter']['absolute'] = TRUE;
   $handler->display->display_options['fields']['nothing_1']['alter']['external'] = TRUE;
   $handler->display->display_options['fields']['nothing_1']['element_label_colon'] = FALSE;
@@ -929,6 +1068,35 @@ function publication_DB_views_default_views() {
       7 => 0,
       8 => 0,
   );
+  /* Filter criterion: Scopus Alert: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'publication_DB_scopus_alert_list';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
+  $handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
+  $handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
+  $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
+  $handler->display->display_options['filters']['type']['is_grouped'] = TRUE;
+  $handler->display->display_options['filters']['type']['group_info']['label'] = 'Filter by publication type';
+  $handler->display->display_options['filters']['type']['group_info']['identifier'] = 'type';
+  $handler->display->display_options['filters']['type']['group_info']['group_items'] = array(
+      1 => array(
+          'title' => 'Journal Article',
+          'operator' => '=',
+          'value' => 'Journal Article',
+      ),
+      2 => array(
+          'title' => 'Proceedings Paper',
+          'operator' => '=',
+          'value' => 'Proceedings Paper',
+      ),
+      3 => array(
+          'title' => '',
+          'operator' => '=',
+          'value' => '',
+      ),
+  );
   
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block_1');
@@ -953,7 +1121,8 @@ function publication_DB_views_default_views() {
       t('next ›'),
       t('last »'),
       t('list links'),
-      t('<a href="queued">Queued publications | </a><a href="http://localhost/admin/islandora/publication_DB/inprocess">In process publications | </a><a href="http://localhost/admin/islandora/publication_DB/blacklisted">Blacklisted publications | </a><a href="http://localhost/admin/islandora/publication_DB/ingested">Ingested publications</a>'),
+      t('<a href="queued">Queued publications | </a><a href="inprocess">In process publications | </a><a href="blacklisted">Blacklisted publications | </a><a href="ingested">Ingested publications</a>'),
+      t('<br>Displaying @start - @end of @total'),
       t('ID'),
       t('.'),
       t(','),
@@ -969,10 +1138,11 @@ function publication_DB_views_default_views() {
       t('Queue'),
       t('Set ingested'),
       t('All'),
+      t('Filter by publication type'),
       t('Block'),
       t('Page'),
   );
-    
+  
   $views['scopus_alert_inprocess'] = $view;
   
   return $views;
