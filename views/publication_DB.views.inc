@@ -70,6 +70,10 @@ function publication_DB_views_data() {
                 'handler' => 'views_handler_field_markup',
                 'click sortable' => TRUE,
             ),
+            'filter' => array(
+                'handler' => 'views_handler_filter_string',
+            ),
+            
          ),
         'type' => array(
             'title' => t('Type'),
@@ -81,9 +85,9 @@ function publication_DB_views_data() {
             //             'sort' => array(
                 //                 'handler' => 'views_handler_sort_date',
                 //             ),
-            //             'filter' => array(
-                //                 'handler' => 'views_handler_filter_date',
-            //             ),
+                'filter' => array(
+                'handler' => 'views_handler_filter_string',
+                      ),
             ),
         'doi' => array(
             'title' => t('DOI'),
