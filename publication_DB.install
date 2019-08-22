@@ -49,6 +49,12 @@ function publication_DB_schema() {
                 'unsigned' => TRUE,
                 'not null' => TRUE,
             ),
+            'user' => array(
+                'type' => 'varchar',
+                'length' => 20,
+                'default' => '',
+                'not null' => FALSE,
+            ),
             
         ),
         'unique keys' => array(
