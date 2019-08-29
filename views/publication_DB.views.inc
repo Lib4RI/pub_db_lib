@@ -133,6 +133,21 @@ function publication_DB_views_data() {
                         ),
         ),
         
+        'user' => array(
+            'title' => t('User'),
+            'help' => t(''),
+            'field' => array(
+                'handler' => 'views_handler_field_markup',
+                'click sortable' => TRUE,
+            ),
+            //             'sort' => array(
+            //                 'handler' => 'views_handler_sort_date',
+            //             ),
+            'filter' => array(
+                'handler' => 'views_handler_filter_string',
+            ),
+        ),
+        
     );
     
 
