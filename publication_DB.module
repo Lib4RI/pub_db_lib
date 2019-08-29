@@ -197,7 +197,7 @@ function publication_DB_alert_batch(){
     // IMPORTANT:
     // If you set a blank parameter, the batch_process() will cause an infinite loop
     
-    batch_process(variable_get('publication_DB_ingest_landing'));
+    batch_process(variable_get('publication_DB_alert_landing'));
 }
     
 

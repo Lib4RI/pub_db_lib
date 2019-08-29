@@ -149,6 +149,13 @@ function publication_DB_admin_form() {
         '#default_value' => variable_get('publication_DB_search_collections', ''),
         '#required' => FALSE,
     );
+
+    $form['publication_DB_tabs']['publication_DB_generic']['publication_DB_alert_landing'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Alert batch landing page'),
+        '#default_value' => variable_get('publication_DB_alert_landing', ''),
+        '#required' => FALSE,
+    );
     
     return system_settings_form($form);
 }
