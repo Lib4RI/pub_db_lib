@@ -258,17 +258,37 @@ function publication_db_set_status($status, $landing_page){
     $doi = trim($_GET['DOI'],'_');
     $eid = trim($_GET['EID'],'_');
     
-    
-    $query = db_update(PUB_DB_ALERT_TABLE);
-    $query->fields(array(
-        'status' => $status,
-    ));
-    
+    $q = db_select(PUB_DB_ALERT_TABLE, 't');
+    $q->fields('t', array('status'));
+    $q->condition('status', $status, '=');
     if (!empty($doi)){
-        $query->condition('doi', $doi, '=')->execute();
+        $q->condition('doi', $doi, '=');
     }
     else{
-        $query->condition('eid', $eid, '=')->execute();
+        $q->condition('eid', $eid, '=');
+    }
+    
+    $res = $q->execute();
+    foreach ($res as $st) {
+        $st = $st->status;
+    }
+    
+    if ($st == $status){
+        drupal_set_message(t('The publication is already in list'), 'error');
+    }
+    else{
+        $query = db_update(PUB_DB_ALERT_TABLE);
+        $query->fields(array(
+            'status' => $status,
+        ));
+        
+        
+        if (!empty($doi)){
+            $query->condition('doi', $doi, '=')->execute();
+        }
+        else{
+            $query->condition('eid', $eid, '=')->execute();
+        }
     }
     
     drupal_goto($landing_page);
@@ -288,6 +308,7 @@ function publication_db_remove(){
     else{
         $query->condition('eid', $eid, '=')->execute();
     }
+    
     
     drupal_goto(variable_get('publication_DB_remove_landing'));
 }
