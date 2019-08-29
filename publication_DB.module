@@ -254,6 +254,7 @@ function publication_db_inprocess(){
 
 function publication_db_set_status($status, $landing_page){
     module_load_include('inc', 'publication_DB', 'includes/define');
+    global $user;
     
     $doi = trim($_GET['DOI'],'_');
     $eid = trim($_GET['EID'],'_');
@@ -280,6 +281,7 @@ function publication_db_set_status($status, $landing_page){
         $query = db_update(PUB_DB_ALERT_TABLE);
         $query->fields(array(
             'status' => $status,
+            'user' => $user->name,
         ));
         
         
