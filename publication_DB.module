@@ -19,6 +19,13 @@ function publication_DB_menu() {
         //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
     );
 
+    $items['islandora/pubdb/clear'] = array(
+        'page callback' => 'publication_DB_clear_queued',
+        'access arguments' => array('search islandora solr'),
+        'type' => MENU_CALLBACK,
+        //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
+    );
+    
     $items['islandora/pubdb/blacklist'] = array(
         'page callback' => 'drupal_get_form',
         'page arguments' => array('publication_DB_blacklist_form'),
@@ -79,7 +86,7 @@ function publication_DB_menu() {
     );
     
     $items['admin/islandora/publication_DB/alerts'] = array(
-        'title' => 'Run Batch',
+        'title' => 'Manage alert list',
         'description' => '',
         'page callback' => 'drupal_get_form',
         'page arguments' => array('publication_DB_run_batch_form'),
@@ -317,3 +324,14 @@ function publication_db_remove(){
     
     drupal_goto(variable_get('publication_DB_remove_landing'));
 }
+
+function publication_DB_clear_queued(){
+    module_load_include('inc', 'publication_DB', 'includes/define');
+    
+    $query = db_delete(PUB_DB_ALERT_TABLE);
+    $query->condition('status', 'queued', '=')->execute();
+    
+    drupal_goto(variable_get('publication_DB_queued_url'));
+}
+
+

@@ -163,7 +163,12 @@ function publication_DB_admin_form() {
 function publication_DB_run_batch_form() {
     $form['publication_DB_run_batch'] = array(
         '#type' => 'markup',
-        '#markup' => l('Run alert batch', 'islandora/pubdb/alert'),
+        '#markup' => l('Run alert batch | ', 'islandora/pubdb/alert'),
+    );
+
+    $form['publication_DB_clear_list'] = array(
+        '#type' => 'markup',
+        '#markup' => l('Clear queued list', 'islandora/pubdb/clear'),
     );
     
     return($form);
