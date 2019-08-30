@@ -20,9 +20,11 @@ function publication_DB_menu() {
     );
 
     $items['islandora/pubdb/blacklist'] = array(
-        'page callback' => 'publication_DB_blacklist',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('publication_DB_blacklist_form'),
         'access arguments' => array('search islandora solr'),
         'type' => MENU_CALLBACK,
+        'file' => 'includes/forms.inc',
         //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
     );
 
@@ -232,8 +234,8 @@ function publication_DB_views_api() {
     );
 }
 
-function publication_db_blacklist(){
-    publication_db_set_status('blacklisted', variable_get('publication_DB_blacklist_landing'));
+function publication_db_blacklist($comment = ''){
+    publication_db_set_status('blacklisted', variable_get('publication_DB_blacklist_landing'), $comment);
 }
 
 function publication_db_whitelist(){
@@ -252,7 +254,7 @@ function publication_db_inprocess(){
     publication_db_set_status('inprocess', variable_get('publication_DB_inprocess_landing'));
 }
 
-function publication_db_set_status($status, $landing_page){
+function publication_db_set_status($status, $landing_page, $comment = ''){
     module_load_include('inc', 'publication_DB', 'includes/define');
     global $user;
     
@@ -282,6 +284,7 @@ function publication_db_set_status($status, $landing_page){
         $query->fields(array(
             'status' => $status,
             'user' => $user->name,
+            'comment' => $comment,
         ));
         
         

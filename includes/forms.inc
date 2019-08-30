@@ -192,3 +192,23 @@ function publication_DB_lists_form() {
     
     return($form);
 }
+
+function publication_DB_blacklist_form($form, &$form_state){
+    $form['publication_DB_blacklist_comments'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Blacklisting reason'),
+        '#required' => FALSE,
+    );
+    
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Blacklist',
+    );
+    
+    return $form;
+}
+
+function publication_DB_blacklist_form_submit($form, &$form_state){
+    module_load_include('module', 'publication_DB', '');
+    publication_db_blacklist($form_state['values']['publication_DB_blacklist_comments']);
+}

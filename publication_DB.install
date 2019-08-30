@@ -55,6 +55,12 @@ function publication_DB_schema() {
                 'default' => '',
                 'not null' => FALSE,
             ),
+            'comment' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => '',
+                'not null' => FALSE,
+            ),
             
         ),
         'unique keys' => array(

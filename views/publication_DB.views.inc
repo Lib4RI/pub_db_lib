@@ -148,7 +148,22 @@ function publication_DB_views_data() {
             ),
         ),
         
-    );
+        'comment' => array(
+            'title' => t('Comments'),
+            'help' => t(''),
+            'field' => array(
+                'handler' => 'views_handler_field_markup',
+                'click sortable' => FALSE,
+            ),
+            //             'sort' => array(
+            //                 'handler' => 'views_handler_sort_date',
+            //             ),
+            'filter' => array(
+                'handler' => 'views_handler_filter_string',
+            ),
+        ),
+        
+     );
     
 
 //     $data['islandora_batch_queue'] = array(
