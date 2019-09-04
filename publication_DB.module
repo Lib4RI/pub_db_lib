@@ -7,73 +7,64 @@ function publication_DB_menu() {
     $items = array();
     $items['islandora/pubdb/get_mods'] = array(
         'page callback' => 'publication_DB_get_mods',
-        'access arguments' => array('search islandora solr'),
+        'access arguments' => array('access publication alert links'),
         'type' => MENU_CALLBACK,
-        //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
     );
     
     $items['islandora/pubdb/alert'] = array(
         'page callback' => 'publication_DB_alert_batch',
-        'access arguments' => array('search islandora solr'),
+        'access arguments' => array('access publication alert links'),
         'type' => MENU_CALLBACK,
-        //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
     );
 
     $items['islandora/pubdb/clear'] = array(
         'page callback' => 'publication_DB_clear_queued',
-        'access arguments' => array('search islandora solr'),
+        'access arguments' => array('access publication alert links'),
         'type' => MENU_CALLBACK,
-        //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
     );
     
     $items['islandora/pubdb/blacklist'] = array(
         'page callback' => 'drupal_get_form',
         'page arguments' => array('publication_DB_blacklist_form'),
-        'access arguments' => array('search islandora solr'),
+        'access arguments' => array('access publication alert links'),
         'type' => MENU_CALLBACK,
         'file' => 'includes/forms.inc',
-        //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
     );
 
     $items['islandora/pubdb/whitelist'] = array(
         'page callback' => 'publication_DB_whitelist',
-        'access arguments' => array('search islandora solr'),
+        'access arguments' => array('access publication alert links'),
         'type' => MENU_CALLBACK,
-        //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
     );
 
     $items['islandora/pubdb/remove'] = array(
         'page callback' => 'publication_db_remove',
-        'access arguments' => array('search islandora solr'),
+        'access arguments' => array('access publication alert links'),
         'type' => MENU_CALLBACK,
-        //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
     );
 
     $items['islandora/pubdb/restore'] = array(
         'page callback' => 'publication_db_restore',
-        'access arguments' => array('search islandora solr'),
+        'access arguments' => array('access publication alert links'),
         'type' => MENU_CALLBACK,
-        //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
     );
 
     $items['islandora/pubdb/inprocess'] = array(
         'page callback' => 'publication_db_inprocess',
-        'access arguments' => array('search islandora solr'),
+        'access arguments' => array('access publication alert links'),
         'type' => MENU_CALLBACK,
-        //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
     );
 
     $items['islandora/pubdb/ingested'] = array(
         'page callback' => 'publication_db_ingested',
-        'access arguments' => array('search islandora solr'),
+        'access arguments' => array('access publication alert links'),
         'type' => MENU_CALLBACK,
-        //         'access arguments' => array(ISLANDORA_ADD_DS, 2),
     );
     
     $items['admin/islandora/publication_DB'] = array(
         'title' => 'Publication Alert',
         'description' => '',
-        'access arguments' => array('administer site configuration'),
+        'access arguments' => array('access publication alert links'),
     );
     
     $items['admin/islandora/publication_DB/lists'] = array(
@@ -81,7 +72,7 @@ function publication_DB_menu() {
         'description' => '',
         'page callback' => 'drupal_get_form',
         'page arguments' => array('publication_DB_lists_form'),
-        'access arguments' => array('administer site configuration'),
+        'access arguments' => array('access publication alert links'),
         'file' => 'includes/forms.inc',
     );
     
@@ -90,7 +81,7 @@ function publication_DB_menu() {
         'description' => '',
         'page callback' => 'drupal_get_form',
         'page arguments' => array('publication_DB_run_batch_form'),
-        'access arguments' => array('administer site configuration'),
+        'access arguments' => array('access publication alert links'),
         'file' => 'includes/forms.inc',
     );
     
@@ -99,7 +90,7 @@ function publication_DB_menu() {
         'description' => '',
         'page callback' => 'drupal_get_form',
         'page arguments' => array('publication_DB_admin_form'),
-        'access arguments' => array('administer site configuration'),
+        'access arguments' => array('administer publication alert'),
         'file' => 'includes/forms.inc',
     );
     
@@ -334,4 +325,17 @@ function publication_DB_clear_queued(){
     drupal_goto(variable_get('publication_DB_queued_url'));
 }
 
+/**
+ * Implements hook_permission().
+ */
+function publication_DB_permission() {
+    return array(
+        'access publication alert links' => array(
+            'title' => t('Access publication alert links'),
+        ),
+        'administer publication alert' => array(
+            'title' => t('Administer publication alert'),
+        ),
+    );
+}
 
