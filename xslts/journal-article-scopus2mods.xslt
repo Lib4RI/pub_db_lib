@@ -80,8 +80,9 @@
 				</detail><detail type="issue">
 					<number><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/prism:issueIdentifier"/></number>
 				</detail>
-				<extent unit="pages">
-					<start><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/dtd:article-number"/></start>
+				<extent unit="page">
+					<start><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/prism:startingPage"/></start>
+					<end><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/prism:endingPage"/></end>
 				</extent>
 			</part>
   		</relatedItem>
