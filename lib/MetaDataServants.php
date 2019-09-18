@@ -389,6 +389,40 @@ class Scopus2ModsServant extends MetaDataServant{
         $this->fetcher->setDoi($doi);
         return $this;
     }
+
+    /**
+     * Convenience method to set the class specific URL parameter 'scopusId'
+     *
+     * @return Scopus2ModsServant
+     *   The instatiated class.
+     */
+    public function setScopusId($scopus_id){
+        $this->fetcher->setScopusId($scopus_id);
+        return $this;
+    }
+
+    /**
+     * Convenience method to set the class specific URL parameter 'eid'
+     *
+     * @return Scopus2ModsServant
+     *   The instatiated class.
+     */
+    public function setEid($eid){
+        $this->fetcher->setEid($eid);
+        return $this;
+    }
+
+    /**
+     * Convenience method to set the class specific URL parameter 'pubmed_id'
+     *
+     * @return Scopus2ModsServant
+     *   The instatiated class.
+     */
+    public function setPmid($Pmid){
+        $this->fetcher->setPmid($Pmid);
+        return $this;
+    }
+    
 }
 
 /**
