@@ -414,6 +414,19 @@ class PubmedFetcher extends MetaDataFetcher{
      */
     public function setDoi($doi){
         $this->params['uri_params']['ids'] = $doi;
+        $this->params['uri_params']['idtype'] = 'doi';
+        return $this;
+    }
+
+    /**
+     * Convenience method to set the class specific URL parameter 'pmid'
+     *
+     * @return PubmedFetcher
+     *   The instantiated class.
+     */
+    public function setPmid($pmid){
+        $this->params['uri_params']['ids'] = $pmid;
+        $this->params['uri_params']['idtype'] = 'pmid';
         return $this;
     }
     
