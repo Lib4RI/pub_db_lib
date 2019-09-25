@@ -77,7 +77,8 @@
 			<part>
 				<detail type="volume">
 					<number><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/prism:volume"/></number>
-				</detail><detail type="issue">
+				</detail>
+				<detail type="issue">
 					<number><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/prism:issueIdentifier"/></number>
 				</detail>
 				<extent unit="page">

@@ -314,9 +314,12 @@ class Crossref2ModsServant extends MetaDataServant{
     public function __construct() {
         $this->fetcher = new CrossrefFetcher();
         $this->processor = new MetaDataProcessor(null);
-        $this->processor->addSteps(array('type' => 'callback', 
-                                        'rule' => 'crossref2mods', 
-                                        'source' => '', 
+        $this->processor->addSteps(array(//'type' => 'callback', 
+//                                        'rule' => 'crossref2mods', 
+//                                        'source' => '', 
+                                        'type' => 'xslt',
+                                        'rule' => dirname(__FILE__).'/../xslts/journal-article-crossref2mods.xslt',
+                                        'source' => 'file',
                                         'params' => array('editor' => FALSE, 
                                                           'subtitle' => FALSE, 
                                                           'publisher' => FALSE)
