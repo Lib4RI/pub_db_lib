@@ -28,6 +28,7 @@
   		</originInfo>
   		<identifier type="doi"><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/prism:doi"/></identifier>
   		<identifier type="scopus"><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/dtd:eid"/></identifier>
+  		<identifier type="pmid"><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/dtd:pubmed-id"/></identifier>
   		<xsl:for-each select="/dtd:abstracts-retrieval-response/dtd:authors/dtd:author">
   			<xsl:choose>
   				<xsl:when test="@seq=1">
