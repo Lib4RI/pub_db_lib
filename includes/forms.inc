@@ -42,6 +42,7 @@ function publication_DB_admin_form() {
     
     $form['publication_DB_tabs']['publication_DB_scopus_alert_tab']['publication_DB_scopus_alert_query'] = array(
         '#type' => 'textfield',
+        '#maxlength' => 255, 
         '#title' => t('Scopus Alert Query'),
         '#default_value' => variable_get('publication_DB_scopus_alert_query', ''),
         '#required' => FALSE,
