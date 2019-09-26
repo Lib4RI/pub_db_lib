@@ -61,6 +61,12 @@
   				 </xsl:otherwise>
   			</xsl:choose>
 		</xsl:for-each>  
+		<subject>
+		<topic/>
+			<xsl:for-each select="/dtd:abstracts-retrieval-response/dtd:authkeywords/dtd:author-keyword">
+				<topic><xsl:value-of select="current()"/></topic>
+			</xsl:for-each>
+		</subject>
   		<abstract><xsl:value-of select="/dtd:abstracts-retrieval-response/dtd:coredata/dc:description/abstract/ce:para"/></abstract>
   		<relatedItem type="host">
   			<titleInfo>
