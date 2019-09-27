@@ -576,3 +576,33 @@ class PdbHarvestServant extends MetaDataServant{
     }
     
 }
+
+/**
+ * Class to get DOI from PubMed ID usig web page
+ */
+class PubmedWebIdServant extends MetaDataServant{
+    
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        $this->fetcher = new PubmedWebFetcher();
+        $this->processor = new MetaDataProcessor(null);
+        $this->processor->addSteps(array('type' => 'xslt',
+            'rule' => dirname(__FILE__).'/../xslts/pubmed-web2doi.xslt',
+            'source' => 'file')
+            );
+    }
+    
+    /**
+     * Convenience method to set the source parameter
+     *
+     * @return ScopusSearchServant
+     *   The instatiated class.
+     */
+    public function setPmid($pmid){
+        $this->fetcher->setPmid($pmid);
+        return $this;
+    }
+    
+}
