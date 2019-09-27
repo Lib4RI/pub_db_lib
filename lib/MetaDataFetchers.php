@@ -433,6 +433,26 @@ class PubmedFetcher extends MetaDataFetcher{
 }
 
 /**
+ * Class to fetch DOI from PubmedID
+ */
+class PubmedWebFetcher extends MetaDataFetcher{
+    /**
+     * Service's base URL
+     */
+    protected $uri = "https://www.ncbi.nlm.nih.gov/pubmed/";
+    protected $baseuri = "https://www.ncbi.nlm.nih.gov/pubmed/";
+    
+    /**
+     * URL parameters specific to the service
+     */
+    protected $params=array('uri_params' =>[]);
+    
+    public function setPmid($pmid){
+        $this->uri = $this->baseuri.$pmid;
+        return $this;
+    }
+}
+/**
  * Class to fetch Crossref metadata
  */
 class CrossrefFetcher extends MetaDataFetcher{
@@ -899,12 +919,12 @@ class PdbFetcher extends MetaDataFetcher{
     /**
      * Service's base URL
      */
-    protected $baseuri = "http://biosync.sbkb.org/biosync_pdbtext";
-    protected $uri = "http://biosync.sbkb.org/biosync_pdbtext";
+    protected $baseuri = "http://biosync.sbkb.org/biosync_pdbtext/";
+    protected $uri = "http://biosync.sbkb.org/biosync_pdbtext/";
     protected $params=array('uri_params' => []);
         
     public function setSource($source){
-        $this->uri = $this->baseuri.'/'.$source;
+        $this->uri = $this->baseuri.$source;
         return $this;
     }
     
