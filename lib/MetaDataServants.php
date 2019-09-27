@@ -546,3 +546,33 @@ class ScopusIdListServant extends ScopusSearchServant{
             );
     }
 }
+
+class PdbHarvestServant extends MetaDataServant{
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        $this->fetcher = new PdbFetcher();
+        $this->processor = new MetaDataProcessor(null);
+        $this->processor->addSteps(array('type' => 'callback',
+                                         'rule' => 'pdb_process',
+                                         'source' => '',
+                                         'params' => array('editor' => FALSE,
+                                                           'subtitle' => FALSE,
+                                                           'publisher' => FALSE)
+                                          )
+        );
+    }
+    
+    /**
+     * Convenience method to set the source parameter
+     *
+     * @return ScopusSearchServant
+     *   The instatiated class.
+     */
+    public function setSource($source){
+        $this->fetcher->setSource($source);
+        return $this;
+    }
+    
+}

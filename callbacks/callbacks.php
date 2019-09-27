@@ -605,3 +605,32 @@ function get_scopus_authorsaffiliations($dom, $params){
     $root_element->appendChild($element);
     return $out;
 }
+
+function pdb_process($dom, $params){
+    $out_dom = new DOMDocument('1.0');
+    $body = substr($dom->saveXML(), strpos($dom->saveXML(), '<response>'));
+    $body = str_replace('<response>', '', $body);
+    $body = str_replace('</response>', '', $body);
+    $lines = explode(PHP_EOL, $body);
+    $pubs = [];
+    foreach (array_slice($lines, 1) as $line) {
+        $l = explode("\t", $line);
+        if(!empty($l[1])){
+            $pubs[$l[1]] = array_slice($l, 1);
+        }
+    }
+    $root_element = $out_dom->createElement('results');
+    foreach ($pubs as $pub){
+        $pub_element = $out_dom->createElement('item');
+        $title_element = $out_dom->createElement('title', $pub[5]);
+        $pmid_element = $out_dom->createElement('pmid', $pub[0]);
+        
+        $pub_element->appendChild($title_element);
+        $pub_element->appendChild($pmid_element);
+        
+        $root_element->appendChild($pub_element);
+    }
+    
+    $out_dom->appendChild($root_element);
+    return $out_dom;
+}

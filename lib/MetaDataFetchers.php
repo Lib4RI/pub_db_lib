@@ -198,7 +198,7 @@ class MetaDataFetcher extends MetaDataAbstract{
      * Set options for the curl library
      *
      */
-    private function setCurlOpt(){
+    protected function setCurlOpt(){
         curl_setopt($this->cSession,CURLOPT_URL,$this->url);
         curl_setopt($this->cSession,CURLOPT_RETURNTRANSFER,TRUE);
         if (!empty($this->getHttpHeaders())){
@@ -825,7 +825,7 @@ class WosRedirectFetcher extends  MetaDataFetcher{
      * Set the curl options.
      * Need to override the parent's method as the fetching strategy does not fit with the main implementation. 
      */
-    private function setCurlOpt(){
+    protected function setCurlOpt(){
         curl_setopt($this->cSession, CURLOPT_URL,$this->url);
         curl_setopt($this->cSession, CURLOPT_HEADER, 1);
         curl_setopt($this->cSession, CURLOPT_NOBODY, 1);
@@ -891,5 +891,45 @@ class WosRedirectFetcher extends  MetaDataFetcher{
                 $this->array2dom($dom, $val, $element);
             }
         }
+    }
+}
+
+class PdbFetcher extends MetaDataFetcher{
+    
+    /**
+     * Service's base URL
+     */
+    protected $baseuri = "http://biosync.sbkb.org/biosync_pdbtext";
+    protected $uri = "http://biosync.sbkb.org/biosync_pdbtext";
+    protected $params=array('uri_params' => []);
+        
+    public function setSource($source){
+        $this->uri = $this->baseuri.'/'.$source;
+        return $this;
+    }
+    
+    /**
+     * Fetch data from the selected web service
+     *
+     * @return MetaDataFetcher
+     *   The instantiated class.
+     */
+    public function fetch(){
+        $this->buildUrl(); //echo $this->getUrl(); exit;
+        $this->buildHeaders();
+        $this->cSession = curl_init();
+        $this->setCurlOpt();
+        $response = curl_exec($this->cSession);
+        $header_size = curl_getinfo($this->cSession, CURLINFO_HEADER_SIZE);
+        $this->response_header = substr($response, 0, $header_size);
+        $body = substr($response, $header_size);
+        $body=preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $body);
+        $this->dom->loadXML('<response>'.$body.'</response>');
+        $this->checkError();
+        
+        curl_close($this->cSession);
+        
+        
+        return $this;
     }
 }
