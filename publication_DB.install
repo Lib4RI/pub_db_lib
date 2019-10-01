@@ -13,6 +13,18 @@ function publication_DB_schema() {
                 'unsigned' => TRUE,
                 'not null' => TRUE
             ),
+            'scopus' => array(
+                'type' => 'int',
+                'unsigned' => TRUE,
+            ),
+            'pdb' => array(
+                'type' => 'int',
+                'unsigned' => TRUE,
+            ),
+            'wos' => array(
+                'type' => 'int',
+                'unsigned' => TRUE,
+            ),
             'title' => array(
                 'type' => 'varchar',
                 'length' => 255,
@@ -24,6 +36,16 @@ function publication_DB_schema() {
                 'default' => '',
             ),
             'eid' => array(
+                'type' => 'varchar',
+                'length' => 40,
+                'default' => '',
+            ),
+            'pmid' => array(
+                'type' => 'varchar',
+                'length' => 40,
+                'default' => '',
+            ),
+            'utid' => array(
                 'type' => 'varchar',
                 'length' => 40,
                 'default' => '',
