@@ -444,6 +444,56 @@ class PubmedIdServant extends MetaDataServant{
                                   'source' => 'file')
                                  );
     }
+    
+    /**
+     * Convenience method to set the class specific URL parameter 'tool'
+     *
+     * @return PubmedFetcher
+     *   The instantiated class.
+     */
+    public function setTool($tool){
+        $this->fetcher->setTool($tool);
+        return $this;
+    }
+    
+    /**
+     * Convenience method to set the class specific URL parameter 'email'
+     *
+     * @return PubmedFetcher
+     *   The instantiated class.
+     */
+    public function setEmail($email){
+        $this->fetcher->setEmail($email);
+        return $this;
+    }
+}
+
+
+class PubmedId2DoiServant extends PubmedIdServant{
+    
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        $this->fetcher = new PubmedFetcher();
+        $this->processor = new MetaDataProcessor(null);
+        $this->processor->addSteps(array('type' => 'xslt',
+            'rule' => dirname(__FILE__).'/../xslts/pmed2doi.xslt',
+            'source' => 'file')
+            );
+    }
+    
+    /**
+     * Convenience method to set the class specific URL parameter 'pmid'
+     *
+     * @return PubmedFetcher
+     *   The instantiated class.
+     */
+    public function setPmid($pmid){
+        $this->fetcher->setPmid($pmid);
+        return $this;
+    }
+    
 }
 
 /**

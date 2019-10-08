@@ -18,6 +18,7 @@
     			<title><xsl:value-of select="dc:title" /></title>
     			<doi><xsl:value-of select="prism:doi" /></doi>
     			<eid><xsl:value-of select="atom:eid" /></eid>
+    			<pmid><xsl:value-of select="atom:eid" /></pmid>
     			<sourceType><xsl:value-of select="prism:aggregationType" />/<xsl:value-of select="atom:subtypeDescription" /></sourceType>
     			<xsl:choose>
     				<xsl:when test="prism:aggregationType = 'Journal' and atom:subtypeDescription = 'Article'">
