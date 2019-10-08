@@ -13,17 +13,10 @@ function publication_DB_schema() {
                 'unsigned' => TRUE,
                 'not null' => TRUE
             ),
-            'scopus' => array(
-                'type' => 'int',
-                'unsigned' => TRUE,
-            ),
-            'pdb' => array(
-                'type' => 'int',
-                'unsigned' => TRUE,
-            ),
-            'wos' => array(
-                'type' => 'int',
-                'unsigned' => TRUE,
+            'sources' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => '',
             ),
             'title' => array(
                 'type' => 'varchar',
