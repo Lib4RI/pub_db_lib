@@ -154,7 +154,7 @@ class PubAlert{
     
     protected function buildFieldsArray($data){
         return array(
-            'title' => (!empty($data['title']) ? $data['title'] : ''),
+            'title' => (!empty($data['title']) ? substr($data['title'],0,254) : ''),
             'doi' => (!empty($data['doi']) ? $data['doi'] : ''),
             'eid' => (!empty($data['eid']) ? $data['eid'] : ''),
             'sourceType' => (!empty($data['sourceType']) ? $data['sourceType'] : ''),
