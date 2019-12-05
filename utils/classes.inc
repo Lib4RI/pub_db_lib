@@ -13,7 +13,8 @@ class PubAlert{
     
     protected $namespace;
     
-    protected $searchYear;
+    protected $searchYearStart;
+    protected $searchYearStop;
     protected $metaDataServant;
 
     /**
@@ -25,11 +26,17 @@ class PubAlert{
 //        $this->metaDataServant->setKey(variable_get('publication_DB_scopus_api_key',''));
         $this->metaDataServant->setUriParam('field', 'eid,doi,title,aggregationType,subtypeDescription');
         $this->metaDataServant->setUriParam('count', '200');
-        $this->setSearchYear(variable_get('publication_DB_scopus_search_year'));
+        $this->setSearchYearStart(variable_get('publication_DB_scopus_search_year_start'));
+        $this->setSearchYearStop(variable_get('publication_DB_scopus_search_year_stop'));
     }
     
-    public function setSearchYear($year){
-        $this->searchYear = $year;
+    public function setSearchYearStart($year){
+        $this->searchYearStart = $year;
+        return $this;
+    }
+
+    public function setSearchYearStop($year){
+        $this->searchYearStop = $year;
         return $this;
     }
     
@@ -57,7 +64,7 @@ class PubAlert{
                        
         
         //TODO Parametrize query and add hook 
-        $params['f'][0] = 'mods_originInfo_encoding_w3cdtf_keyDate_yes_dateIssued_dt:['.$this->searchYear.'-01-01T00:00:00Z TO '.$this->searchYear.'-12-31T23:59:59Z]';
+        $params['f'][0] = 'mods_originInfo_encoding_w3cdtf_keyDate_yes_dateIssued_dt:['.$this->searchYearStart.'-01-01T00:00:00Z TO '.$this->searchYearStop.'-12-31T23:59:59Z]';
         $params['f'][1] = 'mods_identifier_doi_ms:[* TO *] OR mods_identifier_scopus_ms:[* TO *]';
         $params['f'][2] = implode(' OR ', $collections);
         
@@ -176,7 +183,7 @@ class ScopusAlert extends PubAlert{
     }
             
     public function setQuery(){
-        $this->metaDataServant->setQuery('('.variable_get('publication_DB_scopus_alert_query', '').') AND PUBYEAR = '.$this->searchYear);
+        $this->metaDataServant->setQuery('('.variable_get('publication_DB_scopus_alert_query', '').") (PUBYEAR = $this->searchYearStart OR PUBYEAR > $this->searchYearStart) AND (PUBYEAR = $this->searchYearStop OR PUBYEAR < $this->searchYearStop)"); //') AND PUBYEAR = '.$this->searchYear);
         return $this;
     }
 }
