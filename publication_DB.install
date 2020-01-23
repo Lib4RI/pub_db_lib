@@ -25,7 +25,7 @@ function publication_DB_schema() {
             ),
             'doi' => array(
                 'type' => 'varchar',
-                'length' => 40,
+                'length' => 255,
                 'default' => '',
             ),
             'eid' => array(
@@ -45,12 +45,12 @@ function publication_DB_schema() {
             ),
             'sourceType' => array(
                 'type' => 'varchar',
-                'length' => 40,
+                'length' => 255,
                 'default' => '',
             ),
             'type' => array(
                 'type' => 'varchar',
-                'length' => 40,
+                'length' => 255,
                 'default' => '',
             ),
             'status' => array( //queued|blacklisted|ingested|inprocess
