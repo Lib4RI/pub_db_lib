@@ -953,3 +953,17 @@ class PdbFetcher extends MetaDataFetcher{
         return $this;
     }
 }
+
+class FileFetcher extends MetaDataFetcher{
+    
+    public function setSource($path){
+        $this->uri = $path;
+    }
+    
+    public function fetch(){
+        $body = file_get_contents($this->uri);
+        $this->dom->loadXML('<response>'.$body.'</response>');
+        
+        return $this;
+    }
+}
