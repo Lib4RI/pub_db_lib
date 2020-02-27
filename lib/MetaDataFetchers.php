@@ -503,6 +503,12 @@ class CrossrefFetcher extends MetaDataFetcher{
                 return;
             }
         }
+        
+        if($xpath->query('//doi_records')->length == 0){
+            $this->setErrosStatus(TRUE, '', 'DOI not found');
+            return;
+        }
+        
     }
 }
 
