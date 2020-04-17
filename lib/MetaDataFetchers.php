@@ -974,7 +974,34 @@ class FileFetcher extends MetaDataFetcher{
     }
 }
 
-class PdbSearchFetcher extends MetaDataFetcher{
+class PdbFetcher extends MetaDataFetcher{
+    public function fetch(){
+        $this->buildUrl(); //echo $this->getUrl(); exit;
+        $this->buildHeaders();
+        $this->cSession = curl_init();
+        $this->setCurlOpt();
+        
+        $response = curl_exec($this->cSession);
+        $header_size = curl_getinfo($this->cSession, CURLINFO_HEADER_SIZE);
+        $this->response_header = substr($response, 0, $header_size);
+        $body = substr($response, $header_size);
+        
+        $body = arrayToXml(json_decode($body,TRUE),$rootElement='<response/>');
+        $body = str_replace ( "<?xml version=\"1.0\"?>\n", '' , $body);
+        $body = trim ( $body, $character_mask = " \t\n\r\0\x0B");
+        
+        $this->dom->loadXML($body);
+        $this->checkError();
+        
+        curl_close($this->cSession);
+        
+        
+        return $this;
+    }
+        
+}
+    
+class PdbSearchFetcher extends PdbFetcher{
     
     /**
      * Service's base URL
@@ -1005,29 +1032,6 @@ class PdbSearchFetcher extends MetaDataFetcher{
     
     
     
-    public function fetch(){
-        $this->buildUrl(); //echo $this->getUrl(); exit;
-        $this->buildHeaders();
-        $this->cSession = curl_init();
-        $this->setCurlOpt();
-        
-        $response = curl_exec($this->cSession);
-        $header_size = curl_getinfo($this->cSession, CURLINFO_HEADER_SIZE);
-        $this->response_header = substr($response, 0, $header_size);
-        $body = substr($response, $header_size);
-        
-        $body = arrayToXml(json_decode($body,TRUE),$rootElement='<response/>');
-        $body = str_replace ( "<?xml version=\"1.0\"?>\n", '' , $body);
-        $body = trim ( $body, $character_mask = " \t\n\r\0\x0B");
-        
-        $this->dom->loadXML($body);
-        $this->checkError();
-        
-        curl_close($this->cSession);
-        
-        
-        return $this;
-    }
     
     
     public function buildUrl(){
@@ -1077,42 +1081,15 @@ class PdbSearchFetcher extends MetaDataFetcher{
 }
 
 
-class PdbEntryFetcher extends MetaDataFetcher{
+class PdbEntryFetcher extends PdbFetcher{
     protected $baseuri = "https://data.rcsb.org/rest/v1/core/entry";
     protected $uri = "https://data.rcsb.org/rest/v1/core/entry";
     protected $params=array('uri_params' => []);
-    
-    
-    public function fetch(){
-        $this->buildUrl(); //echo $this->getUrl(); exit;
-        $this->buildHeaders();
-        $this->cSession = curl_init();
-        $this->setCurlOpt();
-        
-        $response = curl_exec($this->cSession);
-        $header_size = curl_getinfo($this->cSession, CURLINFO_HEADER_SIZE);
-        $this->response_header = substr($response, 0, $header_size);
-        $body = substr($response, $header_size);
-        
-        $body = arrayToXml(json_decode($body,TRUE),$rootElement='<response/>');
-        $body = str_replace ( "<?xml version=\"1.0\"?>\n", '' , $body);
-        $body = trim ( $body, $character_mask = " \t\n\r\0\x0B");
-        
-        $this->dom->loadXML($body);
-        $this->checkError();
-        
-        curl_close($this->cSession);
-        
-        
-        return $this;
-    }
-    
     
     public function setEntry($entry){
         $this->uri = $this->baseuri.'/'.$entry;
         return $this;
     }
-    
 }
 
 function arrayToXml($array, $rootElement = null, $xml = null) {
