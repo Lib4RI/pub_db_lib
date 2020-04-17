@@ -45,8 +45,8 @@ class MetaDataFetcher extends MetaDataAbstract{
      * Can be overridden in subclasses
      */
     protected $allowed_http_response_code = array(200);
-    
-    
+   
+
     /**
      * Error status array
      * 
@@ -973,3 +973,152 @@ class FileFetcher extends MetaDataFetcher{
         return $this;
     }
 }
+
+class PdbSearchFetcher extends MetaDataFetcher{
+    
+    /**
+     * Service's base URL
+     */
+    protected $baseuri = "http://search.rcsb.org/rcsbsearch/v1/query";
+    protected $uri = "http://search.rcsb.org/rcsbsearch/v1/query";
+    protected $range = array('start' => 0, 'rows' => 1);
+    protected $beamline;
+    protected $f_count = FALSE;
+    
+    protected $query = array(
+        'query' => array(
+            'type' => "terminal",
+            'node_id' => 0,
+            'service' => "text",
+            'parameters' => array(
+                'attribute' => "diffrn_source.pdbx_synchrotron_beamline",
+                'operator' => "exact_match",
+                'value' => "",//$this->beamline,
+            ),
+        ),
+        'return_type' => "entry",
+        'request_options' => array(
+            'pager' => array(),//$this->range,
+            'return_counts' => FALSE,
+        ),
+    );
+    
+    
+    
+    public function fetch(){
+        $this->buildUrl(); //echo $this->getUrl(); exit;
+        $this->buildHeaders();
+        $this->cSession = curl_init();
+        $this->setCurlOpt();
+        
+        $response = curl_exec($this->cSession);
+        $header_size = curl_getinfo($this->cSession, CURLINFO_HEADER_SIZE);
+        $this->response_header = substr($response, 0, $header_size);
+        $body = substr($response, $header_size);
+        
+        $body = arrayToXml(json_decode($body,TRUE),$rootElement='<response/>');
+        $body = str_replace ( "<?xml version=\"1.0\"?>\n", '' , $body);
+        $body = trim ( $body, $character_mask = " \t\n\r\0\x0B");
+        
+        $this->dom->loadXML($body);
+        $this->checkError();
+        
+        curl_close($this->cSession);
+        
+        
+        return $this;
+    }
+    
+    
+    public function buildUrl(){
+        
+        $query = array(
+            'query' => array(
+                'type' => "terminal",
+                'node_id' => 0,
+                'service' => "text",
+                'parameters' => array(
+                    'attribute' => "diffrn_source.pdbx_synchrotron_beamline",
+                    'operator' => "exact_match",
+                    'value' => $this->beamline,
+                ),
+            ),
+            'return_type' => "entry",
+            'request_options' => array(
+                'pager' => $this->range,
+                'return_counts' => $this->f_count,
+            ),
+        );
+        
+        $query['query']['parameters']['value'] = $this->beamline;
+        $query['query']['request_options']['pager'] = $this->range;
+        
+        $this->url = $this->uri.'?json='.urlencode(json_encode($query));
+//        echo $this->url;
+        return $this;
+    }
+    
+    public function setBeamline($beamline){
+        $this->beamline = $beamline;
+        return $this;
+    }
+    
+    public function returnCount($f_count){
+        $this->f_count = $f_count;
+        return $this;
+    }
+    
+    public function setRange($range){
+        $this->range['start'] = $range[0];
+        $this->range['rows']  = $range[1];
+        return $this;
+    }
+    
+}
+
+
+class PdbMetadataFetcher extends MetaDataFetcher{
+    
+}
+
+function arrayToXml($array, $rootElement = null, $xml = null) {
+    $_xml = $xml;
+    
+    // If there is no Root Element then insert root
+    if ($_xml === null) {
+        $_xml = new SimpleXMLElement($rootElement !== null ? $rootElement : '<root/>');
+    }
+    
+    // Visit all key value pair
+    foreach ($array as $k => $v) {
+        
+        // If there is nested array then
+        if (is_array($v)) {
+            if (is_numeric($k)){
+                $elem = $_xml->addChild('item');
+                $elem->addAttribute('id', $k);
+            }
+            else{
+                $elem = $_xml->addChild($k);
+            }
+            // Call function for nested array
+            arrayToXml($v, $k, $elem);
+        }
+        
+        else {
+            if (is_numeric($k)){
+                $elem = $_xml->addChild('item', $v);
+                $elem->addAttribute('id', $k);
+            }
+            else{
+                $_xml->addChild($k, $v);
+            }
+            
+            // Simply add child element.
+            //$_xml->addChild($k, $v);
+        }
+    }
+    
+    return $_xml->asXML();
+}
+
