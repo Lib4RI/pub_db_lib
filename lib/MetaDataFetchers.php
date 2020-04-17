@@ -920,7 +920,7 @@ class WosRedirectFetcher extends  MetaDataFetcher{
     }
 }
 
-class PdbFetcher extends MetaDataFetcher{
+class PdbBiosyncFetcher extends MetaDataFetcher{
     
     /**
      * Service's base URL
