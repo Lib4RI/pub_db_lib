@@ -656,3 +656,53 @@ class PubmedWebIdServant extends MetaDataServant{
     }
     
 }
+
+class PdbIdServant extends MetaDataServant{
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        $this->fetcher = new PdbSearchFetcher();
+        $this->processor = new MetaDataProcessor(null);
+        $this->processor->addSteps(array('type' => 'xslt',
+            'rule' => dirname(__FILE__).'/../xslts/pdb-search2id.xslt',
+            'source' => 'file')
+            );
+    }
+    
+    public function setBeamline($beamline){
+        $this->fetcher->setBeamline($beamline);
+        return $this;
+    }
+    
+    public function returnCount($f_count){
+        $this->fetcher->returnCount($f_count);
+        return $this;
+    }
+    
+    public function setRange($range){
+        $this->fetcher->setRange($range);
+        return $this;
+    }
+    
+}
+
+class PdbEntryServant extends MetaDataServant{
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        $this->fetcher = new PdbEntryFetcher();
+        $this->processor = new MetaDataProcessor(null);
+        $this->processor->addSteps(array('type' => 'xslt',
+            'rule' => dirname(__FILE__).'/../xslts/pdb-entry.xslt',
+            'source' => 'file')
+            );
+    }
+    
+    public function setEntry($entry){
+        $this->fetcher->setEntry($entry);
+        return $this;
+    }
+
+}
