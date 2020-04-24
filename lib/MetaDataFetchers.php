@@ -352,6 +352,12 @@ class MetaDataFetcher extends MetaDataAbstract{
         $this->fetch_steps_done = TRUE;
         return $this;
     }
+    
+    public function reset(){
+        $this->fetch_steps_done = FALSE;
+        return $this;
+    }
+    
 }
 
 /**

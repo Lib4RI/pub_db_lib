@@ -32,6 +32,20 @@ class MetaDataServant{
         $this->fetcher = new MetaDataFetcher();
         $this->cruncher = new MetaDataProcessor(null);
     }
+
+    /**
+     * Reset fetching and processing stacks
+     */
+    public function reset(){
+        $this->fetched = FALSE;
+        $this->processed = FALSE;
+        $this->fetched_stack = array();
+        $this->processed_stack = array();
+        
+        $this->fetcher->reset();
+        
+        return $this;
+    }
     
     /**
      * Return TRUE if MetaData is fetched
