@@ -9,7 +9,7 @@
   			<item>
 		    	<title><xsl:value-of select="title"/></title>
 		    	<doi><xsl:value-of select="pdbx_database_id_doi"/></doi>
-		    	<pubmed_id><xsl:value-of select="pdbx_database_id_pub_med"/></pubmed_id>
+		    	<pmid><xsl:value-of select="pdbx_database_id_pub_med"/></pmid>
 	    	</item>
     	</xsl:for-each>
     </result>
