@@ -1124,11 +1124,11 @@ function arrayToXml($array, $rootElement = null, $xml = null) {
         
         else {
             if (is_numeric($k)){
-                $elem = $_xml->addChild('item', $v);
+                $elem = $_xml->addChild('item', htmlspecialchars($v));
                 $elem->addAttribute('id', $k);
             }
             else{
-                $_xml->addChild($k, $v);
+                $_xml->addChild($k, htmlspecialchars($v));
             }
             
             // Simply add child element.
