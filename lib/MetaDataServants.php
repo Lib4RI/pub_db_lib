@@ -684,6 +684,16 @@ class PdbIdServant extends MetaDataServant{
             );
     }
     
+    public function restrictDate($f_date){
+        $this->fetcher->restrictDate($f_date);
+        return $this;
+    }
+
+    public function setDate($date){
+        $this->fetcher->setDate($date);
+        return $this;
+    }
+    
     public function setBeamline($beamline){
         $this->fetcher->setBeamline($beamline);
         return $this;

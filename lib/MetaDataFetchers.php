@@ -1016,24 +1016,26 @@ class PdbSearchFetcher extends PdbFetcher{
     protected $uri = "http://search.rcsb.org/rcsbsearch/v1/query";
     protected $range = array('start' => 0, 'rows' => 1);
     protected $beamline;
+    protected $date = '2010-01-01T00:00:00Z';
+    protected $f_date = TRUE;
     protected $f_count = FALSE;
     
     protected $query = array(
         'query' => array(
-            'type' => "terminal",
-            'node_id' => 0,
-            'service' => "text",
-            'parameters' => array(
-                'attribute' => "diffrn_source.pdbx_synchrotron_beamline",
-                'operator' => "exact_match",
-                'value' => "",//$this->beamline,
-            ),
-        ),
-        'return_type' => "entry",
-        'request_options' => array(
-            'pager' => array(),//$this->range,
-            'return_counts' => FALSE,
-        ),
+//             'type' => "terminal",
+//             'node_id' => 0,
+//             'service' => "text",
+//             'parameters' => array(
+//                 'attribute' => "diffrn_source.pdbx_synchrotron_beamline",
+//                 'operator' => "exact_match",
+//                 'value' => "",//$this->beamline,
+//             ),
+//         ),
+//         'return_type' => "entry",
+//         'request_options' => array(
+//             'pager' => array(),//$this->range,
+//             'return_counts' => FALSE,
+         ),
     );
     
     
@@ -1042,15 +1044,77 @@ class PdbSearchFetcher extends PdbFetcher{
     
     public function buildUrl(){
         
+//         $query = array(
+//             'query' => array(
+//                 'type' => "terminal",
+//                 'node_id' => 0,
+//                 'service' => "text",
+//                 'parameters' => array(
+//                     'attribute' => "diffrn_source.pdbx_synchrotron_beamline",
+//                     'operator' => "exact_match",
+//                     'value' => $this->beamline,
+//                 ),
+//             ),
+//             'return_type' => "entry",
+//             'request_options' => array(
+//                 'pager' => $this->range,
+//                 'return_counts' => $this->f_count,
+//             ),
+//         );
+
         $query = array(
             'query' => array(
-                'type' => "terminal",
-                'node_id' => 0,
-                'service' => "text",
-                'parameters' => array(
-                    'attribute' => "diffrn_source.pdbx_synchrotron_beamline",
-                    'operator' => "exact_match",
-                    'value' => $this->beamline,
+                'type' => "group",
+                'logical_operator' => "and",
+                'nodes' => array( 
+                        array(
+                        'type' => "terminal",
+                        'node_id' => 0,
+                        'service' => "text",
+                        'parameters' => array(
+                            'attribute' => "diffrn_source.pdbx_synchrotron_beamline",
+                            'operator' => "exact_match",
+                            'value' => $this->beamline,
+                        ),
+                    ),
+                    array(
+                        'type' => "group",
+                        'logical_operator' => "or",
+                        'nodes' => array(
+                            array(
+                                'type' => "terminal",
+                                'node_id' => 1,
+                                'service' => "text",
+                                'parameters' => array(
+                                    'attribute' => "rcsb_accession_info.initial_release_date",
+                                    'operator' => "greater",
+                                    'value' => $this->date,
+                                ),
+                          ),
+                            array(
+                                'type' => "terminal",
+                                'node_id' => 1,
+                                'service' => "text",
+                                'parameters' => array(
+                                    'attribute' => "rcsb_accession_info.revision_date",
+                                    'operator' => "greater",
+                                    'value' => $this->date,
+                                ),
+                            ),
+                            array(
+                                'type' => "terminal",
+                                'node_id' => 1,
+                                'service' => "text",
+                                'parameters' => array(
+                                    'attribute' => "rcsb_accession_info.deposit_date",
+                                    'operator' => "greater",
+                                    'value' => $this->date,
+                                ),
+                            ),
+                            
+                        ),
+                    ),
+                    
                 ),
             ),
             'return_type' => "entry",
@@ -1060,11 +1124,22 @@ class PdbSearchFetcher extends PdbFetcher{
             ),
         );
         
-        $query['query']['parameters']['value'] = $this->beamline;
-        $query['query']['request_options']['pager'] = $this->range;
+        if (!$this->f_date){
+            unset($query['query']['nodes'][1]);
+        }
         
         $this->url = $this->uri.'?json='.urlencode(json_encode($query));
 //        echo $this->url;
+        return $this;
+    }
+    
+    public function restrictDate($f_date){
+        $this->f_date = $f_date;
+        return $this;
+    }
+
+    public function setDate($date){
+        $this->date = $date;
         return $this;
     }
     
