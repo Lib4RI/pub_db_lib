@@ -6,7 +6,7 @@
    
   	<result>
   		<xsl:for-each select="/response/citation/item">
-  			<xsl:if test="/response/citation/item/id = 'primary'">
+  			<xsl:if test="id = 'primary'">
 	  			<item>
 			    	<title><xsl:value-of select="title"/></title>
 			    	<doi><xsl:value-of select="pdbx_database_id_doi"/></doi>
