@@ -6,11 +6,13 @@
    
   	<result>
   		<xsl:for-each select="/response/citation/item">
-  			<item>
-		    	<title><xsl:value-of select="title"/></title>
-		    	<doi><xsl:value-of select="pdbx_database_id_doi"/></doi>
-		    	<pmid><xsl:value-of select="pdbx_database_id_pub_med"/></pmid>
-	    	</item>
+  			<xsl:if test="/response/citation/item/id = 'primary'">
+	  			<item>
+			    	<title><xsl:value-of select="title"/></title>
+			    	<doi><xsl:value-of select="pdbx_database_id_doi"/></doi>
+			    	<pmid><xsl:value-of select="pdbx_database_id_pub_med"/></pmid>
+		    	</item>
+	    	</xsl:if>
     	</xsl:for-each>
     </result>
   </xsl:template>
