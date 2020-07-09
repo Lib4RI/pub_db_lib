@@ -16,9 +16,10 @@
     	<xsl:for-each select="/atom:search-results/atom:entry">
     		<item>
     			<title><xsl:value-of select="dc:title" /></title>
+    			<pubyear><xsl:value-of select="substring(prism:coverDate,1,4)" /></pubyear>
     			<doi><xsl:value-of select="prism:doi" /></doi>
     			<eid><xsl:value-of select="atom:eid" /></eid>
-    			<pmid><xsl:value-of select="atom:eid" /></pmid>
+    			<pmid><xsl:value-of select="atom:pubmed-id" /></pmid>
     			<sourceType><xsl:value-of select="prism:aggregationType" />/<xsl:value-of select="atom:subtypeDescription" /></sourceType>
     			<xsl:choose>
     				<xsl:when test="prism:aggregationType = 'Journal' and atom:subtypeDescription = 'Article'">

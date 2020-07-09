@@ -23,6 +23,11 @@ function publication_DB_schema() {
                 'length' => 255,
                 'default' => '',
             ),
+            'pubdate' => array(
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'default' => '',
+            ),
             'doi' => array(
                 'type' => 'varchar',
                 'length' => 255,
