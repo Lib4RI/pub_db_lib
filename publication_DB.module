@@ -252,7 +252,7 @@ function publication_db_inprocess(){
     publication_db_set_status('inprocess', variable_get('publication_DB_inprocess_landing'));
 }
 
-function publication_db_set_status($status, $landing_page, $comment = ''){
+function publication_db_set_status($status, $landing_page, $comment = '', $pdf_action = NULL){
     module_load_include('inc', 'publication_DB', 'includes/define');
     global $user;
     
