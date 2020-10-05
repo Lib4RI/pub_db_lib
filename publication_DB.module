@@ -61,6 +61,13 @@ function publication_DB_menu() {
         'type' => MENU_CALLBACK,
     );
     
+    $items['islandora/pubdb/showpdf'] = array(
+        'page callback' => 'publication_db_show_pdf',
+        'access arguments' => array('access publication alert links'),
+        'type' => MENU_CALLBACK,
+    );
+    
+    
     $items['admin/islandora/publication_DB'] = array(
         'title' => 'Publication Alert',
         'description' => '',
@@ -237,19 +244,19 @@ function publication_db_blacklist($comment = ''){
 }
 
 function publication_db_whitelist(){
-    publication_db_set_status('queued', variable_get('publication_DB_whitelist_landing'));
+    publication_db_set_status('queued', variable_get('publication_DB_whitelist_landing'), '');
 }
 
 function publication_db_ingested(){
-    publication_db_set_status('ingested', variable_get('publication_DB_ingested_landing'));
+    publication_db_set_status('ingested', variable_get('publication_DB_ingested_landing'), '', 'delete');
 }
 
 function publication_db_restore(){
-    publication_db_set_status('queued', variable_get('publication_DB_restore_landing'));
+    publication_db_set_status('queued', variable_get('publication_DB_restore_landing'), '');
 }
 
 function publication_db_inprocess(){
-    publication_db_set_status('inprocess', variable_get('publication_DB_inprocess_landing'));
+    publication_db_set_status('inprocess', variable_get('publication_DB_inprocess_landing'), '', 'download');
 }
 
 function publication_db_set_status($status, $landing_page, $comment = '', $pdf_action = NULL){
@@ -258,6 +265,8 @@ function publication_db_set_status($status, $landing_page, $comment = '', $pdf_a
     
     $doi = trim($_GET['DOI'],'_');
     $eid = trim($_GET['EID'],'_');
+    $id = str_replace (',' , '' ,trim($_GET['id'],'_'));
+    $set_fid = false;
     
     $q = db_select(PUB_DB_ALERT_TABLE, 't');
     $q->fields('t', array('status'));
@@ -278,12 +287,40 @@ function publication_db_set_status($status, $landing_page, $comment = '', $pdf_a
         drupal_set_message(t('The publication is already in list'), 'error');
     }
     else{
+        
+        if (module_exists('pdf_downloader')){
+            module_load_include('module', 'pdf_downloader', 'pdf_downloader');
+            
+            if (($pdf_action == 'download') && (!publication_DB_get_fid($id))){
+                if(pdf_downloader_dload_pdf($doi, $id)){
+                    $fid = publication_DB_get_fid($id);
+                    if($fid){
+                        $set_fid = true;
+                    }
+                }
+            }
+            
+            if (($pdf_action == 'delete') && (publication_DB_get_fid($id))){
+                $file = file_load(publication_DB_get_fid($id));
+                pdf_downloader_delete($file, $id);
+                $fid = null;
+                $set_fid = true;
+            }
+        }
+        
         $query = db_update(PUB_DB_ALERT_TABLE);
-        $query->fields(array(
+        
+        $fields =array(
             'status' => $status,
             'user' => $user->name,
             'comment' => $comment,
-        ));
+        );
+        
+        if ($set_fid){
+            $fields['fid'] = $fid;
+        }
+        
+        $query->fields($fields);
         
         
         if (!empty($doi)){
@@ -293,7 +330,7 @@ function publication_db_set_status($status, $landing_page, $comment = '', $pdf_a
             $query->condition('eid', $eid, '=')->execute();
         }
     }
-    
+        
     drupal_goto($landing_page);
 }
 
@@ -323,6 +360,23 @@ function publication_DB_clear_queued(){
     $query->condition('status', 'queued', '=')->execute();
     
     drupal_goto(variable_get('publication_DB_queued_url'));
+}
+
+function publication_DB_get_fid($id){
+    $q = db_select('file_usage', 't');
+    $q->fields('t', array('fid'));
+    $q->condition('id', $id, '=');
+    $res = $q->execute();
+    foreach ($res as $st) {
+        return $st->fid;
+    }
+}
+
+function publication_DB_show_pdf(){
+    $fid = trim($_GET['fid'],'_');
+    $file = file_load($fid);
+    
+    drupal_goto(file_create_url($file->uri));
 }
 
 /**
