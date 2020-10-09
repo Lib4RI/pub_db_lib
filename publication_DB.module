@@ -67,6 +67,11 @@ function publication_DB_menu() {
         'type' => MENU_CALLBACK,
     );
     
+    $items['islandora/pubdb/rpage'] = array(
+        'page callback' => 'publication_db_remove_pages',
+        'access arguments' => array('access publication alert links'),
+        'type' => MENU_CALLBACK,
+    );
     
     $items['admin/islandora/publication_DB'] = array(
         'title' => 'Publication Alert',
@@ -292,17 +297,22 @@ function publication_db_set_status($status, $landing_page, $comment = '', $pdf_a
             module_load_include('module', 'pdf_downloader', 'pdf_downloader');
             
             if (($pdf_action == 'download') && (!publication_DB_get_fid($id))){
-                if(pdf_downloader_dload_pdf($doi, $id)){
-                    $fid = publication_DB_get_fid($id);
-                    if($fid){
-                        $set_fid = true;
+                $pdf = pdf_downloader_dload_pdf($doi);
+                if($pdf){
+                    $uri = file_create_filename(md5($pdf).'.pdf', 'public://pdfdloader');
+                    $file = file_save_data($pdf, $uri, FILE_EXISTS_REPLACE);
+                    if ($file){
+                        file_usage_add($file, 'publication_db', 'alert', $id);
                     }
+                    $fid = publication_DB_get_fid($id);
+                    $set_fid = true;
                 }
             }
             
             if (($pdf_action == 'delete') && (publication_DB_get_fid($id))){
                 $file = file_load(publication_DB_get_fid($id));
-                pdf_downloader_delete($file, $id);
+                file_usage_delete($file, 'publication_db', 'alert', $id);
+                file_delete($file);
                 $fid = null;
                 $set_fid = true;
             }
@@ -378,6 +388,32 @@ function publication_DB_show_pdf(){
     
     drupal_goto(file_create_url($file->uri));
 }
+
+function publication_DB_remove_pages(){
+    $id = str_replace (',' , '' ,trim($_GET['id'],'_'));
+    $fid = trim($_GET['fid'],'_');
+    $rhead = trim($_GET['rhead'],'_');
+    $rtail = trim($_GET['rtail'],'_');
+    
+    $file = file_load($fid);
+    $copy = file_copy($file, 'public://');
+    
+    $fpath = drupal_realpath($file->uri);
+    $cpath = drupal_realpath($copy->uri);
+    
+//     file_usage_delete($file, 'publication_db', 'alert', $id);
+//     file_delete($file);
+    
+    $npage = exec('qpdf '.$cpath.' --show-npages');
+    $start = 1+$rhead;
+    $stop = $npage-$rtail;
+    exec("qpdf $cpath --pages $cpath {$start}-{$stop} -- $fpath");
+    
+    file_save($file);
+    file_delete($copy);
+    drupal_goto(variable_get('publication_DB_inprocess_url'));
+}
+
 
 /**
  * Implements hook_permission().

@@ -180,7 +180,7 @@ function publication_DB_views_data() {
             'help' => t(''),
             'field' => array(
                 'handler' => 'views_handler_field_numeric',
-                'click sortable' => TRUE,
+                'click sortable' => FALSE,
             ),
         ),
         
