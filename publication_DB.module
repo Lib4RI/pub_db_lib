@@ -411,6 +411,24 @@ function publication_DB_remove_pages(){
     
     file_save($file);
     file_delete($copy);
+    
+    $nnpage = exec('qpdf '.$fpath.' --show-npages');
+    
+    if ($nnpage == $npage){        
+        drupal_set_message('Page(s) not removed', 'warning');
+    }
+    else{
+        $removed_pages = [];
+        if ($start > 1){
+            $removed_pages = array_merge($removed_pages, range(1,$start-1));
+        }
+        if ($stop != $npage){
+            $removed_pages = array_merge($removed_pages, range($stop+1,$npage));
+        }
+        
+        drupal_set_message('Object ID: '.$id.' - Page '.implode(', ', $removed_pages).' removed. (If you are visualizing the PDF in the browser, reload the corresponding page to check the result)', 'status');
+    }
+    
     drupal_goto(variable_get('publication_DB_inprocess_url'));
 }
 
