@@ -295,10 +295,11 @@ function publication_db_set_status($status, $landing_page, $comment = '', $pdf_a
         
         if (module_exists('pdf_downloader')){
             module_load_include('module', 'pdf_downloader', 'pdf_downloader');
-            
+           
             if (($pdf_action == 'download') && (!publication_DB_get_fid($id))){
                 $pdf = pdf_downloader_dload_pdf($doi);
                 if($pdf){
+                    drupal_set_message('Object ID: '.$id.' - PDF downloaded', 'status');
                     $uri = file_create_filename(md5($pdf).'.pdf', 'public://pdfdloader');
                     $file = file_save_data($pdf, $uri, FILE_EXISTS_REPLACE);
                     if ($file){
@@ -306,6 +307,9 @@ function publication_db_set_status($status, $landing_page, $comment = '', $pdf_a
                     }
                     $fid = publication_DB_get_fid($id);
                     $set_fid = true;
+                }
+                else{
+                    drupal_set_message('Object ID: '.$id.' - Couldn\'t download PDF', 'warning');
                 }
             }
             
