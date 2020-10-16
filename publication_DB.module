@@ -245,7 +245,7 @@ function publication_DB_views_api() {
 }
 
 function publication_db_blacklist($comment = ''){
-    publication_db_set_status('blacklisted', variable_get('publication_DB_blacklist_landing'), $comment);
+    publication_db_set_status('blacklisted', variable_get('publication_DB_blacklist_landing'), $comment, 'delete');
 }
 
 function publication_db_whitelist(){
