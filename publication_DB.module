@@ -385,6 +385,8 @@ function publication_DB_get_fid($id){
     $q = db_select('file_usage', 't');
     $q->fields('t', array('fid'));
     $q->condition('id', $id, '=');
+    $q->condition('module', 'publication_db', '=');
+    $q->condition('type', 'alert', '=');
     $res = $q->execute();
     foreach ($res as $st) {
         return $st->fid;
