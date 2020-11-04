@@ -111,7 +111,7 @@ function publication_DB_menu() {
 
 //TODO move to lib4ri customization
 function publication_DB_get_mods($query = NULL, $params = NULL){
-    module_load_include('inc', 'publication_DB', 'utils/classes');
+    module_load_include('php', 'publication_DB', 'lib/MetaDataFetchers');
     
     $fetcher = new ScopusAbstractFetcher();
     $fetcher->setKey(variable_get('publication_DB_scopus_api_key',''));
