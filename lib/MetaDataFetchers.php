@@ -1119,10 +1119,17 @@ class PdbSearchFetcher extends PdbFetcher{
             ),
             'return_type' => "entry",
             'request_options' => array(
-                'pager' => $this->range,
-                'return_counts' => $this->f_count,
+//                'pager' => $this->range,
+//                'return_counts' => $this->f_count,
             ),
         );
+        
+        if ($this->f_count){
+            $query['request_options'] = array('return_counts' => $this->f_count);
+        }
+        else {
+            $query['request_options'] = array('pager' => $this->range);
+        }
         
         if (!$this->f_date){
             unset($query['query']['nodes'][1]);
