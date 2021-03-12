@@ -30,7 +30,7 @@ function publication_DB_admin_form() {
     
     $form['publication_DB_tabs']['publication_DB_scopus_alert_tab']['publication_DB_scopus_search_year_start'] = array(
         '#type' => 'textfield',
-        '#title' => t('Search Year'),
+        '#title' => t('Start search Year'),
         '#default_value' => variable_get('publication_DB_scopus_search_year_start', ''),
         '#required' => FALSE,
         '#states' => array(
@@ -42,7 +42,7 @@ function publication_DB_admin_form() {
 
     $form['publication_DB_tabs']['publication_DB_scopus_alert_tab']['publication_DB_scopus_search_year_stop'] = array(
         '#type' => 'textfield',
-        '#title' => t('Search Year'),
+        '#title' => t('Stop search Year'),
         '#default_value' => variable_get('publication_DB_scopus_search_year_stop', ''),
         '#required' => FALSE,
         '#states' => array(

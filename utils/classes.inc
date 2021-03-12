@@ -26,7 +26,7 @@ class PubAlert{
 //        $this->metaDataServant->setKey(variable_get('publication_DB_scopus_api_key',''));
         $this->metaDataServant->setUriParam('field', 'eid,doi,title,coverDate,aggregationType,subtypeDescription');
         $this->metaDataServant->setUriParam('count', '200');
-        $this->setSearchYearStart(variable_get('publication_DB_scopus_search_year_start'));
+        $this->setSearchYearStart((string)((int)variable_get('publication_DB_scopus_search_year_start')-1)); //local and metadata provider publication year can differ. Reduce falso positives        
         $this->setSearchYearStop(variable_get('publication_DB_scopus_search_year_stop'));
     }
     
@@ -62,7 +62,6 @@ class PubAlert{
         $current_url = url(current_path(), array('absolute' => TRUE));
         $collections = array_map(function($val){return 'RELS_EXT_isMemberOfCollection_uri_ms:info\\:fedora/'.$val;},str_replace(':','\\:',array_map('trim',explode(',',variable_get('publication_DB_search_collections')))));
                        
-        
         //TODO Parametrize query and add hook 
         $params['f'][0] = 'mods_originInfo_encoding_w3cdtf_keyDate_yes_dateIssued_dt:['.$this->searchYearStart.'-01-01T00:00:00Z TO '.$this->searchYearStop.'-12-31T23:59:59Z]';
         $params['f'][1] = 'mods_identifier_doi_ms:[* TO *] OR mods_identifier_scopus_ms:[* TO *]';
