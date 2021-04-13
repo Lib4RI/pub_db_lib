@@ -1012,8 +1012,8 @@ class PdbSearchFetcher extends PdbFetcher{
     /**
      * Service's base URL
      */
-    protected $baseuri = "http://search.rcsb.org/rcsbsearch/v1/query";
-    protected $uri = "http://search.rcsb.org/rcsbsearch/v1/query";
+    protected $baseuri = "https://search.rcsb.org/rcsbsearch/v1/query";
+    protected $uri = "https://search.rcsb.org/rcsbsearch/v1/query";
     protected $range = array('start' => 0, 'rows' => 1);
     protected $beamline;
     protected $date = '2010-01-01T00:00:00Z';
