@@ -124,8 +124,8 @@ class PubAlert{
     }
     
     private function removeInRepo(){
-        foreach ($this->new_pubs as $key => $elem){
-            foreach ($this->in_repo_pubs as $repoobj){
+        foreach ($this->in_repo_pubs as $repoobj){
+            foreach ($this->new_pubs as $key => $elem){
                 if (!is_array($repoobj['mods_identifier_doi_ms'])){
                     $repoobj['mods_identifier_doi_ms'] = [];
                 }
