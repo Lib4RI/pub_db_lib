@@ -46,7 +46,12 @@ class MetaDataFetcher extends MetaDataAbstract{
      */
     protected $allowed_http_response_code = array(200);
    
-
+    /**
+     * String containing the format returned by the service provider
+     * Can be overridden in subclasses
+     */
+    protected $fetch_format = 'xml';
+    
     /**
      * Error status array
      * 
@@ -123,7 +128,7 @@ class MetaDataFetcher extends MetaDataAbstract{
      * @return MetaDataFetcher
      *   The instantiated class.
      */
-    public function buildUrl(){
+    public function buildUrl(){var_dump($this->params['uri_params']);
         $this->url = $this->uri.'?'.http_build_query($this->params['uri_params']);
         return $this;
     }
@@ -136,6 +141,16 @@ class MetaDataFetcher extends MetaDataAbstract{
      */
     public function getUrl(){
         return $this->url;
+    }
+
+    /**
+     * Return the full URL
+     *
+     * @return string
+     *   A string containing the full URL.
+     */
+    public function getUri(){
+        return $this->uri;
     }
     
     /**
@@ -223,6 +238,10 @@ class MetaDataFetcher extends MetaDataAbstract{
         $header_size = curl_getinfo($this->cSession, CURLINFO_HEADER_SIZE);
         $this->response_header = substr($response, 0, $header_size);
         $body = substr($response, $header_size);
+        
+        if ($this->fetch_format == 'json'){
+            $body = arrayToXml(json_decode($body, true), $rootElement='<response/>');
+        }
         
         $this->dom->loadXML($body);
         $this->checkError();
@@ -1180,6 +1199,31 @@ class PdbEntryFetcher extends PdbFetcher{
     }
 }
 
+/**
+ * Class to fetch DataCite metadata
+ */
+class DataCiteFetcher extends MetaDataFetcher{
+    protected $uri = "https://api.datacite.org/";
+    protected $params=array('uri_params' => []);
+    
+}
+
+/**
+ * Class to fetch DataCite dois metadata
+ */
+class DataCiteDoisFetcher extends DataCiteFetcher{
+    protected $uri = "https://api.datacite.org/dois/";
+    protected $params=array('uri_params' => array('query' => 'relatedIdentifiers.relatedIdentifier:'));
+    protected $fetch_format = 'json';
+    
+    public function setDoi($doi){
+        $this->setUriParam('query', "relatedIdentifiers.relatedIdentifier:$doi");
+    }
+    
+}
+
+/**********  Functions  *********************************************************************************/
+
 function arrayToXml($array, $rootElement = null, $xml = null) {
     $_xml = $xml;
     
@@ -1220,4 +1264,4 @@ function arrayToXml($array, $rootElement = null, $xml = null) {
     
     return $_xml->asXML();
 }
-
+    

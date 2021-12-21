@@ -730,3 +730,18 @@ class PdbEntryServant extends MetaDataServant{
     }
 
 }
+
+class DataCiteDoisServant extends MetaDataServant{
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        $this->fetcher = new DataCiteDoisFetcher();
+        $this->processor = new MetaDataProcessor(null);
+        $this->processor->addSteps(array('type' => 'xslt',
+            'rule' => dirname(__FILE__).'/../xslts/data_cite_dois.xslt',
+            'source' => 'file')
+            );
+    }
+    
+}
