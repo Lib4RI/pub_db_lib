@@ -8,6 +8,7 @@
     	<xsl:for-each select="/response/data/item">
     		<item>
      			<doi><xsl:value-of select="attributes/doi"/></doi>
+     			<url><xsl:value-of select="attributes/url"/></url>
 			</item>
      	</xsl:for-each>
     </results>
