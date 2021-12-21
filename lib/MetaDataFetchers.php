@@ -128,7 +128,7 @@ class MetaDataFetcher extends MetaDataAbstract{
      * @return MetaDataFetcher
      *   The instantiated class.
      */
-    public function buildUrl(){var_dump($this->params['uri_params']);
+    public function buildUrl(){
         $this->url = $this->uri.'?'.http_build_query($this->params['uri_params']);
         return $this;
     }
