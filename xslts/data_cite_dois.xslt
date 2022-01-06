@@ -9,6 +9,7 @@
     		<item>
      			<doi><xsl:value-of select="attributes/doi"/></doi>
      			<url><xsl:value-of select="attributes/url"/></url>
+     			<publisher><xsl:value-of select="attributes/publisher"/></publisher>
 			</item>
      	</xsl:for-each>
     </results>
