@@ -10,8 +10,10 @@
      			<doi><xsl:value-of select="attributes/doi"/></doi>
      			<url><xsl:value-of select="attributes/url"/></url>
      			<publisher><xsl:value-of select="attributes/publisher"/></publisher>
-     			<resourceType><xsl:value-of select="attributes/types/resourceType"/></resourceType>
-     			<resourceTypeGeneral><xsl:value-of select="attributes/types/resourceTypeGeneral"/></resourceTypeGeneral>
+<!--       			<resourceType><xsl:value-of select="attributes/types/resourceType"/></resourceType>
+     			<resourceTypeGeneral><xsl:value-of select="attributes/types/resourceTypeGeneral"/></resourceTypeGeneral>-->
+     			<xsl:copy-of select="attributes/types"/>
+     			<xsl:copy-of select="attributes/relatedIdentifiers"/>
 			</item>
      	</xsl:for-each>
     </results>
