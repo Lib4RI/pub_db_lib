@@ -744,4 +744,19 @@ class DataCiteDoisServant extends MetaDataServant{
             );
     }
     
+    public function pushQueryElement($element, $value){
+        $this->fetcher->pushQueryElement($element, $value);
+        return $this;
+    }
+    
+    public function pushRelationType($type){
+        $this->fetcher->pushRelationType($type);
+        return $this;
+    }
+    
+    public function pushPublisher($hosts){
+        $this->fetcher->pushPublisher($hosts);
+        return $this;
+    }
+    
 }

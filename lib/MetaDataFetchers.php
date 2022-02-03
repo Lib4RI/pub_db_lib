@@ -1213,11 +1213,44 @@ class DataCiteFetcher extends MetaDataFetcher{
  */
 class DataCiteDoisFetcher extends DataCiteFetcher{
     protected $uri = "https://api.datacite.org/dois/";
-    protected $params=array('uri_params' => array('query' => 'relatedIdentifiers.relatedIdentifier:'));
+    protected $params=array('uri_params' => array('query' => '(relatedIdentifiers.relationType:IsSupplementTo)AND(relatedIdentifiers.relatedIdentifier:)'));
     protected $fetch_format = 'json';
+    private $query_elements = [];
+    
+    private function buildQuery(){
+        $elements = $this->query_elements;
+        $query = '('.array_shift($elements).')';
+        
+        foreach ($elements as $element){
+            $query.="AND($element)";
+        }
+        
+        $this->setUriParam('query', $query);
+    }
+    
+    public function buildUrl(){
+        $this->buildQuery();
+        return parent::buildUrl();
+    }
+    
+    public function pushQueryElement($element, $value){
+        array_push($this->query_elements, "$element:$value");
+        return $this;
+    }
+    
+    public function pushRelationType($type){
+        $this->pushQueryElement("relatedIdentifiers.relationType", $value);
+        return $this;
+    }
+    
+    public function pushPublisher($hosts){
+        $this->pushQueryElement("publisher", $value);
+        return $this;
+    }
     
     public function setDoi($doi){
-        $this->setUriParam('query', "relatedIdentifiers.relatedIdentifier:$doi");
+        $this->pushQueryElement("relatedIdentifiers.relatedIdentifier", $doi);
+        return $this;
     }
     
 }
