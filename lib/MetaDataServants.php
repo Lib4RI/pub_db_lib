@@ -754,8 +754,8 @@ class DataCiteDoisServant extends MetaDataServant{
         return $this;
     }
     
-    public function pushPublisher($hosts){
-        $this->fetcher->pushPublisher($hosts);
+    public function pushPublisher($publisher){
+        $this->fetcher->pushPublisher($publisher);
         return $this;
     }
     
