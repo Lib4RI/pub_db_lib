@@ -1215,15 +1215,24 @@ class DataCiteDoisFetcher extends DataCiteFetcher{
     protected $uri = "https://api.datacite.org/dois/";
     protected $params=array('uri_params' => array('query' => '(relatedIdentifiers.relationType:IsSupplementTo)AND(relatedIdentifiers.relatedIdentifier:)'));
     protected $fetch_format = 'json';
-    private $query_elements = [];
+    private $query_elements = array('relatedIdentifiers.relationType' => [],
+                                    'publisher' => [],
+                                    'relatedIdentifiers.relatedIdentifier' => [],
+    );
     
     private function buildQuery(){
         $elements = $this->query_elements;
-        $query = '('.array_shift($elements).')';
         
-        foreach ($elements as $element){
-            $query.="AND($element)";
+        $query = '';
+        foreach ($this->query_elements as $group => $elements){
+            $query.="((${group}:".array_shift($elements).')';
+            foreach ($elements as $element => $value){
+                $query.="OR(${group}:${value})";
+            }
+            $query.=")AND";
         }
+
+        $query = rtrim($query,'AND');
         
         $this->setUriParam('query', $query);
     }
@@ -1234,17 +1243,20 @@ class DataCiteDoisFetcher extends DataCiteFetcher{
     }
     
     public function pushQueryElement($element, $value){
-        array_push($this->query_elements, "$element:$value");
+        if (!isset($this->query_elements[$element])){
+            $this->query_elements[$element] = [];
+        }
+        array_push($this->query_elements[$element], "$value");
         return $this;
     }
     
     public function pushRelationType($type){
-        $this->pushQueryElement("relatedIdentifiers.relationType", $value);
+        $this->pushQueryElement("relatedIdentifiers.relationType", $type);
         return $this;
     }
     
-    public function pushPublisher($hosts){
-        $this->pushQueryElement("publisher", $value);
+    public function pushPublisher($host){
+        $this->pushQueryElement("publisher", "\"$host\"");
         return $this;
     }
     
