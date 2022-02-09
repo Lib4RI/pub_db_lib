@@ -1225,9 +1225,13 @@ class DataCiteDoisFetcher extends DataCiteFetcher{
         
         $query = '';
         foreach ($this->query_elements as $group => $elements){
+            $logic = 'OR';
+            if (substr($group, 0, 1) == '-'){
+                $logic = 'AND';
+            }
             $query.="((${group}:".array_shift($elements).')';
             foreach ($elements as $element => $value){
-                $query.="OR(${group}:${value})";
+                $query.="${logic}(${group}:${value})";
             }
             $query.=")AND";
         }
