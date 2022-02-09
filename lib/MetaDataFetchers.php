@@ -1254,6 +1254,11 @@ class DataCiteDoisFetcher extends DataCiteFetcher{
         $this->pushQueryElement("relatedIdentifiers.relationType", $type);
         return $this;
     }
+
+    public function pushExcludeRelationType($type){
+        $this->pushQueryElement("-relatedIdentifiers.relationType", $type);
+        return $this;
+    }
     
     public function pushPublisher($host){
         $this->pushQueryElement("publisher", "\"$host\"");

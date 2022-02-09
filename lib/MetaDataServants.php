@@ -754,6 +754,11 @@ class DataCiteDoisServant extends MetaDataServant{
         return $this;
     }
     
+    public function pushExcludeRelationType($type){
+        $this->fetcher->pushExcludeRelationType($type);
+        return $this;
+    }
+    
     public function pushPublisher($publisher){
         $this->fetcher->pushPublisher($publisher);
         return $this;
