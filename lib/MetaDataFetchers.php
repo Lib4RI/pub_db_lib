@@ -1215,10 +1215,10 @@ class DataCiteDoisFetcher extends DataCiteFetcher{
     protected $uri = "https://api.datacite.org/dois/";
     protected $params=array('uri_params' => array('query' => '(relatedIdentifiers.relationType:IsSupplementTo)AND(relatedIdentifiers.relatedIdentifier:)'));
     protected $fetch_format = 'json';
-    private $query_elements = array('relatedIdentifiers.relationType' => [],
+    private $query_elements = array();/*'relatedIdentifiers.relationType' => [],
                                     'publisher' => [],
                                     'relatedIdentifiers.relatedIdentifier' => [],
-    );
+    );*/
     
     private function buildQuery(){
         $elements = $this->query_elements;
