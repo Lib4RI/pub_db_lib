@@ -68,6 +68,11 @@ class MetaDataFetcher extends MetaDataAbstract{
      * Steps done flag (TRUE or FALSE)
      */
     protected $fetch_steps_done = FALSE;
+
+    /**
+     * Build URL flag (TRUE or FALSE)
+     */
+    protected $build_url_flag = TRUE;
     
     /**
      * Constructor 
@@ -90,7 +95,18 @@ class MetaDataFetcher extends MetaDataAbstract{
         $this->uri = $uri;
         return $this;
     }
-  
+
+    /**
+     * Set the service URL.
+     *
+     * @return MetaDataFetcher
+     *   The instantiated class.
+     */
+    public function setUrl($url){
+        $this->url = $url;
+        return $this;
+    }
+    
     /**
      * Set URI parameter
      *
@@ -132,7 +148,7 @@ class MetaDataFetcher extends MetaDataAbstract{
         $this->url = $this->uri.'?'.http_build_query($this->params['uri_params']);
         return $this;
     }
-
+    
     /**
      * Return the full URL
      *
@@ -230,7 +246,9 @@ class MetaDataFetcher extends MetaDataAbstract{
      *   The instantiated class.
      */
     public function fetch(){
-        $this->buildUrl(); //echo $this->getUrl(); exit;
+        if ($this->build_url_flag){
+            $this->buildUrl(); //echo $this->getUrl(); exit;
+        }
         $this->buildHeaders();
         $this->cSession = curl_init();
         $this->setCurlOpt();
@@ -252,6 +270,12 @@ class MetaDataFetcher extends MetaDataAbstract{
         return $this;
     }
 
+    
+    public function setBuildUrl($flag = TRUE){
+        $this->build_url_flag = $flag;
+        return $this;
+    }
+    
     /**
      * Check the service's response for errors
      */
@@ -624,7 +648,7 @@ class ScopusSearchFetcher extends  MetaDataFetcher{
      * @return String
      *   The value of the relevant node
      */
-    private function getValueFromDom($query){
+    protected function getValueFromDom($query){
         $xpath = new DOMXPath($this->getDom());
         $results = @$xpath->query($query);
         if (!empty($results)){
@@ -1205,6 +1229,26 @@ class PdbEntryFetcher extends PdbFetcher{
 class DataCiteFetcher extends MetaDataFetcher{
     protected $uri = "https://api.datacite.org/";
     protected $params=array('uri_params' => []);
+    
+    /**
+     * Steps "iterator"
+     *
+     * @return MetaDataFetcher
+     *   The instantiated class.
+     */
+    public function nextStep(){
+        
+        $next = $this->getValueFromDom("//links/next");
+        if ($next){
+            $this->setBuildUrl(FALSE);
+            $this->setUrl($next);
+        }
+        else{
+            $this->fetch_steps_done = TRUE;
+        }
+                
+        return $this;
+    }
     
 }
 

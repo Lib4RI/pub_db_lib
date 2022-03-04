@@ -96,4 +96,18 @@ abstract class MetaDataAbstract{
             
         return $dom->textContent;
     }
+    
+    /**
+     * Convenience internal method to get relevant values from DOM
+     *
+     * @return String
+     *   The value of the relevant node
+     */
+    protected function getValueFromDom($query){
+        $xpath = new DOMXPath($this->getDom());
+        $results = @$xpath->query($query);
+        if ((!empty($results) )){
+            return @$results[0]->nodeValue;
+        }
+    }
 }
