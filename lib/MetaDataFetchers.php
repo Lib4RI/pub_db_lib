@@ -1320,6 +1320,21 @@ class DataCiteDoisFetcher extends DataCiteFetcher{
     
 }
 
+/**
+ * Class to fetch a DataCite package metadata
+ */
+class DataCitePackageFetcher extends DataCiteFetcher{
+    protected $baseuri = "https://api.datacite.org/dois/";
+    protected $fetch_format = 'json';
+    
+    public function setDoi($doi){
+        $this->uri = $this->baseuri.$doi;
+        return $this;
+    }
+    
+}
+    
+    
 /**********  Functions  *********************************************************************************/
 
 function arrayToXml($array, $rootElement = null, $xml = null) {
