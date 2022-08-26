@@ -1055,8 +1055,8 @@ class PdbSearchFetcher extends PdbFetcher{
     /**
      * Service's base URL
      */
-    protected $baseuri = "https://search.rcsb.org/rcsbsearch/v1/query";
-    protected $uri = "https://search.rcsb.org/rcsbsearch/v1/query";
+    protected $baseuri = "https://search.rcsb.org/rcsbsearch/v2/query";
+    protected $uri = "https://search.rcsb.org/rcsbsearch/v2/query";
     protected $range = array('start' => 0, 'rows' => 1);
     protected $beamline;
     protected $date = '2010-01-01T00:00:00Z';
@@ -1171,7 +1171,7 @@ class PdbSearchFetcher extends PdbFetcher{
             $query['request_options'] = array('return_counts' => $this->f_count);
         }
         else {
-            $query['request_options'] = array('pager' => $this->range);
+            $query['request_options'] = array('paginate' => $this->range);
         }
         
         if (!$this->f_date){
@@ -1179,7 +1179,6 @@ class PdbSearchFetcher extends PdbFetcher{
         }
         
         $this->url = $this->uri.'?json='.urlencode(json_encode($query));
-//        echo $this->url;
         return $this;
     }
     
