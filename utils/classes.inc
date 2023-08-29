@@ -57,6 +57,11 @@ class PubAlert{
         return $this;
     }
     
+    public function fetchStep(){
+        
+    }
+    
+    
     public function getInRepo(){
         global $base_url;
         $current_url = url(current_path(), array('absolute' => TRUE));
@@ -110,6 +115,24 @@ class PubAlert{
         $this->removeQueued();
         $this->insertPubs();
         return $this;
+    }
+
+    public function setNewPubsSteps(){
+        $this->setQuery();
+        while(1){
+            $this->fetched_pubs = $this->fetchStep();
+            foreach($this->fetched_pubs as $pub){
+                if ((!$this->getInRepoSingle($pub)) AND (!$this->getQueuedSingle($pub))) 
+                $this->insertSingle($pub);
+            }
+        }
+        return $this;
+    }
+    
+    protected function insertSingle(){
+        db_insert($this->queued_table)
+        ->fields($this->buildFieldsArray($pub))
+        ->execute();
     }
     
     protected function insertPubs(){
