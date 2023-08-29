@@ -401,6 +401,16 @@ class MetaDataFetcher extends MetaDataAbstract{
         return $this;
     }
     
+    /**
+     * Return the value of the steps done flag
+     *
+     * @return string
+     *   The error message
+     */
+    public function getFetchStepsDone(){
+        return $this->fetch_steps_done;
+    }
+    
 }
 
 /**

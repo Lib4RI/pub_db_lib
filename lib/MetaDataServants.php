@@ -134,6 +134,28 @@ class MetaDataServant{
     }
     
     /**
+     * Fetch data from the selected web service (single step)
+     *
+     * @return MetaDataServant
+     *   The instatiated class.
+     */
+    public function fetchStep(){
+        $this->fetcher->fetch();
+        $dom = new DOMDocument( "1.0", "ISO-8859-15" );
+        $dom->loadXML($this->fetcher->getXML()); //This must be improved!!!
+        $this->fetched_stack[0] = $dom;
+        if($this->getFetcherErrorStatus()){
+            $this->fetched = FALSE;
+        }
+        else{
+            $this->fetched = TRUE;
+        }
+        $this->fetcher->nextStep(); 
+        return $this;
+    }
+    
+    
+    /**
      * Perform the transformation chain
      *
      * @return MetaDataServant
@@ -149,6 +171,26 @@ class MetaDataServant{
             }
             $this->processed = TRUE;
         }
+        
+        return $this;
+    }
+
+    /**
+     * Perform the transformation chain (single step)
+     *
+     * @return MetaDataServant
+     *   The instatiated class.
+     */
+    public function processStep(){
+        $this->processor->loadDom($this->fetched_stack[0]);
+        $dom = new DOMDocument( "1.0", "ISO-8859-15" );
+        $dom->loadXML($this->processor->process()->getXML()); //This must be improved!!!
+        $this->processed_stack[0] = $dom;
+        
+        if ($this->fetched = TRUE){
+            $this->processed = TRUE;
+        }
+        
         return $this;
     }
     
@@ -163,6 +205,17 @@ class MetaDataServant{
         return $this;
     }
 
+    /**
+     * Fetch data from the selected web service and perform the transformation chain (single step)
+     *
+     * @return MetaDataServant
+     *   The instatiated class.
+     */
+    public function serveStep(){
+        $this->fetchStep()->processStep();
+        return $this;
+    }
+    
     /**
      * Return the fetched DOMDocument
      *
@@ -315,6 +368,17 @@ class MetaDataServant{
     public function getProcessor(){
         return $this->processor;
     }
+    
+    /**
+     * Return the value of the steps done flag
+     *
+     * @return string
+     *   The error message
+     */
+    public function getFetchStepsDone(){
+        return $this->fetcher->getFetchStepsDone();
+    }
+    
 }
 
 /**
