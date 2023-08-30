@@ -92,6 +92,14 @@ class PubAlert{
     public function isInRepo($pub){
         $collections = array_map(function($val){return 'RELS_EXT_isMemberOfCollection_uri_ms:info\\:fedora/'.$val;},str_replace(':','\\:',array_map('trim',explode(',',variable_get('publication_DB_search_collections')))));
         
+        if (is_array($pub['doi'])){
+            $pub['doi'] = '';
+        }
+        
+        if (is_array($pub['eid'])){
+            $pub['eid'] = '';
+        }
+        
         $doi = (strlen($pub['doi']) > 0) ? $pub['doi'] : 'none';
         $eid = (strlen($pub['eid']) > 0) ? $pub['eid'] : 'none';
         
@@ -132,6 +140,14 @@ class PubAlert{
     }
 
     public function isInQueue($pub){
+        if (is_array($pub['doi'])){
+            $pub['doi'] = '';
+        }
+        
+        if (is_array($pub['eid'])){
+            $pub['eid'] = '';
+        }
+        
         $doi = (strlen($pub['doi']) > 0) ? $pub['doi'] : 'none';
         $eid = (strlen($pub['eid']) > 0) ? $pub['eid'] : 'none';
         
