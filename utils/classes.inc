@@ -89,6 +89,35 @@ class PubAlert{
         return $this;
     }
 
+    public function isInRepo($pub){
+        $collections = array_map(function($val){return 'RELS_EXT_isMemberOfCollection_uri_ms:info\\:fedora/'.$val;},str_replace(':','\\:',array_map('trim',explode(',',variable_get('publication_DB_search_collections')))));
+        
+        $doi = (strlen($pub['doi']) > 0) ? $pub['doi'] : 'none';
+        $eid = (strlen($pub['eid']) > 0) ? $pub['eid'] : 'none';
+        
+        //TODO Parametrize query and add hook
+        $params['f'][0] = "mods_identifier_doi_ms:($doi) OR mods_identifier_scopus_ms:($eid)";
+        $params['f'][1] = implode(' OR ', $collections);
+        
+        //$params['q'] = str_replace($base_url.'/', '', $current_url);
+        $sq = new IslandoraSolrQueryProcessor();
+        
+        // Build and execute Apache Solr query.
+        $sq->buildQuery('*:*', $params);
+        $sq->solrParams['facet'] = "false";
+        $sq->solrParams['fl'] = 'PID, mods_identifier_doi_ms, mods_identifier_scopus_ms';
+        $sq->solrLimit = '2';
+        $sq->executeQuery(FALSE, TRUE);
+        
+        
+        $ii = 0;
+        foreach ($sq->islandoraSolrResult['response']['objects'] as $object) {
+            $ii++;
+        }
+        
+        return ($ii==1) ? TRUE : FALSE;
+    }
+    
     public function getQueued(){
         $query = db_select($this->queued_table, 'g');
         $query->fields('g');
@@ -102,6 +131,28 @@ class PubAlert{
         return $this;
     }
 
+    public function isInQueue($pub){
+        $doi = (strlen($pub['doi']) > 0) ? $pub['doi'] : 'none';
+        $eid = (strlen($pub['eid']) > 0) ? $pub['eid'] : 'none';
+        
+        $or_condition = db_or();
+        $or_condition->condition('eid', $eid,'=');
+        $or_condition->condition('doi', $doi,'=');
+        
+        $query = db_select($this->queued_table, 'g');
+        $query->fields('g');
+        $query->condition($or_condition);
+        $res = $query->execute();
+        
+        $ii=0;
+        
+        foreach ($res as $pub) {
+            $ii++;
+        }
+        
+        return ($ii==1) ? TRUE : FALSE;
+    }
+    
     public function getBlacklisted(){
         return $this;
     }
@@ -119,10 +170,10 @@ class PubAlert{
 
     public function setNewPubsSteps(){
         $this->setQuery();
-        while(1){
+        while(!$this->metaDataServant->getFetchStepsDone()){
             $this->fetched_pubs = $this->fetchStep();
             foreach($this->fetched_pubs as $pub){
-                if ((!$this->getInRepoSingle($pub)) AND (!$this->getQueuedSingle($pub))) 
+                if ((!$this->isInRepo($pub)) AND (!$this->isInQueue($pub))) 
                 $this->insertSingle($pub);
             }
         }
