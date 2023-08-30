@@ -135,7 +135,8 @@ function publication_DB_scopus_alert(&$context){
     module_load_include('inc', 'publication_DB', 'utils/classes');
     if (variable_get('publication_DB_scopus_alert')){
         $alert = new ScopusAlert();
-        $list = $alert->setNewPubs()->getNewPubs();
+//        $list = $alert->setNewPubs()->getNewPubs();
+        $alert->setNewPubsSteps();
     }
 
     $context['sandbox']['current_node']++;
@@ -152,7 +153,8 @@ function publication_DB_test_alert(&$context){
 
     module_load_include('inc', 'publication_DB', 'utils/classes');
     $alert = new TestAlert();
-    $list = $alert->setNewPubs()->getNewPubs();
+//    $list = $alert->setNewPubs()->getNewPubs();
+    $alert->setNewPubsSteps();
     
     
     $context['sandbox']['current_node']++;
@@ -168,8 +170,8 @@ function publication_DB_alert($AlertClass, &$context){
     }
     
     module_load_include('inc', 'publication_DB', 'utils/classes');
-    $list = $AlertClass->setNewPubs()->getNewPubs();
-    
+//    $list = $AlertClass->setNewPubs()->getNewPubs();
+    $AlertClass->setNewPubsSteps();
     
     $context['sandbox']['current_node']++;
     $context['sandbox']['progress']++;
