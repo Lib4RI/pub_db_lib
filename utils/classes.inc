@@ -171,8 +171,8 @@ class PubAlert{
     public function setNewPubsSteps(){
         $this->setQuery();
         while(!$this->metaDataServant->getFetchStepsDone()){
-            $this->fetched_pubs = $this->fetchStep();
-            foreach($this->fetched_pubs as $pub){
+            $this->metaDataServant->serveStep();
+            foreach($this->metaDataServant->getProcessedArray() as $pub){
                 if ((!$this->isInRepo($pub)) AND (!$this->isInQueue($pub))) 
                 $this->insertSingle($pub);
             }
