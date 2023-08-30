@@ -172,15 +172,16 @@ class PubAlert{
         $this->setQuery();
         while(!$this->metaDataServant->getFetchStepsDone()){
             $this->metaDataServant->serveStep();
-            foreach($this->metaDataServant->getProcessedArray() as $pub){
-                if ((!$this->isInRepo($pub)) AND (!$this->isInQueue($pub))) 
-                $this->insertSingle($pub);
+            foreach($this->metaDataServant->getProcessedArray()[0]['item'] as $pub){
+                if ((!$this->isInRepo($pub)) AND (!$this->isInQueue($pub))){
+                    $this->insertSingle($pub);
+                }
             }
         }
         return $this;
     }
     
-    protected function insertSingle(){
+    protected function insertSingle($pub){
         db_insert($this->queued_table)
         ->fields($this->buildFieldsArray($pub))
         ->execute();
