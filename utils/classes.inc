@@ -119,8 +119,10 @@ class PubAlert{
         
         
         $ii = 0;
-        foreach ($sq->islandoraSolrResult['response']['objects'] as $object) {
-            $ii++;
+        if(is_array($sq->islandoraSolrResult['response']['objects'])){
+            foreach ($sq->islandoraSolrResult['response']['objects'] as $object) {
+                $ii++;
+            }
         }
         
         return ($ii==1) ? TRUE : FALSE;
@@ -188,9 +190,11 @@ class PubAlert{
         $this->setQuery();
         while(!$this->metaDataServant->getFetchStepsDone()){
             $this->metaDataServant->serveStep();
-            foreach($this->metaDataServant->getProcessedArray()[0]['item'] as $pub){
-                if ((!$this->isInRepo($pub)) AND (!$this->isInQueue($pub))){
-                    $this->insertSingle($pub);
+            if(is_array($this->metaDataServant->getProcessedArray()[0]['item'])){
+                foreach($this->metaDataServant->getProcessedArray()[0]['item'] as $pub){
+                    if ((!$this->isInRepo($pub)) AND (!$this->isInQueue($pub))){
+                        $this->insertSingle($pub);
+                    }
                 }
             }
         }
