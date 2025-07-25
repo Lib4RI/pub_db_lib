@@ -519,7 +519,7 @@ class CrossrefFetcher extends MetaDataFetcher{
     /**
      * Service's base URL
      */
-    protected $uri = "http://www.crossref.org/openurl";
+    protected $uri = "https://www.crossref.org/openurl"; // Using httpS now. Base URL also exist in: variable_get('islandora_doi_openurl','')
 
     /**
      * URL parameters specific to the service
